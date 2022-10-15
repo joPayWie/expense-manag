@@ -4,6 +4,11 @@
     src: url(../assets/fonts/RemachineScript_Personal_Use.ttf);
 }
 
+* {
+    font-family: 'Poppins', sans-serif;
+}
+  
+
 /********* scrollbar ***/
 
 *::-webkit-scrollbar{
