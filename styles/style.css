@@ -34,11 +34,11 @@
 .build-with{
     color: #101E33;
     font-size: 15px;
+    font-weight: 600;
 }
 
 .made-jopay{
     font-family: remachine;
-    font-weight: 400;
     font-size: 25px;
-    color: #E94560;
+    color: #b84a0a;
 }
