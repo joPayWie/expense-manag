@@ -4,6 +4,26 @@
     src: url(../assets/fonts/RemachineScript_Personal_Use.ttf);
 }
 
+/********* scrollbar ***/
+
+*::-webkit-scrollbar{
+    width: 16px;
+}
+
+*::-webkit-scrollbar-thumb{
+    background-color:#EA580C;
+    border-radius: 10px;
+    border: 2px solid white;
+}
+
+*::-webkit-scrollbar-thumb:active{
+    background-color:#f47734;
+}
+
+*::-webkit-scrollbar-track{
+    background: white;
+}
+
 /************* footer*/
 
 .build-with{

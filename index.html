@@ -4,32 +4,103 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="apple-touch-icon" sizes="180x180" href="assets/favicon/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="styles/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css" integrity="sha512-xh6O/CkQoPOWDdYTDqeRdPCVd1SpvCA9XXcUnZS2FmJNp1coAFzvtCN9BmamE+4aHK8yyUHUSCcJHgXloTyT2A==" crossorigin="anonymous" referrerpolicy="no-referrer">
     <title>myExpenseManag</title>
 </head>
-<body class="bg-[url('assets/images/piggy-bg.png')] bg-cover">
+<body class="bg-[url('assets/images/piggy-bg.png')] bg-cover bg-no-repeat">
     <header class="flex flex-row justify-between bg-[#101E33] px-5 h-24 items-center">
         <img src="assets/images/logo.png" aria-label="my expense manager logo" class="h-24">
-        <nav class="text-white "> 
+        <nav class="text-white"> 
             <ul class="flex flex-row justify-between text-lg">
-                <li class="mx-6"><a href="index.html"> 
+                <li class="mx-6 hover:text-orange-600"><a href="index.html"> 
                     <i class="fa-solid fa-chart-simple"></i> 
                     Balance </a></li>
-                <li class="mx-6"><a href="tags.html"> 
+                <li class="mx-6 hover:text-orange-600"><a href="tags.html"> 
                     <i class="fa-solid fa-tag"></i>
                     Tags </a></li>
-                <li class="mx-6"><a href="report.html">
+                <li class="mx-6 hover:text-orange-600"><a href="report.html">
                     <i class="fa-solid fa-chart-pie"></i> 
                     Report </a></li>
             </ul>
         </nav>
     </header>
-    <section class="h-[90vh]">
-        <div></div>
-        <div></div>
-        <div></div>
+    <section class="flex justify-center text-stone-800">
+        <div class="flex flex-col w-3/12">
+            <div class="bg-white rounded-md max-h-fit m-5 p-8 shadow-md">
+                <h2 class="text-4xl font-bold text-stone-800 mb-8"> Balance </h2>
+                <div class="flex justify-between my-3"> 
+                    <div class="text-start text-lg"> Incomes  </div>
+                    <div class="text-green-600" id="total-incomes"> +$0 </div>
+                </div>
+                <div class="flex justify-between my-3">
+                    <div class="text-start text-lg"> Outcomes </div>
+                    <div class="text-red-600" id="total-outcomes"> -$0 </div>
+                </div>
+                <div class="flex justify-between my-3">
+                    <div class="text-start text-xl"> Total </div>
+                    <div class="font-bold" id="total-totalxD"> $0 </div>
+                </div>
+            </div>
+    
+            <div class="bg-white rounded-md max-h-fit m-5 p-8 shadow-md">
+                <div class="flex justify-between mb-8 items-center">
+                    <h3 class="text-3xl font-bold text-stone-800"> Filters </h3>
+                    <a href="" id="toggle-filter" class="text-[#1E90FF] hover:text-orange-600"> Hide filters </a>
+                </div>
+                <form>
+                    <div class="flex flex-col">
+                        <label for="filter-type" class="font-bold mb-2"> Type </label>
+                        <select name="filer-type" id="filter-type" class="border-2"> 
+                            <option value="all"> All </option>
+                            <option value="income"> Income </option>
+                            <option value="outcome"> Outcome </option>
+                        </select>
+                    </div>
+                    <div class="flex flex-col">
+                        <label for="tag-type" class="font-bold mb-2"> Tag </label>
+                        <select name="tag" id="tag-type" class="border-2"> 
+                            <option value="all"> All </option>
+                            <option value="food"> Food </option>
+                            <option value="education"> Education </option>
+                            <option value="transfers"> Transfers </option>
+                            <option value="services"> Services </option>
+                            <option value="work"> Work </option>
+                        </select>
+                    </div>
+                    <div class="flex flex-col">
+                        <label for="date" class="font-bold mb-2"> Since </label>
+                        <input type="date" name="date" id="date" class="border-2">
+                    </div>
+                    <div class="flex flex-col">
+                        <label for="sort-by" class="font-bold mb-2"> Sort by </label>
+                        <select name="sort-by" id="sort-by" class="border-2"> 
+                            <option value="newest"> Newest </option>
+                            <option value="latest"> Latest </option>
+                            <option value="higher"> Higher amount </option>
+                            <option value="lower"> Lower amount </option>
+                            <option value="A-Z"> A to Z </option>
+                            <option value="Z-A"> Z o A </option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <div class="bg-white rounded-md m-5 w-6/12 min-h-min shadow-md" id="operations-container">
+            <div class="flex flex-row justify-between p-8 ">
+                <h3 class="text-3xl font-bold text-stone-800"> Operations </h3>
+                <button class="bg-[#101E33] hover:bg-[#1E90FF] text-white rounded-md p-3"> + New operation </button>
+            </div>
+            <div>
+                <p> Lorem, ipsum dolor sit amet consectetur adipisicing elit. Soluta placeat ipsum, quis est minus harum velit quos!  </p>
+            </div>
+        </div>
     </section>
     <footer class="flex flex-row justify-end bg-transparent mx-4">
         <span class="build-with"> Build with &#128154; by 
