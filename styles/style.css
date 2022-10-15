@@ -1,0 +1,19 @@
+/********** fonts */
+@font-face {
+    font-family: remachine;
+    src: url(../assets/fonts/RemachineScript_Personal_Use.ttf);
+}
+
+/************* footer*/
+
+.build-with{
+    color: #101E33;
+    font-size: 15px;
+}
+
+.made-jopay{
+    font-family: remachine;
+    font-weight: 400;
+    font-size: 25px;
+    color: #E94560;
+}

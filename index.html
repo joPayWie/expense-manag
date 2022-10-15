@@ -5,9 +5,36 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="styles/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css" integrity="sha512-xh6O/CkQoPOWDdYTDqeRdPCVd1SpvCA9XXcUnZS2FmJNp1coAFzvtCN9BmamE+4aHK8yyUHUSCcJHgXloTyT2A==" crossorigin="anonymous" referrerpolicy="no-referrer">
     <title>myExpenseManag</title>
 </head>
-<body>
-    
+<body class="bg-[url('assets/images/piggy-bg.png')] bg-cover">
+    <header class="flex flex-row justify-between bg-[#101E33] px-5 h-24 items-center">
+        <img src="assets/images/logo.png" aria-label="my expense manager logo" class="h-24">
+        <nav class="text-white "> 
+            <ul class="flex flex-row justify-between text-lg">
+                <li class="mx-6"><a href="index.html"> 
+                    <i class="fa-solid fa-chart-simple"></i> 
+                    Balance </a></li>
+                <li class="mx-6"><a href="tags.html"> 
+                    <i class="fa-solid fa-tag"></i>
+                    Tags </a></li>
+                <li class="mx-6"><a href="report.html">
+                    <i class="fa-solid fa-chart-pie"></i> 
+                    Report </a></li>
+            </ul>
+        </nav>
+    </header>
+    <section class="h-[90vh]">
+        <div></div>
+        <div></div>
+        <div></div>
+    </section>
+    <footer class="flex flex-row justify-end bg-transparent mx-4">
+        <span class="build-with"> Build with &#128154; by 
+            <span class="made-jopay">JoPay</span> 
+        </span>
+    </footer>
 </body>
 </html>
