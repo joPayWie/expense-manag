@@ -29,7 +29,13 @@
     background: white;
 }
 
-/************* footer*/
+@media (max-width: 1024px) {
+    ::-webkit-scrollbar { display: none; }
+}
+
+
+
+/************* my signature*/
 
 .build-with{
     color: #101E33;
