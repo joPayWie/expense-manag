@@ -16,45 +16,48 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
     <title>myExpenseManag</title>
 </head>
-<body class="h-screen w-full min-h-fit max-w-full bg-[url('assets/images/bg-dollar.png')] bg-cover bg-no-repeat overflow-x-hidden">
+<body class="flex flex-col items-center h-screen w-full min-h-fit max-w-full bg-[url('assets/images/bg-dollar.png')] bg-cover bg-no-repeat overflow-x-hidden">
 
 <!-- header -->
-    <header class="flex flex-row justify-between bg-[#101E33] px-5 h-24 items-center">
+    <header class="flex flex-row justify-between w-full bg-[#101E33] px-5 h-24 items-center">
         <!-- logo  -->
         <img src="assets/images/logo.png" aria-label="my expense manager logo" alt="my expense manager logo" class="hidden md:block h-24">
         <img src="assets/images/logo-mobile.png" aria-label="my expense manager logo" alt="my expense manager logo" class="md:hidden h-24">
         <nav class="text-white">
         <!-- desktop navbar  -->
             <ul class="hidden md:flex md:flex-row md:justify-between md:text-lg">
-                <li class="mx-6 hover:text-orange-600"><a href="index.html"> 
+                <li class="mx-6 hover:text-orange-600"><a href="index.html" id="balance-link"> 
                     <i class="fa-solid fa-chart-simple"></i> 
                     Balance </a></li>
-                <li class="mx-6 hover:text-orange-600"><a href="tags.html"> 
+                <li class="mx-6 hover:text-orange-600"><a href="#" id="tags-link"> 
                     <i class="fa-solid fa-tag"></i>
                     Tags </a></li>
-                <li class="mx-6 hover:text-orange-600"><a href="report.html">
+                <li class="mx-6 hover:text-orange-600"><a href="#" id="report-link">
                     <i class="fa-solid fa-chart-pie"></i> 
                     Report </a></li>
             </ul>
         <!-- header burger menu -->
             <div class="md:hidden flex items-center">
                 <button class="outline-none mobile-menu-button">
-                    <i class="fa-solid fa-bars text-4xl mr-3  border-2 border-white py-2 px-3 rounded"></i>
+                    <div class="flex justify-center border-2 border-white rounded py-2 pl-3 pr-0 bg-[#EA580C]">
+                        <i id="burger-icon-lines" class="fa-solid fa-bars text-4xl mr-3 "></i>
+                        <i id="burger-icon-xmark" class="hidden fa-solid fa-xmark text-4xl pl-1 pr-4"></i>
+                    </div>
                 </button>
             </div>
         </nav>
     </header>
 
-    <div class="hidden md:hidden mobile-menu bg-[#101E33]">
+    <div class="hidden md:hidden mobile-menu bg-[#101E33] w-full">
         <ul>
             <li>
-                <a href="index.html" class="block text-sm px-2 py-4 text-white font-semibold hover:bg-[#EA580C] transition duration-200">Balance</a>
+                <a href="index.html" id="balance-link-mobile" class="block text-sm px-2 py-4 text-white font-semibold hover:bg-[#EA580C] transition duration-200">Balance</a>
             </li>
             <li>
-                <a href="#" class="block text-sm px-2 py-4 text-white font-semibold hover:bg-[#EA580C] transition duration-200">Tags</a>
+                <a href="#" id="tags-link-mobile" class="block text-sm px-2 py-4 text-white font-semibold hover:bg-[#EA580C] transition duration-200">Tags</a>
             </li>
             <li>
-                <a href="#" class="block text-sm px-2 py-4 text-white font-semibold hover:bg-[#EA580C] transition duration-200 ">Report</a>
+                <a href="#" id="report-link-mobile" class="block text-sm px-2 py-4 text-white font-semibold hover:bg-[#EA580C] transition duration-200 ">Report</a>
             </li>
         </ul>
     </div>
@@ -68,22 +71,23 @@
                 <h2 class="text-4xl font-bold text-stone-800 mb-8"> Balance </h2>
                 <div class="flex justify-between my-3"> 
                     <div class="text-start text-lg"> Incomes  </div>
-                    <div class="text-green-600" id="total-incomes"> +$0 </div>
+                    <div  id="total-incomes" class="text-green-600"> +$0 </div>
                 </div>
                 <div class="flex justify-between my-3">
                     <div class="text-start text-lg"> Outcomes </div>
-                    <div class="text-red-600" id="total-outcomes"> -$0 </div>
+                    <div id="total-outcomes" class="text-red-600"> -$0 </div>
                 </div>
                 <div class="flex justify-between my-3">
                     <div class="text-start text-xl"> Total </div>
-                    <div class="font-bold" id="total-totalxD"> $0 </div>
+                    <div id="total-totalxD" class="font-bold"> $0 </div>
                 </div>
             </div>
+
         <!-- filter div -->
-            <div class="bg-white rounded-md min-h-fit m-5 p-8 shadow-md">
+            <div class="bg-white min-h-fit rounded-md m-5 p-8 shadow-md">
                 <div class="flex justify-between mb-8 items-center">
                     <h3 class="text-3xl font-bold text-stone-800"> Filters </h3>
-                    <a href="" id="toggle-filter" class="text-[#1E90FF] hover:text-orange-600"> Hide filters </a>
+                    <a href="#" id="toggle-filter" class="text-[#1E90FF] hover:text-orange-600"> Hide filters </a>
                 </div>
                 <form>
                     <div class="flex flex-col">
@@ -96,7 +100,7 @@
                     </div>
                     <div class="flex flex-col">
                         <label for="tag-type" class="font-bold mb-2"> Tag </label>
-                        <select name="tag" id="tag-type" class="border-2"> 
+                        <select name="tag-type" id="tag-type" class="border-2"> 
                             <option value="all"> All </option>
                             <option value="food"> Food </option>
                             <option value="education"> Education </option>
@@ -128,15 +132,50 @@
         <div class="bg-white rounded-md m-5 w-10/12 lg:w-6/12 min-h-min shadow-md" id="operations-container">
             <div class="flex flex-col lg:flex-row lg:justify-between p-8">
                 <h3 class="text-3xl font-bold text-stone-800"> Operations </h3>
-                <button class="self-start lg:self-end bg-[#101E33] hover:bg-[#1E90FF] text-white rounded-md p-3 mt-3 lg:mt-0"> + New operation </button>
+                <button id="operation-btn" class="self-start lg:self-end bg-[#101E33] hover:bg-[#1E90FF] text-white rounded-md p-3 mt-3 lg:mt-0"> + New operation </button>
             </div>
-            <div class="flex flex-col justify-center items-center lg:mt-7" id="operations-noresult-container">
+            <div id="operations-noresult-container" class="flex flex-col justify-center items-center lg:mt-7">
                 <img src="assets/images/undraw_questions_re_1fy7.svg" class="w-8/12 lg:w-3/5">
                 <h4 class="mt-5 font-extrabold text-xl"> No results </h4>
                 <p class="my-4"> Change filters or add operations </p>
             </div>
             <div id="operations-table-container">
                 <!-- HERE GOES THE TABLE -->
+            </div>
+        </div>
+    </section>
+
+    <!-- tag section  -->
+    <section class="hidden justify-center items-center flex-col w-10/12 lg:w-7/12">
+        <!-- tag div  -->
+        <div class="flex flex-col w-full min-h-min bg-white rounded-md m-5 p-8 shadow-md">
+            <h1 class="text-3xl font-bold text-stone-800"> Tags </h1>
+            <div class="flex flex-col mt-3">
+                <label for="tag-name"> Tag name </label>
+                <div class="flex flex-row">
+                    <input type="text" id="tag-name" class="border-2 w-full">
+                    <button id="tag-btn" class="bg-[#EA580C] justify-self-center font-semibold p-2 ml-2 rounded-md hover:bg-[#1E90FF] hover:text-white"> Add </button>
+                </div>
+                <div id="tag-list">
+                    <!-- TAG LISTTTTT  -->
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- report section -->
+    <section class="hidden justify-center items-center flex-col w-full">
+        <div class="bg-white rounded-md m-5 w-10/12 lg:w-6/12 min-h-min shadow-md" id="report-container">
+            <div class="flex flex-col lg:flex-row lg:justify-between p-8">
+                <h3 class="text-3xl font-bold text-stone-800"> Report </h3>
+            </div>
+            <div id="report-noresult-container" class="flex flex-col justify-center items-center lg:mt-7">
+                <img src="assets/images/undraw_investing_re_bov7.svg" class="w-8/12 lg:w-3/5">
+                <h4 class="mt-5 font-extrabold text-xl"> Not enough operations </h4>
+                <p class="my-4"> Try by adding operations </p>
+            </div>
+            <div id="report-table-container">
+                <!-- HERE GOES THE REPORT TABLE -->
             </div>
         </div>
     </section>
