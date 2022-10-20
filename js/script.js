@@ -1,7 +1,7 @@
 /* DOM selector function */
 
 const $ = (selector) => document.querySelector(selector)
-const $$ = (selector) => documento.querySelectorAll(selector)
+const $$ = (selector) => document.querySelectorAll(selector)
 
 /********************************* DATA FUNCTIONS  *****************/
 
@@ -32,3 +32,31 @@ hideFilters.addEventListener("click", () => {
 })
 
  /********************* Sections click events *************/
+// hide and unhide sections variables
+const balanceSection = $("#main-section")
+const tagSection = $("#tag-section")
+const tagShowLinks = $$(".tag-show-link")
+const reportSection = $("#report-section")
+const reportShowLinks = $$(".report-show-link")
+
+for (const tagLink of tagShowLinks) {
+  tagLink.addEventListener("click", () => {
+    tagSection.classList.toggle("hidden")
+    balanceSection.classList.add("hidden")
+    reportSection.classList.add("hidden")
+    burgerMenu.classList.add("hidden")
+    burgerIconLines.classList.remove("hidden")
+    burgerIconX.classList.add("hidden")  
+  })
+}
+
+for (const reportLink of reportShowLinks) {
+  reportLink.addEventListener("click", () => {
+    reportSection.classList.toggle("hidden")
+    balanceSection.classList.add("hidden")
+    tagSection.classList.add("hidden")
+    burgerMenu.classList.add("hidden")
+    burgerIconLines.classList.remove("hidden")
+    burgerIconX.classList.add("hidden")  
+  })
+}
