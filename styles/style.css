@@ -16,13 +16,13 @@
 }
 
 *::-webkit-scrollbar-thumb{
-    background-color:#EA580C;
+    background-color:#F083BF;
     border-radius: 10px;
     border: 2px solid white;
 }
 
 *::-webkit-scrollbar-thumb:active{
-    background-color:#f47734;
+    background-color: #FAE4ED;
 }
 
 *::-webkit-scrollbar-track{
@@ -33,9 +33,7 @@
     ::-webkit-scrollbar { display: none; }
 }
 
-
-
-/************* my signature*/
+/************* our signature*/
 
 .build-with{
     color: #101E33;
@@ -46,5 +44,11 @@
 .made-jopay{
     font-family: remachine;
     font-size: 25px;
-    color: #EA580C;
+    color: #E94560;
 }
+
+.made-lasolci{
+    color: #cf266c;
+}
+
+/* color solci  #F083BF

@@ -21,5 +21,14 @@ const $$ = (selector) => documento.querySelectorAll(selector)
    burgerIconX.classList.toggle("hidden")   
  })
 
+ /************ hide filters  ************/
+ // hide and unhide filters variables
+ const hideFilters = $("#toggle-filter")
+ const filterForm = $("#filter-form")
+
+ // hide and unhide filters function
+hideFilters.addEventListener("click", () => {
+  filterForm.classList.toggle("hidden")
+})
 
  /********************* Sections click events *************/
