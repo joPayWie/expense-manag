@@ -4,6 +4,11 @@
     src: url(../assets/fonts/RemachineScript_Personal_Use.ttf);
 }
 
+@font-face {
+    font-family: ellisha;
+    src: url(../assets/fonts/Ellisha.ttf);
+}
+
 * {
     font-family: 'Poppins', sans-serif;
 }
@@ -57,6 +62,8 @@
 }
 
 .made-lasolci{
+    font-family: ellisha;
+    font-size: 16px;
     color: #cf266c;
 }
 

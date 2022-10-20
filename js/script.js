@@ -41,7 +41,7 @@ const reportShowLinks = $$(".report-show-link")
 
 for (const tagLink of tagShowLinks) {
   tagLink.addEventListener("click", () => {
-    tagSection.classList.toggle("hidden")
+    tagSection.classList.remove("hidden")
     balanceSection.classList.add("hidden")
     reportSection.classList.add("hidden")
     burgerMenu.classList.add("hidden")
@@ -52,7 +52,7 @@ for (const tagLink of tagShowLinks) {
 
 for (const reportLink of reportShowLinks) {
   reportLink.addEventListener("click", () => {
-    reportSection.classList.toggle("hidden")
+    reportSection.classList.remove("hidden")
     balanceSection.classList.add("hidden")
     tagSection.classList.add("hidden")
     burgerMenu.classList.add("hidden")
