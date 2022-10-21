@@ -5,8 +5,8 @@
 }
 
 @font-face {
-    font-family: ellisha;
-    src: url(../assets/fonts/Ellisha.ttf);
+    font-family: julietta-messie;
+    src: url(../assets/fonts/Julietta-Messie.otf);
 }
 
 * {
@@ -62,8 +62,8 @@
 }
 
 .made-lasolci{
-    font-family: ellisha;
-    font-size: 16px;
+    font-family: julietta-messie;
+    font-size: 25px;
     color: #cf266c;
 }
 
