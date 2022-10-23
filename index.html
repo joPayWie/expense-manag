@@ -206,49 +206,52 @@
         </div>
     </section>
 
-    <div class="hidden operation-modal bg-white min-h-fit rounded-md m-5 p-8 shadow-md w-1/2">
-        <h2 class="text-3xl text-stone-800 font-bold">New operation</h2>
-        <form>
-            <div class="flex flex-col">
-                <label for="description" class="font-bold mb-2"> Description </label>
-                <input name="description" id="description" class="border-2" type="text">
-                </input>
-            </div>
-            <div class="flex flex-col">
-                <label for="amount" class="font-bold mb-2"> Amount </label>
-                <input name="amount" id="amount" class="border-2" type="number">
-                </input>
-            </div>
-            <div class="flex flex-col">
-                <label for="filter-type" class="font-bold mb-2"> Type </label>
-                <select name="filer-type" id="filter-type" class="border-2">
-                    <option value="all"> All </option>
-                    <option value="income"> Income </option>
-                    <option value="outcome"> Outcome </option>
-                </select>
-            </div>
-            <div class="flex flex-col">
-                <label for="tag-type" class="font-bold mb-2"> Tag </label>
-                <select name="tag-type" id="tag-type" class="border-2">
-                    <option value="all"> All </option>
-                    <option value="food"> Food </option>
-                    <option value="education"> Education </option>
-                    <option value="transfers"> Transfers </option>
-                    <option value="services"> Services </option>
-                    <option value="work"> Work </option>
-                </select>
-            </div>
-            <div class="flex flex-col">
-                <label for="date-modal" class="font-bold mb-2"> Since </label>
-                <input type="date" name="date-modal" id="date-modal" class="border-2">
-            </div>
-            <div class="flex justify-end">
-                <button
-                    class="m-3 self-start lg:self-end text-white bg-[#F499CA] rounded-md p-3 mt-3 lg:mt-0 hover:bg-[#53AEE5] transition duration-150 hover:ease-in">Add</button>
-                <button
-                    class="m-3 self-start lg:self-end text-white bg-[#F499CA] rounded-md p-3 mt-3 lg:mt-0 hover:bg-[#53AEE5] transition duration-150 hover:ease-in ">Cancel</button>
-            </div>
-        </form>
+
+    <div class="hidden container-modal bg-[rgba(0,0,0,0.2)] fixed w-full h-full overflow-auto flex justify-center items-center ">
+        <div class=" operation-modal bg-white min-h-fit rounded-md m-5 p-8 shadow-md w-1/2">
+            <h2 class="text-3xl text-stone-800 font-bold">New operation</h2>
+            <form>
+                <div class="flex flex-col">
+                    <label for="description" class="font-bold mb-2"> Description </label>
+                    <input name="description" id="description" class="border-2" type="text">
+                    </input>
+                </div>
+                <div class="flex flex-col">
+                    <label for="amount" class="font-bold mb-2"> Amount </label>
+                    <input name="amount" id="amount" class="border-2" type="number">
+                    </input>
+                </div>
+                <div class="flex flex-col">
+                    <label for="filter-type" class="font-bold mb-2"> Type </label>
+                    <select name="filer-type" id="filter-type" class="border-2">
+                        <option value="all"> All </option>
+                        <option value="income"> Income </option>
+                        <option value="outcome"> Outcome </option>
+                    </select>
+                </div>
+                <div class="flex flex-col">
+                    <label for="tag-type" class="font-bold mb-2"> Tag </label>
+                    <select name="tag-type" id="tag-type" class="border-2">
+                        <option value="all"> All </option>
+                        <option value="food"> Food </option>
+                        <option value="education"> Education </option>
+                        <option value="transfers"> Transfers </option>
+                        <option value="services"> Services </option>
+                        <option value="work"> Work </option>
+                    </select>
+                </div>
+                <div class="flex flex-col">
+                    <label for="date-modal" class="font-bold mb-2"> Since </label>
+                    <input type="date" name="date-modal" id="date-modal" class="border-2">
+                </div>
+                <div class="mt-5 flex justify-end">
+                    <button id="modal-btn-add"
+                        class="m-3 self-start lg:self-end text-white bg-[#E371AF] rounded-md p-3 mt-3 lg:mt-0 hover:bg-[#53AEE5] transition duration-150 hover:ease-in">Add</button>
+                    <button id="modal-btn-cancel"
+                        class="m-3 self-start lg:self-end text-white bg-red-600 rounded-md p-3 mt-3 lg:mt-0 hover:bg-[#53AEE5] transition duration-150 hover:ease-in ">Cancel</button>
+                </div>
+            </form>
+        </div>
     </div>
 
     <!-- footer -->
