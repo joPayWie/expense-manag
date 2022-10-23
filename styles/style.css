@@ -67,4 +67,12 @@
     color: #cf266c;
 }
 
-/* color solci  #F083BF
+@media (max-width: 650px) {
+    .build-with {
+        font-size: 12.5px;
+        text-align: center;
+    }
+    .made-jopay, .made-lasolci {
+        font-size: 20px;
+    }
+}
