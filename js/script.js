@@ -4,8 +4,42 @@ const $ = (selector) => document.querySelector(selector)
 const $$ = (selector) => document.querySelectorAll(selector)
 
 /********************************* DATA FUNCTIONS  *****************/
+// Data variables
+const tags = [
+    { id: 0, 
+    name: "Food"},
+    { id: 1,
+      name: "Education"},
+    { id: 2,
+      name: "Transfers"},
+    { id: 3,
+    name: "Services"},
+    { id: 4,
+    name: "Work"},  
+]
+
+// Input data
+const inputNewTag = $("#tag-name")
+
+// Functions
+const createObject = (array) => {
+    newObj = {}
+    newObj.id = array.length
+    newObj.name = inputNewTag.value
+    return newObj
+}
+
+console.log(createObject(tags))
+
+const addNewObject = (array, object) => {
+    return array.push(object)
+}
+
+
 
 /******************** DOM FUNCTIONS **********************************/
+
+
 
 /************************ Modal *******************************/
 
@@ -17,14 +51,13 @@ const modal = $(".operation-modal")
 const modalContainer = $(".container-modal")
 
 // Modal event 
-
 operationBtn.addEventListener("click", () => {
-  modalContainer.classList.remove("hidden")
+    modalContainer.classList.remove("hidden")
 })
 
 cancelBtnModal.addEventListener("click", (event) => {
-  event.preventDefault()
-  modalContainer.classList.add("hidden")
+    event.preventDefault()
+    modalContainer.classList.add("hidden")
 })
 
 
@@ -38,9 +71,9 @@ const burgerIconX = $("#burger-icon-xmark")
 
 // Burger menu event listeners
 burgerBtn.addEventListener("click", () => {
-  burgerMenu.classList.toggle("hidden");
-  burgerIconLines.classList.toggle("hidden")
-  burgerIconX.classList.toggle("hidden")
+    burgerMenu.classList.toggle("hidden");
+    burgerIconLines.classList.toggle("hidden")
+    burgerIconX.classList.toggle("hidden")
 })
 
 /************ hide filters  ************/
@@ -50,7 +83,7 @@ const filterForm = $("#filter-form")
 
 // hide and unhide filters function
 hideFilters.addEventListener("click", () => {
-  filterForm.classList.toggle("hidden")
+    filterForm.classList.toggle("hidden")
 })
 
 /********************* Sections click events *************/
