@@ -60,6 +60,18 @@ const tagSection = $("#tag-section")
 const tagShowLinks = $$(".tag-show-link")
 const reportSection = $("#report-section")
 const reportShowLinks = $$(".report-show-link")
+const balanceShowLinks = $$("#balance-link")
+
+for (const balanceLink of balanceShowLinks) {
+  balanceLink.addEventListener("click", () => {
+    balanceSection.classList.remove("hidden")
+    tagSection.classList.add("hidden")
+    reportSection.classList.add("hidden")
+    burgerMenu.classList.add("hidden")
+    burgerIconLines.classList.remove("hidden")
+    burgerIconX.classList.add("hidden")
+  })
+}
 
 for (const tagLink of tagShowLinks) {
   tagLink.addEventListener("click", () => {
