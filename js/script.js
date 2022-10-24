@@ -9,35 +9,47 @@ const $$ = (selector) => document.querySelectorAll(selector)
 
 /*********************** Burger menu **************************/
 // Burger menu variables
- const burgerBtn = $("button.mobile-menu-button")
- const burgerMenu = $(".mobile-menu")
- const burgerIconLines = $("#burger-icon-lines")
- const burgerIconX = $("#burger-icon-xmark")
+const burgerBtn = $("button.mobile-menu-button")
+const burgerMenu = $(".mobile-menu")
+const burgerIconLines = $("#burger-icon-lines")
+const burgerIconX = $("#burger-icon-xmark")
 
- // Burger menu event listeners
- burgerBtn.addEventListener("click", () => {
-   burgerMenu.classList.toggle("hidden");
-   burgerIconLines.classList.toggle("hidden")
-   burgerIconX.classList.toggle("hidden")   
- })
+// Burger menu event listeners
+burgerBtn.addEventListener("click", () => {
+  burgerMenu.classList.toggle("hidden");
+  burgerIconLines.classList.toggle("hidden")
+  burgerIconX.classList.toggle("hidden")
+})
 
- /************ hide filters  ************/
- // hide and unhide filters variables
- const hideFilters = $("#toggle-filter")
- const filterForm = $("#filter-form")
+/************ hide filters  ************/
+// hide and unhide filters variables
+const hideFilters = $("#toggle-filter")
+const filterForm = $("#filter-form")
 
- // hide and unhide filters function
+// hide and unhide filters function
 hideFilters.addEventListener("click", () => {
   filterForm.classList.toggle("hidden")
 })
 
- /********************* Sections click events *************/
+/********************* Sections click events *************/
 // hide and unhide sections variables
 const balanceSection = $("#main-section")
 const tagSection = $("#tag-section")
 const tagShowLinks = $$(".tag-show-link")
 const reportSection = $("#report-section")
 const reportShowLinks = $$(".report-show-link")
+const balanceShowLinks = $$("#balance-link")
+
+for (const balanceLink of balanceShowLinks) {
+  balanceLink.addEventListener("click", () => {
+    balanceSection.classList.remove("hidden")
+    tagSection.classList.add("hidden")
+    reportSection.classList.add("hidden")
+    burgerMenu.classList.add("hidden")
+    burgerIconLines.classList.remove("hidden")
+    burgerIconX.classList.add("hidden")
+  })
+}
 
 for (const tagLink of tagShowLinks) {
   tagLink.addEventListener("click", () => {
@@ -46,7 +58,7 @@ for (const tagLink of tagShowLinks) {
     reportSection.classList.add("hidden")
     burgerMenu.classList.add("hidden")
     burgerIconLines.classList.remove("hidden")
-    burgerIconX.classList.add("hidden")  
+    burgerIconX.classList.add("hidden")
   })
 }
 
@@ -57,6 +69,6 @@ for (const reportLink of reportShowLinks) {
     tagSection.classList.add("hidden")
     burgerMenu.classList.add("hidden")
     burgerIconLines.classList.remove("hidden")
-    burgerIconX.classList.add("hidden")  
+    burgerIconX.classList.add("hidden")
   })
 }
