@@ -60,7 +60,7 @@ const tagSection = $("#tag-section")
 const tagShowLinks = $$(".tag-show-link")
 const reportSection = $("#report-section")
 const reportShowLinks = $$(".report-show-link")
-const balanceShowLinks = $$("#balance-link")
+const balanceShowLinks = $$(".balance-show-link")
 
 for (const balanceLink of balanceShowLinks) {
   balanceLink.addEventListener("click", () => {
