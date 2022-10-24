@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" class="overflow-x-hidden max-w-full">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -10,12 +11,15 @@
     <link rel="manifest" href="/site.webmanifest">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="styles/style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css" integrity="sha512-xh6O/CkQoPOWDdYTDqeRdPCVd1SpvCA9XXcUnZS2FmJNp1coAFzvtCN9BmamE+4aHK8yyUHUSCcJHgXloTyT2A==" crossorigin="anonymous" referrerpolicy="no-referrer">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css"
+        integrity="sha512-xh6O/CkQoPOWDdYTDqeRdPCVd1SpvCA9XXcUnZS2FmJNp1coAFzvtCN9BmamE+4aHK8yyUHUSCcJHgXloTyT2A=="
+        crossorigin="anonymous" referrerpolicy="no-referrer">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
     <title>myExpenseManag</title>
 </head>
+
 <body
     class="flex flex-col items-center h-screen w-full min-h-fit max-w-full bg-[url('assets/images/fondo.jpeg')] bg-cover bg-no-repeat overflow-x-hidden">
 
@@ -50,7 +54,8 @@
                 <button class="outline-none mobile-menu-button">
                     <div class="bg-[#F499CA] flex justify-center border-2 border-white rounded  py-2 pl-3 pr-0">
                         <i id="burger-icon-lines" class="fa-solid fa-bars text-stone-800 text-4xl mr-3 "></i>
-                        <i id="burger-icon-xmark" class="hidden fa-solid fa-xmark text-stone-800 text-4xl pl-1 pr-4"></i>
+                        <i id="burger-icon-xmark"
+                            class="hidden fa-solid fa-xmark text-stone-800 text-4xl pl-1 pr-4"></i>
                     </div>
                 </button>
             </div>
@@ -60,7 +65,7 @@
     <div class="hidden md:hidden w-full mobile-menu bg-[#EA89BC]">
         <ul>
             <li>
-                <a href="index.html" id="balance-link-mobile"
+                <a href="#" id="balance-link-mobile"
                     class="block text-sm px-2 py-4 text-black font-semibold hover:bg-[#53AEE5] hover:text-white transition duration-200">Balance</a>
             </li>
             <li>
@@ -75,7 +80,8 @@
     </div>
 
     <!-- main section -->
-    <section id="main-section" class="flex flex-col w-full items-center justify-center lg:flex-row lg:items-start text-stone-800">
+    <section id="main-section"
+        class="flex flex-col w-full items-center justify-center lg:flex-row lg:items-start text-stone-800">
         <!-- balance and filters div -->
         <div class="flex flex-col w-11/12 lg:w-3/12">
             <!-- balance div -->
@@ -188,7 +194,8 @@
             <div class="flex flex-col lg:flex-row lg:justify-between p-8">
                 <h3 class="text-3xl font-bold text-stone-800"> Report </h3>
             </div>
-            <div id="report-noresult-container" class="bg-[url('assets/images/hojita6.jpeg')] flex flex-col justify-center items-center lg:mt-7 ">
+            <div id="report-noresult-container"
+                class="bg-[url('assets/images/hojita6.jpeg')] flex flex-col justify-center items-center lg:mt-7 ">
                 <img src="assets/images/billetera1.png" class="w-2/4" alt="please add operations to access your report">
                 <h4 class="text-xl mt-5 font-extrabold"> Not enough operations </h4>
                 <p class="my-4"> Try by adding operations </p>
@@ -199,12 +206,61 @@
         </div>
     </section>
 
+
+    <div class="hidden container-modal bg-[rgba(0,0,0,0.2)] fixed w-full h-full overflow-auto flex justify-center items-center ">
+        <div class=" operation-modal bg-white min-h-fit rounded-md m-5 p-8 shadow-md w-1/2">
+            <h2 class="text-3xl text-stone-800 font-bold">New operation</h2>
+            <form>
+                <div class="flex flex-col">
+                    <label for="description" class="font-bold mb-2"> Description </label>
+                    <input name="description" id="description" class="border-2" type="text">
+                    </input>
+                </div>
+                <div class="flex flex-col">
+                    <label for="amount" class="font-bold mb-2"> Amount </label>
+                    <input name="amount" id="amount" class="border-2" type="number">
+                    </input>
+                </div>
+                <div class="flex flex-col">
+                    <label for="filter-type" class="font-bold mb-2"> Type </label>
+                    <select name="filer-type" id="filter-type" class="border-2">
+                        <option value="all"> All </option>
+                        <option value="income"> Income </option>
+                        <option value="outcome"> Outcome </option>
+                    </select>
+                </div>
+                <div class="flex flex-col">
+                    <label for="tag-type" class="font-bold mb-2"> Tag </label>
+                    <select name="tag-type" id="tag-type" class="border-2">
+                        <option value="all"> All </option>
+                        <option value="food"> Food </option>
+                        <option value="education"> Education </option>
+                        <option value="transfers"> Transfers </option>
+                        <option value="services"> Services </option>
+                        <option value="work"> Work </option>
+                    </select>
+                </div>
+                <div class="flex flex-col">
+                    <label for="date-modal" class="font-bold mb-2"> Since </label>
+                    <input type="date" name="date-modal" id="date-modal" class="border-2">
+                </div>
+                <div class="mt-5 flex justify-end">
+                    <button id="modal-btn-add"
+                        class="m-3 self-start lg:self-end text-white bg-[#E371AF] rounded-md p-3 mt-3 lg:mt-0 hover:bg-[#53AEE5] transition duration-150 hover:ease-in">Add</button>
+                    <button id="modal-btn-cancel"
+                        class="m-3 self-start lg:self-end text-white bg-red-600 rounded-md p-3 mt-3 lg:mt-0 hover:bg-[#53AEE5] transition duration-150 hover:ease-in ">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <!-- footer -->
     <footer class="flex flex-row justify-center bg-transparent  lg:justify-end mx-4">
         <span class="build-with"> Build with &#128154; by
-            <strong class="made-jopay">JoPay</strong>  &  <strong class="made-lasolci"> Solange Aimery </strong>
+            <strong class="made-jopay">JoPay</strong> & <strong class="made-lasolci"> Solange Aimery </strong>
         </span>
     </footer>
     <script src="js/script.js"> </script>
 </body>
+
 </html>
