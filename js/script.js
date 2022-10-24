@@ -7,7 +7,29 @@ const $$ = (selector) => document.querySelectorAll(selector)
 
 /******************** DOM FUNCTIONS **********************************/
 
+/************************ Modal *******************************/
+
+// Modal variables
+const operationBtn = $("#operation-btn")
+const addBtnModal = $("#modal-btn-add")
+const cancelBtnModal = $("#modal-btn-cancel")
+const modal = $(".operation-modal")
+const modalContainer = $(".container-modal")
+
+// Modal event 
+
+operationBtn.addEventListener("click", () => {
+  modalContainer.classList.remove("hidden")
+})
+
+cancelBtnModal.addEventListener("click", (event) => {
+  event.preventDefault()
+  modalContainer.classList.add("hidden")
+})
+
+
 /*********************** Burger menu **************************/
+
 // Burger menu variables
 const burgerBtn = $("button.mobile-menu-button")
 const burgerMenu = $(".mobile-menu")
