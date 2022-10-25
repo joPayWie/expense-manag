@@ -56,10 +56,10 @@ const showTagsOnDisplay = (array) => {
     for (const tag of array) {
       tagTable.innerHTML += `
       <div class="flex justify-between mb-3"> 
-        <span class="text-sm bg-[#F4C6D9] text-[#AB0B4F] px-1 rounded">${tag.name}</span> 
+        <span class="text-sm bg-[#F4C6D9] text-[#AB0B4F] p-1 rounded">${tag.name}</span> 
         <span class="flex">
-          <a href="#" class="mx-3"> <img src="EDIT"> </a> 
-          <a href="#"> <img src="DELETE"> </a>
+          <a href="#" class="mx-3"> <img src="assets/images/lapiz.png" alt="pencil drawing" class="w-5"> </a> 
+          <a href="#"> <img src="assets/images/tachito1.png" alt="garbage drawing" class="w-5 "> </a>
         </span> 
       </div>`
     }
