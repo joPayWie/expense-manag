@@ -18,6 +18,9 @@ const tags = [
     name: "Work"},  
 ]
 
+// localStorage.setItem("tagList", JSON.stringify(tags))
+// const tagsStorage = JSON.parse(localStorage.getItem("tagList")) 
+
 // Input data
 const inputNewTag = $("#tag-name")
 
@@ -25,21 +28,51 @@ const inputNewTag = $("#tag-name")
 const createObject = (array) => {
     newObj = {}
     newObj.id = array.length
-    newObj.name = inputNewTag.value
+    if ( inputNewTag.value === '' ) {
+      return alert(`PLEASE ENTER A TAG NAME. Thank you :)`)
+    }
+    else ( newObj.name = inputNewTag.value )
     return newObj
 }
-
-console.log(createObject(tags))
 
 const addNewObject = (array, object) => {
     return array.push(object)
 }
 
 
-
 /******************** DOM FUNCTIONS **********************************/
+// Dom tags variables
+const tagTable = $("#tag-list")
+const addTagBtn = $("#tag-btn")
 
+const showTagsOnDisplay = (array) => {
+    for (const tag of array) {
+      tagTable.innerHTML += `
+      <div class="flex justify-between mb-3"> 
+        <span class="text-sm bg-[#F4C6D9] text-[#AB0B4F] px-1 rounded">${tag.name}</span> 
+        <span class="flex">
+          <a href="#" class="mx-3"> <img src="EDIT"> </a> 
+          <a href="#"> <img src="DELETE"> </a>
+        </span> 
+      </div>`
+    }
+}
 
+addTagBtn.addEventListener("click", () => {
+    tagTable.innerHTML = ""
+    addNewObject(tags, createObject(tags))
+    localStorage.setItem("tagList", JSON.stringify(tags)) 
+    if ( localStorage.getItem("tagList") ) {
+      showTagsOnDisplay(JSON.parse(localStorage.getItem("tagList")))
+    }
+    else { showTagsOnDisplay(tags) }
+})
+
+// first executation
+if ( localStorage.getItem("tagList") ) {
+  showTagsOnDisplay(JSON.parse(localStorage.getItem("tagList")))
+}
+else { showTagsOnDisplay(tags) }
 
 /************************ Modal *******************************/
 
