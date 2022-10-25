@@ -18,33 +18,57 @@ const tags = [
     name: "Work"},  
 ]
 
+const charactersForId = [
+  ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'],
+  [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+]
 
-// aqui se guardaa la info directamente en local
+// General functions
 
+const getRandomCharacter = (array) => {
+    let randomIndex = Math.floor(Math.random() * array.length)
+    let randomSelection = array[randomIndex];
+    return randomSelection  
+}
+
+const getRandomId = (array) => {
+  let randomIdArr = []
+    while (randomIdArr.length < 6) {
+      for (let i = 0; i < array.length; i++) {
+        let character = getRandomCharacter(array[i])
+        randomIdArr.push(character)
+      }
+    }
+    for (let i = randomIdArr.length - 1; i > 0; i--) {
+      let j = Math.floor(Math.random() * (i + 1));
+      [randomIdArr[i], randomIdArr[j]] = [randomIdArr[j], randomIdArr[i]];
+  }
+  return randomIdArr.join('')
+}
+
+const addNewObject = (array, object) => {
+  return array.push(object)
+}
+
+
+// Local storage for tags list
 if (!localStorage.getItem("tagList")) {
   localStorage.setItem("tagList", JSON.stringify(tags))
 }
 
-
-
-// Input data
+// Input data por tags
 const inputNewTag = $("#tag-name")
 
-// Functions
-const createObject = (array) => {
-    newObj = {}
-    newObj.id = array.length
-    if ( inputNewTag.value === '' ) {
-      return alert(`PLEASE ENTER A TAG NAME. Thank you :)`)
-    }
-    else ( newObj.name = inputNewTag.value )
-    return newObj
+// Create tag
+const createTagObject = () => {
+  newObj = {}
+  newObj.id = getRandomId(charactersForId)
+  if ( inputNewTag.value === '' ) {
+    return alert(`PLEASE ENTER A TAG NAME. Thank you :)`)
+  }
+  else ( newObj.name = inputNewTag.value )
+  return newObj
 }
-
-const addNewObject = (array, object) => {
-    return array.push(object)
-}
-
 
 /******************** DOM FUNCTIONS **********************************/
 // Dom tags variables
@@ -52,6 +76,7 @@ const tagTable = $("#tag-list")
 const addTagBtn = $("#tag-btn")
 const localTagsArr = JSON.parse(localStorage.getItem("tagList"))
 
+// Dom tags functions
 const showTagsOnDisplay = (array) => {
     for (const tag of array) {
       tagTable.innerHTML += `
@@ -67,7 +92,7 @@ const showTagsOnDisplay = (array) => {
 
 addTagBtn.addEventListener("click", () => {
     tagTable.innerHTML = ""
-    addNewObject(localTagsArr, createObject(localTagsArr))
+    addNewObject(localTagsArr, createTagObject(localTagsArr))
     localStorage.setItem("tagList", JSON.stringify(localTagsArr)) 
     if ( !localStorage.getItem("tagList") ) {
       localStorage.setItem("tagList", JSON.stringify(localTagsArr))
@@ -81,8 +106,8 @@ if ( localStorage.getItem("tagList") ) {
 }
 else { showTagsOnDisplay(localTagsArr) }
 
-/************************ Modal *******************************/
 
+/************************ Modal *******************************/
 // Modal variables
 const operationBtn = $("#operation-btn")
 const addBtnModal = $("#modal-btn-add")
@@ -102,7 +127,6 @@ cancelBtnModal.addEventListener("click", (event) => {
 
 
 /*********************** Burger menu **************************/
-
 // Burger menu variables
 const burgerBtn = $("button.mobile-menu-button")
 const burgerMenu = $(".mobile-menu")
@@ -116,7 +140,8 @@ burgerBtn.addEventListener("click", () => {
     burgerIconX.classList.toggle("hidden")
 })
 
-/************ hide filters  ************/
+
+/************ Hide filters  ************/
 // hide and unhide filters variables
 const hideFilters = $("#toggle-filter")
 const filterForm = $("#filter-form")
