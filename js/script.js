@@ -18,8 +18,14 @@ const tags = [
     name: "Work"},  
 ]
 
-// localStorage.setItem("tagList", JSON.stringify(tags))
-// const tagsStorage = JSON.parse(localStorage.getItem("tagList")) 
+
+// aqui se guardaa la info directamente en local
+
+if (!localStorage.getItem("tagList")) {
+  localStorage.setItem("tagList", JSON.stringify(tags))
+}
+
+
 
 // Input data
 const inputNewTag = $("#tag-name")
@@ -44,6 +50,7 @@ const addNewObject = (array, object) => {
 // Dom tags variables
 const tagTable = $("#tag-list")
 const addTagBtn = $("#tag-btn")
+const localTagsArr = JSON.parse(localStorage.getItem("tagList"))
 
 const showTagsOnDisplay = (array) => {
     for (const tag of array) {
@@ -60,19 +67,19 @@ const showTagsOnDisplay = (array) => {
 
 addTagBtn.addEventListener("click", () => {
     tagTable.innerHTML = ""
-    addNewObject(tags, createObject(tags))
-    localStorage.setItem("tagList", JSON.stringify(tags)) 
-    if ( localStorage.getItem("tagList") ) {
-      showTagsOnDisplay(JSON.parse(localStorage.getItem("tagList")))
+    addNewObject(localTagsArr, createObject(localTagsArr))
+    localStorage.setItem("tagList", JSON.stringify(localTagsArr)) 
+    if ( !localStorage.getItem("tagList") ) {
+      localStorage.setItem("tagList", JSON.stringify(localTagsArr))
     }
-    else { showTagsOnDisplay(tags) }
+    else { showTagsOnDisplay(localTagsArr) }
 })
 
 // first executation
 if ( localStorage.getItem("tagList") ) {
   showTagsOnDisplay(JSON.parse(localStorage.getItem("tagList")))
 }
-else { showTagsOnDisplay(tags) }
+else { showTagsOnDisplay(localTagsArr) }
 
 /************************ Modal *******************************/
 
