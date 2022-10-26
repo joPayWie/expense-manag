@@ -47,6 +47,9 @@ const getRandomId = (array) => {
 }
 
 const addNewObject = (array, object) => {
+  if(inputNewTag.value === ''){
+    return array
+  }
   return array.push(object)
 }
 
@@ -58,15 +61,17 @@ if (!localStorage.getItem("tagList")) {
 
 // Input data por tags
 const inputNewTag = $("#tag-name")
+const errorMessage = $(".span-message")
 
 // Create tag
 const createTagObject = () => {
   newObj = {}
   newObj.id = getRandomId(charactersForId)
   if ( inputNewTag.value === '' ) {
-    return alert(`PLEASE ENTER A TAG NAME. Thank you :)`)
+    return errorMessage.classList.remove("hidden")
   }
   else ( newObj.name = inputNewTag.value )
+  errorMessage.classList.add("hidden")
   return newObj
 }
 
