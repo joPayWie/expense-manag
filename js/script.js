@@ -24,7 +24,6 @@ const charactersForId = [
 ]
 
 // General functions
-
 const getRandomCharacter = (array) => {
     let randomIndex = Math.floor(Math.random() * array.length)
     let randomSelection = array[randomIndex];
@@ -53,15 +52,16 @@ const addNewObject = (array, object) => {
   return array.push(object)
 }
 
+/************** Tags section **************/
+
+// Input data for tags
+const inputNewTag = $("#tag-name")
+const errorMessage = $(".span-message")
 
 // Local storage for tags list
 if (!localStorage.getItem("tagList")) {
   localStorage.setItem("tagList", JSON.stringify(tags))
 }
-
-// Input data por tags
-const inputNewTag = $("#tag-name")
-const errorMessage = $(".span-message")
 
 // Create tag
 const createTagObject = () => {
@@ -105,7 +105,7 @@ addTagBtn.addEventListener("click", () => {
     else { showTagsOnDisplay(localTagsArr) }
 })
 
-// first executation
+// First tag execution
 if ( localStorage.getItem("tagList") ) {
   showTagsOnDisplay(JSON.parse(localStorage.getItem("tagList")))
 }
