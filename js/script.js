@@ -35,6 +35,12 @@ const charactersForId = [
   [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
 ]
 
+const totalRemaining = 0
+
+const totalIncomes = 0
+
+const totalOutcomes = 0
+
 // General functions
 const getRandomCharacter = (array) => {
   let randomIndex = Math.floor(Math.random() * array.length)
@@ -57,25 +63,30 @@ const getRandomId = (array) => {
   return randomIdArr.join('')
 }
 
-/***** Operation section *****/
-
+/*********** Operation section ***********/
 // Input variables for operations
 const descriptionInput = $("#description")
 const amountInput = $("#amount")
 const filterTypeModal = $("#filter-type-modal")
 const tagTypeModal = $("#tag-type-modal")
 const dateInputModal = $("#date-modal")
+const localOperationsArr = JSON.parse(localStorage.getItem("operationsList"))
 
-// local storage for operations list
+// Local storage for operations list
 if (!localStorage.getItem("operationsList")) {
   localStorage.setItem("operationsList", JSON.stringify(operations))
 }
 
-
+// Date
 let today = new Date()
 dateInputModal.value = today.getFullYear() + '-' + ('0' + (today.getMonth() + 1)).slice(-2) + '-' + ('0' + today.getDate()).slice(-2);
 
+const formatDate = (date) => {
+  const newDate = date.split("-").reverse()
+  return newDate.join("/")
+}
 
+// Create operation
 const addNewOperationObject = (array, object) => {
   if (descriptionInput.value === '' || amountInput.value === "" || filterTypeModal.value === "All" || tagTypeModal.value === "All") {
     return array
@@ -83,13 +94,6 @@ const addNewOperationObject = (array, object) => {
   return array.push(object)
 
 }
-
-
-const formatDate = (date) => {
-  const newDate = date.split("-").reverse()
-  return newDate.join("/")
-}
-
 
 const createOperationObject = () => {
   return {
@@ -133,19 +137,82 @@ const createTagObject = () => {
   }
 }
 
+
+/************** Balance section *******************/
+// Variables and local first execution for balance section
+if (!localStorage.getItem("totalRemaining")) {
+  localStorage.setItem("totalRemaining", JSON.stringify(totalRemaining))
+}
+
+if (!localStorage.getItem("totalIncomes")) {
+  localStorage.setItem("totalIncomes", JSON.stringify(totalIncomes))
+}
+
+if (!localStorage.getItem("totalOutcomes")) {
+  localStorage.setItem("totalOutcomes", JSON.stringify(totalOutcomes))
+}
+
+let localTotalRemaining = JSON.parse(localStorage.getItem("totalRemaining"))
+let localTotalIncomes = JSON.parse(localStorage.getItem("totalIncomes"))
+let localTotalOutcomes = JSON.parse(localStorage.getItem("totalOutcomes"))
+
+// Functions for balance section
+const calculateTotalIncomes = (array) => {
+  localTotalIncomes = 0
+  for ( const { type, amount } of array ) {
+    if ( type === 'income' ) {
+      localTotalIncomes += Number(amount)
+    }
+  }
+  return localTotalIncomes
+}
+
+const calculateTotalOutcomes = (array) => {
+  localTotalOutcomes = 0
+  for ( const { type, amount } of array ) {
+    if ( type === 'outcome' ) {
+      localTotalOutcomes += Number(amount)
+    }
+  }
+  return localTotalOutcomes
+}
+
+const calculateTotalRemaining = () => {
+  return localTotalRemaining = calculateTotalIncomes(localOperationsArr) - calculateTotalOutcomes(localOperationsArr)
+}
+
+const saveTotalsInLocal = () => {
+  localStorage.setItem("totalRemaining", JSON.stringify(calculateTotalRemaining()))
+  localStorage.setItem("totalIncomes", JSON.stringify(calculateTotalIncomes(localOperationsArr)))
+  localStorage.setItem("totalOutcomes", JSON.stringify(calculateTotalOutcomes(localOperationsArr)))
+}
+
+
 /******************** DOM FUNCTIONS **********************************/
+// Dom balance variables
+const totalIncomesDom = $("#total-incomes")
+const totalOutcomesDom = $("#total-outcomes")
+const totalRemainingDom = $("#total-totalxD")
+
+const showTotalsOnDisplay = () => {
+  saveTotalsInLocal()
+  totalIncomesDom.innerHTML = `${localTotalIncomes}`
+  totalOutcomesDom.innerHTML = `${localTotalOutcomes}`
+  totalRemainingDom.innerHTML = `${localTotalRemaining}`
+}
+
+showTotalsOnDisplay()
+
 // Dom operations variables 
 const operationTableContainer = $("#operations-object-table")
 const modalBtnAdd = $("#modal-btn-add")
 const noResultContainer = $("#operations-noresult-container")
 const operationHeaderTable = $("#operations-header-table")
-const localOperationsArr = JSON.parse(localStorage.getItem("operationsList"))
 
 if ( !noResultContainer.classList.contains("hidden") ) {
   operationHeaderTable.classList.remove("md:table-header-group")
   operationHeaderTable.classList.add("md:hidden")
 }
-
 
 // Dom operations functions and events
 const mediumScreen = window.matchMedia("(min-width: 768px)")
@@ -242,6 +309,7 @@ modalBtnAdd.addEventListener("click", (e) => {
   noResultContainer.classList.add("hidden")
   operationHeaderTable.classList.remove("md:hidden")
   operationHeaderTable.classList.add("md:table-header-group")
+  showTotalsOnDisplay()
 })
 
 
@@ -289,12 +357,12 @@ const cancelBtnModal = $("#modal-btn-cancel")
 const modal = $(".operation-modal")
 const modalContainer = $(".container-modal")
 const operationModalForm = $("#operation-modal-form") 
-/* tuve que cambiar el final del form para poder resetearlo sin cambiar la date */
+/* tuve que cambiar el final del form para poder resetearlo sin cambiar la date ATENTI AL POLLI */
 
 // Modal event 
 operationBtn.addEventListener("click", () => {
   modalContainer.classList.remove("hidden")
-  operationModalForm.reset() /* tuve que cambiar el final del form para poder resetearlo sin cambiar la date */
+  operationModalForm.reset() /* tuve que cambiar el final del form para poder resetearlo sin cambiar la date ATENTI AL POLLI */
 })
 
 cancelBtnModal.addEventListener("click", (event) => {
