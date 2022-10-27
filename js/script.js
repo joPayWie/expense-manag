@@ -28,19 +28,12 @@ const tags = [
   },
 ]
 
+const operations = []
+
 const charactersForId = [
   ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'],
   [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
 ]
-
-const operations = []
-
-if (!localStorage.getItem("operationsList")) {
-  localStorage.setItem("operationsList", JSON.stringify(operations))
-}
-
-const localOperationsArr = JSON.parse(localStorage.getItem("operationsList"))
-
 
 // General functions
 const getRandomCharacter = (array) => {
@@ -64,24 +57,24 @@ const getRandomId = (array) => {
   return randomIdArr.join('')
 }
 
-const addNewObject = (array, object) => {
-  if (inputNewTag.value === '') {
-    return array
-  }
-  return array.push(object)
-}
-
 /***** Operation section *****/
 
-//variables 
+// Input variables for operations
 const descriptionInput = $("#description")
 const amountInput = $("#amount")
 const filterTypeModal = $("#filter-type-modal")
 const tagTypeModal = $("#tag-type-modal")
 const dateInputModal = $("#date-modal")
 
+// local storage for operations list
+if (!localStorage.getItem("operationsList")) {
+  localStorage.setItem("operationsList", JSON.stringify(operations))
+}
+
+
 let today = new Date()
 dateInputModal.value = today.getFullYear() + '-' + ('0' + (today.getMonth() + 1)).slice(-2) + '-' + ('0' + today.getDate()).slice(-2);
+
 
 const addNewOperationObject = (array, object) => {
   if (descriptionInput.value === '' || amountInput.value === "" || filterTypeModal.value === "All" || tagTypeModal.value === "All") {
@@ -91,28 +84,26 @@ const addNewOperationObject = (array, object) => {
 
 }
 
+
 const formatDate = (date) => {
   const newDate = date.split("-").reverse()
   return newDate.join("/")
 }
 
-const createOperationObject = () => {
 
+const createOperationObject = () => {
   return {
     id: getRandomId(charactersForId),
     description: descriptionInput.value,
     amount: amountInput.value,
     type: filterTypeModal.value,
     tag: tagTypeModal.value,
-    date: formatDate(dateInputModal.value),
+    date: formatDate(dateInputModal.value)
   }
-
 }
 
-
 /************** Tags section **************/
-
-// Input data for tags
+// Input variables for tags
 const inputNewTag = $("#tag-name")
 const errorMessage = $(".span-message")
 
@@ -122,6 +113,13 @@ if (!localStorage.getItem("tagList")) {
 }
 
 // Create tag
+const addNewTagObject = (array, object) => {
+  if (inputNewTag.value === '') {
+    return array
+  }
+  return array.push(object)
+}
+
 const createTagObject = () => {
   newObj = {}
   newObj.id = getRandomId(charactersForId)
@@ -141,26 +139,96 @@ const operationTableContainer = $("#operations-object-table")
 const modalBtnAdd = $("#modal-btn-add")
 const noResultContainer = $("#operations-noresult-container")
 const operationHeaderTable = $("#operations-header-table")
+const localOperationsArr = JSON.parse(localStorage.getItem("operationsList"))
 
 if ( !noResultContainer.classList.contains("hidden") ) {
   operationHeaderTable.classList.remove("md:table-header-group")
   operationHeaderTable.classList.add("md:hidden")
 }
 
+
 // Dom operations functions and events
+const mediumScreen = window.matchMedia("(min-width: 768px)")
+
 const showOperationsOnDisplay = (array) => {
-  for (const { description, amount, tag, date } of array) {
-    operationTableContainer.innerHTML += `
-      <tr class="text-center text-sm">
+  for ( const { description, amount, type, tag, date } of array ) {
+    if ( mediumScreen.matches ) {
+      if ( type === 'income' ) {
+        operationTableContainer.innerHTML += `
+        <tr class="text-center text-sm">
+            <td>${description}</td>
+            <td>
+              <span class="text-sm bg-[#F4C6D9] text-[#AB0B4F] p-1 rounded">${tag}</span> 
+            </td>
+            <td>${date}</td>
+            <td class="font-semibold text-green-600">$${amount}</td>
+            <td>
+              <span class="flex justify-center">
+              <a href="#" class="mx-2 py-1 px-2 rounded-full hover:bg-[#1E90FF]"> <img src="assets/images/lapiz.png" aria-label="edit" alt="pencil drawing" class="w-5"> </a> 
+              <a href="#" class="mx-2 py-1 px-2 rounded-full hover:bg-[#1E90FF]"> <img src="assets/images/tachito1.png" aria-label="delete" alt="garbage drawing" class="w-5 "> </a>
+              </span> 
+            </td>
+        </tr>`
+      }
+      if ( type === 'outcome' ) {
+        operationTableContainer.innerHTML += `
+        <tr class="text-center text-sm">
+            <td>${description}</td>
+            <td>
+              <span class="text-sm bg-[#F4C6D9] text-[#AB0B4F] p-1 rounded">${tag}</span> 
+            </td>
+            <td>${date}</td>
+            <td class="font-semibold text-red-600">-$${amount}</td>
+            <td>
+              <span class="flex justify-center">
+              <a href="#" class="mx-2 py-1 px-2 rounded-full hover:bg-[#1E90FF]"> <img src="assets/images/lapiz.png" aria-label="edit" alt="pencil drawing" class="w-5"> </a> 
+              <a href="#" class="mx-2 py-1 px-2 rounded-full hover:bg-[#1E90FF]"> <img src="assets/images/tachito1.png" aria-label="delete" alt="garbage drawing" class="w-5 "> </a>
+              </span> 
+            </td>
+        </tr>`
+      }
+    }
+  else { if ( type === 'income' ) {
+      operationTableContainer.innerHTML += `
+      <tr class="h-10">
+        <tr>
           <td>${description}</td>
-          <td><span class="text-sm bg-[#F4C6D9] text-[#AB0B4F] p-1 rounded">${tag}</span> </td>
-          <td>${date}</td>
-          <td>${amount}</td>
-          <td><span class="flex">
-          <a href="#" class="mx-3"> <img src="assets/images/lapiz.png" alt="pencil drawing" class="w-5"> </a> 
-          <a href="#"> <img src="assets/images/tachito1.png" alt="garbage drawing" class="w-5 "> </a>
-        </span> </td>
+          <td class="flex justify-end">
+            <span class="text-xs bg-[#F4C6D9] text-[#AB0B4F] p-1 rounded">${tag}</span> 
+          </td>
+        </tr>
+        <tr>
+          <td class="font-semibold text-green-600 text-lg">$${amount}</td>
+          <td>
+            <span class="flex justify-end">
+              <a href="#" class="py-1 px-2 rounded-full hover:bg-[#1E90FF]"> <img src="assets/images/lapiz.png" aria-label="edit" alt="pencil drawing" class="w-5"> </a> 
+              <a href="#" class="py-1 px-2 rounded-full hover:bg-[#1E90FF]"> <img src="assets/images/tachito1.png" aria-label="delete" alt="garbage drawing" class="w-5 "> </a>
+            </span> 
+          </td>
+        </tr>
       </tr>`
+      }
+    if ( type === 'outcome' ) {
+      operationTableContainer.innerHTML += `
+      <tr class="h-10">
+        <tr>
+          <td>${description}</td>
+          <td class="flex justify-end">
+            <span class="text-xs bg-[#F4C6D9] text-[#AB0B4F] p-1 rounded">${tag}</span> 
+          </td>
+        </tr>
+        <tr>
+          <td class="font-semibold text-red-600 text-lg">-$${amount}</td>
+          <td>
+            <span class="flex justify-end">
+              <a href="#" class="py-1 px-2 rounded-full hover:bg-[#1E90FF]"> <img src="assets/images/lapiz.png" aria-label="edit" alt="pencil drawing" class="w-5"> </a> 
+              <a href="#" class="py-1 px-2 rounded-full hover:bg-[#1E90FF]"> <img src="assets/images/tachito1.png" aria-label="delete" alt="garbage drawing" class="w-5"> </a>
+            </span> 
+          </td>
+        </tr>
+      </tr>`
+      }
+    }
   }
 }
 
@@ -198,7 +266,7 @@ const showTagsOnDisplay = (array) => {
 
 addTagBtn.addEventListener("click", () => {
   tagTable.innerHTML = ""
-  addNewObject(localTagsArr, createTagObject(localTagsArr))
+  addNewTagObject(localTagsArr, createTagObject(localTagsArr))
   localStorage.setItem("tagList", JSON.stringify(localTagsArr))
   if (!localStorage.getItem("tagList")) {
     localStorage.setItem("tagList", JSON.stringify(localTagsArr))
@@ -220,10 +288,13 @@ const addBtnModal = $("#modal-btn-add")
 const cancelBtnModal = $("#modal-btn-cancel")
 const modal = $(".operation-modal")
 const modalContainer = $(".container-modal")
+const operationModalForm = $("#operation-modal-form") 
+/* tuve que cambiar el final del form para poder resetearlo sin cambiar la date */
 
 // Modal event 
 operationBtn.addEventListener("click", () => {
   modalContainer.classList.remove("hidden")
+  operationModalForm.reset() /* tuve que cambiar el final del form para poder resetearlo sin cambiar la date */
 })
 
 cancelBtnModal.addEventListener("click", (event) => {
