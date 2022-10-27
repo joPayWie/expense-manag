@@ -136,13 +136,20 @@ const createTagObject = () => {
 }
 
 /******************** DOM FUNCTIONS **********************************/
-// Dom operation variables 
-const operationTableContainer = $("#operation-object-table")
+// Dom operations variables 
+const operationTableContainer = $("#operations-object-table")
 const modalBtnAdd = $("#modal-btn-add")
 const noResultContainer = $("#operations-noresult-container")
+const operationHeaderTable = $("#operations-header-table")
 
+if ( !noResultContainer.classList.contains("hidden") ) {
+  operationHeaderTable.classList.remove("md:table-header-group")
+  operationHeaderTable.classList.add("md:hidden")
+}
+
+// Dom operations functions and events
 const showOperationsOnDisplay = (array) => {
-  for (const {description ,amount,tag ,date} of array) {
+  for (const { description, amount, tag, date } of array) {
     operationTableContainer.innerHTML += `
       <tr class="text-center text-sm">
           <td>${description}</td>
@@ -165,15 +172,17 @@ modalBtnAdd.addEventListener("click", (e) => {
   showOperationsOnDisplay(localOperationsArr)
   modalContainer.classList.add("hidden")
   noResultContainer.classList.add("hidden")
-
+  operationHeaderTable.classList.remove("md:hidden")
+  operationHeaderTable.classList.add("md:table-header-group")
 })
+
 
 // Dom tags variables
 const tagTable = $("#tag-list")
 const addTagBtn = $("#tag-btn")
 const localTagsArr = JSON.parse(localStorage.getItem("tagList"))
 
-// Dom tags functions
+// Dom tags functions and events
 const showTagsOnDisplay = (array) => {
   for (const tag of array) {
     tagTable.innerHTML += `
