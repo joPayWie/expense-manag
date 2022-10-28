@@ -129,8 +129,8 @@
                         </select>
                     </div>
                     <div class="flex flex-col">
-                        <label for="tag-type" class="font-bold mt-2"> Tag </label>
-                        <select name="tag-type" id="tag-type" class="border-2">
+                        <label for="filter-tag" class="font-bold mt-2"> Tag </label>
+                        <select name="filter-tag" id="filter-tag" class="border-2">
                             <option value="All">All</option>
                         </select>
                     </div>
@@ -237,25 +237,19 @@
                 </div>
                 <div class="flex flex-col">
                     <label for="amount" class="font-bold mt-2"> Amount </label>
-                    <input name="amount" id="amount" class="border-2" type="number">
+                    <input name="amount" id="amount" class="border-2" type="number" placeholder="Put the amount in positive number">
                 </div>
                 <div class="flex flex-col">
-                    <label for="filter-type-modal" class="font-bold mt-2"> Type </label>
-                    <select name="filer-type-modal" id="filter-type-modal" class="border-2">
-                        <option value="all"> All </option>
+                    <label for="type-modal" class="font-bold mt-2"> Type </label>
+                    <select name="type-modal" id="type-modal" class="border-2">
                         <option value="income"> Income </option>
                         <option value="outcome"> Outcome </option>
                     </select>
                 </div>
                 <div class="flex flex-col">
-                    <label for="tag-type-modal" class="font-bold mt-2"> Tag </label>
-                    <select name="tag-type-modal" id="tag-type-modal" class="border-2">
+                    <label for="tag-modal" class="font-bold mt-2"> Tag </label>
+                    <select name="tag-modal" id="tag-modal" class="border-2">
                         <option value="all"> All </option>
-                        <option value="food"> Food </option>
-                        <option value="education"> Education </option>
-                        <option value="transfers"> Transfers </option>
-                        <option value="services"> Services </option>
-                        <option value="work"> Work </option>
                     </select>
                 </div>
             </form>
