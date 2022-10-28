@@ -159,8 +159,8 @@ let localTotalOutcomes = JSON.parse(localStorage.getItem("totalOutcomes"))
 // Functions for balance section
 const calculateTotalIncomes = (array) => {
   localTotalIncomes = 0
-  for ( const { type, amount } of array ) {
-    if ( type === 'income' ) {
+  for (const { type, amount } of array) {
+    if (type === 'income') {
       localTotalIncomes += Number(amount)
     }
   }
@@ -169,8 +169,8 @@ const calculateTotalIncomes = (array) => {
 
 const calculateTotalOutcomes = (array) => {
   localTotalOutcomes = 0
-  for ( const { type, amount } of array ) {
-    if ( type === 'outcome' ) {
+  for (const { type, amount } of array) {
+    if (type === 'outcome') {
       localTotalOutcomes += Number(amount)
     }
   }
@@ -209,7 +209,7 @@ const modalBtnAdd = $("#modal-btn-add")
 const noResultContainer = $("#operations-noresult-container")
 const operationHeaderTable = $("#operations-header-table")
 
-if ( !noResultContainer.classList.contains("hidden") ) {
+if (!noResultContainer.classList.contains("hidden")) {
   operationHeaderTable.classList.remove("md:table-header-group")
   operationHeaderTable.classList.add("md:hidden")
 }
@@ -218,9 +218,9 @@ if ( !noResultContainer.classList.contains("hidden") ) {
 const mediumScreen = window.matchMedia("(min-width: 768px)")
 
 const showOperationsOnDisplay = (array) => {
-  for ( const { description, amount, type, tag, date } of array ) {
-    if ( mediumScreen.matches ) {
-      if ( type === 'income' ) {
+  for (const { description, amount, type, tag, date } of array) {
+    if (mediumScreen.matches) {
+      if (type === 'income') {
         operationTableContainer.innerHTML += `
         <tr class="text-center text-sm">
             <td>${description}</td>
@@ -237,7 +237,7 @@ const showOperationsOnDisplay = (array) => {
             </td>
         </tr>`
       }
-      if ( type === 'outcome' ) {
+      if (type === 'outcome') {
         operationTableContainer.innerHTML += `
         <tr class="text-center text-sm">
             <td>${description}</td>
@@ -255,8 +255,9 @@ const showOperationsOnDisplay = (array) => {
         </tr>`
       }
     }
-  else { if ( type === 'income' ) {
-      operationTableContainer.innerHTML += `
+    else {
+      if (type === 'income') {
+        operationTableContainer.innerHTML += `
       <tr class="h-10">
         <tr>
           <td>${description}</td>
@@ -275,8 +276,8 @@ const showOperationsOnDisplay = (array) => {
         </tr>
       </tr>`
       }
-    if ( type === 'outcome' ) {
-      operationTableContainer.innerHTML += `
+      if (type === 'outcome') {
+        operationTableContainer.innerHTML += `
       <tr class="h-10">
         <tr>
           <td>${description}</td>
@@ -302,7 +303,7 @@ const showOperationsOnDisplay = (array) => {
 modalBtnAdd.addEventListener("click", (e) => {
   e.preventDefault()
   operationTableContainer.innerHTML = ""
-  addNewOperationObject(localOperationsArr,createOperationObject())
+  addNewOperationObject(localOperationsArr, createOperationObject())
   localStorage.setItem("operationsList", JSON.stringify(localOperationsArr))
   showOperationsOnDisplay(localOperationsArr)
   modalContainer.classList.add("hidden")
@@ -348,6 +349,25 @@ if (localStorage.getItem("tagList")) {
 }
 else { showTagsOnDisplay(localTagsArr) }
 
+/*************** filter main section tags *****************/
+
+//variables
+tagTypeFilter = $("#tag-type")
+
+addTagTypeFilter = () => {
+  for (const tag of localTagsArr){
+    tagTypeFilter.innerHTML += `<option value="${tag.name}">${tag.name}</option>`
+  }
+}
+
+addTagTypeFilter()
+
+tagTypeFilter.addEventListener("click", () => {
+  tagTypeFilter.innerHTML = ""
+  addTagTypeFilter()
+})
+
+
 
 /************************ Modal *******************************/
 // Modal variables
@@ -356,7 +376,7 @@ const addBtnModal = $("#modal-btn-add")
 const cancelBtnModal = $("#modal-btn-cancel")
 const modal = $(".operation-modal")
 const modalContainer = $(".container-modal")
-const operationModalForm = $("#operation-modal-form") 
+const operationModalForm = $("#operation-modal-form")
 /* tuve que cambiar el final del form para poder resetearlo sin cambiar la date ATENTI AL POLLI */
 
 // Modal event 
