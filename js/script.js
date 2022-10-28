@@ -205,7 +205,7 @@ const showTotalsOnDisplay = () => {
   totalRemainingDom.innerHTML = `${localTotalRemaining}`
 }
 
-showTotalsOnDisplay()
+
 
 // Dom operations variables 
 const operationTableContainer = $("#operations-object-table")
@@ -314,7 +314,6 @@ const noResultsOrResults = () => {
   }
 }
 
-noResultsOrResults()
 
 // if (!noResultContainer.classList.contains("hidden")) {
 //   operationHeaderTable.classList.remove("md:table-header-group")
@@ -488,3 +487,8 @@ for (const reportLink of reportShowLinks) {
     burgerIconX.classList.add("hidden")
   })
 }
+
+
+showTotalsOnDisplay()
+
+noResultsOrResults()
