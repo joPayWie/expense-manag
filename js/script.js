@@ -6,10 +6,10 @@ const $$ = (selector) => document.querySelectorAll(selector)
 /********************************* DATA FUNCTIONS  *****************/
 // Data variables
 const tags = [
-  {
-    id: 0,
-    name: "All"
-  },
+  // {
+  //   id: 0,
+  //   name: "All"
+  // },
   {
     id: 1,
     name: "Food"
@@ -71,8 +71,8 @@ const getRandomId = (array) => {
 // Input variables for operations
 const descriptionInput = $("#description")
 const amountInput = $("#amount")
-const filterTypeModal = $("#filter-type-modal")
-const tagTypeModal = $("#tag-type-modal")
+const typeModal = $("#type-modal")
+const tagModal = $("#tag-modal")
 const dateInputModal = $("#date-modal")
 const localOperationsArr = JSON.parse(localStorage.getItem("operationsList"))
 
@@ -92,7 +92,7 @@ const formatDate = (date) => {
 
 // Create operation
 const addNewOperationObject = (array, object) => {
-  if (descriptionInput.value === '' || amountInput.value === "" || filterTypeModal.value === "All" || tagTypeModal.value === "All") {
+  if (descriptionInput.value === '' || amountInput.value === "" || typeModal.value === "All" || tagModal.value === "All") {
     return array
   }
   return array.push(object)
@@ -104,8 +104,8 @@ const createOperationObject = () => {
     id: getRandomId(charactersForId),
     description: descriptionInput.value,
     amount: amountInput.value,
-    type: filterTypeModal.value,
-    tag: tagTypeModal.value,
+    type: typeModal.value,
+    tag: tagModal.value,
     date: formatDate(dateInputModal.value)
   }
 }
@@ -212,17 +212,10 @@ const operationTableContainer = $("#operations-object-table")
 const modalBtnAdd = $("#modal-btn-add")
 const noResultContainer = $("#operations-noresult-container")
 const operationHeaderTable = $("#operations-header-table")
-const divTableOpetaions = $("#div-table-opetaions")
-
-if (!noResultContainer.classList.contains("hidden")) {
-  operationHeaderTable.classList.remove("md:table-header-group")
-  operationHeaderTable.classList.add("md:hidden")
-}
+const divTableOperations = $("#div-table-opetaions")
 
 // Dom operations functions and events
 const mediumScreen = window.matchMedia("(min-width: 768px)")
-
-
 
 const showOperationsOnDisplay = (array) => {
   for (const { description, amount, type, tag, date } of array) {
@@ -307,17 +300,26 @@ const showOperationsOnDisplay = (array) => {
   }
 }
 
-noResultsOrResults = () => {
-  if(localOperationsArr.length === 0){
+// Showing or not showing table head
+const noResultsOrResults = () => {
+  if ( localOperationsArr.length === 0 ){
     noResultContainer.classList.remove("hidden")
-    divTableOpetaions.classList.add("hidden")
+    divTableOperations.classList.add("hidden")
   } else {
     noResultContainer.classList.add("hidden")
+    divTableOperations.classList.remove("hidden")
+    operationHeaderTable.classList.remove("md:hidden")
+    operationHeaderTable.classList.add("md:table-header-group")
     showOperationsOnDisplay(localOperationsArr)
   }
 }
 
 noResultsOrResults()
+
+// if (!noResultContainer.classList.contains("hidden")) {
+//   operationHeaderTable.classList.remove("md:table-header-group")
+//   operationHeaderTable.classList.add("md:hidden")
+// }  // ver qué hacemos con esto
 
 modalBtnAdd.addEventListener("click", (e) => {
   e.preventDefault()
@@ -326,7 +328,7 @@ modalBtnAdd.addEventListener("click", (e) => {
   localStorage.setItem("operationsList", JSON.stringify(localOperationsArr))
   showOperationsOnDisplay(localOperationsArr)
   modalContainer.classList.add("hidden")
-  divTableOpetaions.classList.remove("hidden")
+  divTableOperations.classList.remove("hidden")
   noResultContainer.classList.add("hidden")
   operationHeaderTable.classList.remove("md:hidden")
   operationHeaderTable.classList.add("md:table-header-group")
@@ -371,23 +373,22 @@ else { showTagsOnDisplay(localTagsArr) }
 
 /*************** filter main section tags *****************/
 
-//variables
-tagTypeFilter = $("#tag-type")
+// Tag for filter variables
+const tagFilter = $("#filter-tag")
 
-addTagTypeFilter = () => {
+const addTagTypeFilter = () => {
   for (const tag of localTagsArr){
-    tagTypeFilter.innerHTML += `
+    tagFilter.innerHTML += `
     <option value="${tag.name}">${tag.name}</option>`
   }
 }
 
 addTagTypeFilter()
 
-tagTypeFilter.addEventListener("click", () => {
-  tagTypeFilter.innerHTML = `<option value="all">All</option>`
+tagFilter.addEventListener("click", () => {
+  tagFilter.innerHTML = `<option value="all">All</option>`
   addTagTypeFilter()
-})
-
+}) // no te deja seleccionar la tag para filtrar atenti para que lo solucionemos
 
 
 /************************ Modal *******************************/
@@ -398,12 +399,21 @@ const cancelBtnModal = $("#modal-btn-cancel")
 const modal = $(".operation-modal")
 const modalContainer = $(".container-modal")
 const operationModalForm = $("#operation-modal-form")
-/* tuve que cambiar el final del form para poder resetearlo sin cambiar la date ATENTI AL POLLI */
+
+// Modal tags
+const addTagModal = () => {
+  tagModal.innerHTML = ''
+  for (const { name } of localTagsArr){
+    tagModal.innerHTML += `
+    <option value="${name}">${name}</option>`
+  }
+}
 
 // Modal event 
 operationBtn.addEventListener("click", () => {
   modalContainer.classList.remove("hidden")
   operationModalForm.reset() /* tuve que cambiar el final del form para poder resetearlo sin cambiar la date ATENTI AL POLLI */
+  addTagModal() 
 })
 
 cancelBtnModal.addEventListener("click", (event) => {
