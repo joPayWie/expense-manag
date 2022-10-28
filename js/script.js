@@ -307,7 +307,7 @@ const showOperationsOnDisplay = (array) => {
   }
 }
 
-noResultsOrResults = () => {
+const noResultsOrResults = () => {
   if(localOperationsArr.length === 0){
     noResultContainer.classList.remove("hidden")
     divTableOpetaions.classList.add("hidden")
@@ -372,9 +372,9 @@ else { showTagsOnDisplay(localTagsArr) }
 /*************** filter main section tags *****************/
 
 //variables
-tagTypeFilter = $("#tag-type")
+const tagTypeFilter = $("#tag-type")
 
-addTagTypeFilter = () => {
+const addTagTypeFilter = () => {
   for (const tag of localTagsArr){
     tagTypeFilter.innerHTML += `
     <option value="${tag.name}">${tag.name}</option>`
@@ -410,6 +410,24 @@ cancelBtnModal.addEventListener("click", (event) => {
   event.preventDefault()
   modalContainer.classList.add("hidden")
 })
+
+// Modal tags
+
+// tagTypeFilter = $("#tag-type")
+
+// addTagTypeFilter = () => {
+//   for (const tag of localTagsArr){
+//     tagTypeFilter.innerHTML += `
+//     <option value="${tag.name}">${tag.name}</option>`
+//   }
+// }
+
+// addTagTypeFilter()
+
+// tagTypeFilter.addEventListener("click", () => {
+//   tagTypeFilter.innerHTML = `<option value="all">All</option>`
+//   addTagTypeFilter()
+// })
 
 
 /*********************** Burger menu **************************/
