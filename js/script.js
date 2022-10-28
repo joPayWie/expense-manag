@@ -68,6 +68,11 @@ const getRandomId = (array) => {
 }
 
 /*********** Operation section ***********/
+// Local storage for operations list
+if (!localStorage.getItem("operationsList")) {
+  localStorage.setItem("operationsList", JSON.stringify(operations))
+}
+
 // Input variables for operations
 const descriptionInput = $("#description")
 const amountInput = $("#amount")
@@ -75,11 +80,6 @@ const typeModal = $("#type-modal")
 const tagModal = $("#tag-modal")
 const dateInputModal = $("#date-modal")
 const localOperationsArr = JSON.parse(localStorage.getItem("operationsList"))
-
-// Local storage for operations list
-if (!localStorage.getItem("operationsList")) {
-  localStorage.setItem("operationsList", JSON.stringify(operations))
-}
 
 // Date
 let today = new Date()
@@ -220,85 +220,45 @@ const mediumScreen = window.matchMedia("(min-width: 768px)")
 const showOperationsOnDisplay = (array) => {
   for (const { description, amount, type, tag, date } of array) {
     if (mediumScreen.matches) {
-      if (type === 'income') {
-        operationTableContainer.innerHTML += `
-        <tr class="text-center text-sm">
-            <td>${description}</td>
-            <td>
-              <span class="text-sm bg-[#F4C6D9] text-[#AB0B4F] p-1 rounded">${tag}</span> 
-            </td>
-            <td>${date}</td>
-            <td class="font-semibold text-green-600">$${amount}</td>
-            <td>
-              <span class="flex justify-center">
-              <a href="#" class="mx-2 py-1 px-2 rounded-full hover:bg-[#1E90FF]"> <img src="assets/images/lapiz.png" aria-label="edit" alt="pencil drawing" class="w-5"> </a> 
-              <a href="#" class="mx-2 py-1 px-2 rounded-full hover:bg-[#1E90FF]"> <img src="assets/images/tachito1.png" aria-label="delete" alt="garbage drawing" class="w-5 "> </a>
-              </span> 
-            </td>
-        </tr>`
-      }
-      if (type === 'outcome') {
-        operationTableContainer.innerHTML += `
-        <tr class="text-center text-sm">
-            <td>${description}</td>
-            <td>
-              <span class="text-sm bg-[#F4C6D9] text-[#AB0B4F] p-1 rounded">${tag}</span> 
-            </td>
-            <td>${date}</td>
-            <td class="font-semibold text-red-600">-$${amount}</td>
-            <td>
-              <span class="flex justify-center">
-              <a href="#" class="mx-2 py-1 px-2 rounded-full hover:bg-[#1E90FF]"> <img src="assets/images/lapiz.png" aria-label="edit" alt="pencil drawing" class="w-5"> </a> 
-              <a href="#" class="mx-2 py-1 px-2 rounded-full hover:bg-[#1E90FF]"> <img src="assets/images/tachito1.png" aria-label="delete" alt="garbage drawing" class="w-5 "> </a>
-              </span> 
-            </td>
-        </tr>`
-      }
+      operationTableContainer.innerHTML += `
+          <tr class="text-center text-sm">
+              <td>${description}</td>
+              <td>
+                <span class="text-sm bg-[#F4C6D9] text-[#AB0B4F] p-1 rounded">${tag}</span> 
+              </td>
+              <td>${date}</td>
+              <td class="font-semibold ${type === "income" ? "text-green-600" : "text-red-600"}">$${amount}</td>
+              <td>
+                <span class="flex justify-center">
+                <a href="#" class="mx-2 py-1 px-2 rounded-full hover:bg-[#1E90FF]"> <img src="assets/images/lapiz.png" aria-label="edit" alt="pencil drawing" class="w-5"> </a> 
+                <a href="#" class="mx-2 py-1 px-2 rounded-full hover:bg-[#1E90FF]"> <img src="assets/images/tachito1.png" aria-label="delete" alt="garbage drawing" class="w-5 "> </a>
+                </span> 
+              </td>
+          </tr>`
     }
     else {
-      if (type === 'income') {
-        operationTableContainer.innerHTML += `
-      <tr class="h-10">
-        <tr>
-          <td>${description}</td>
-          <td class="flex justify-end">
-            <span class="text-xs bg-[#F4C6D9] text-[#AB0B4F] p-1 rounded">${tag}</span> 
-          </td>
-        </tr>
-        <tr>
-          <td class="font-semibold text-green-600 text-lg">$${amount}</td>
-          <td>
-            <span class="flex justify-end">
-              <a href="#" class="py-1 px-2 rounded-full hover:bg-[#1E90FF]"> <img src="assets/images/lapiz.png" aria-label="edit" alt="pencil drawing" class="w-5"> </a> 
-              <a href="#" class="py-1 px-2 rounded-full hover:bg-[#1E90FF]"> <img src="assets/images/tachito1.png" aria-label="delete" alt="garbage drawing" class="w-5 "> </a>
-            </span> 
-          </td>
-        </tr>
-      </tr>`
-      }
-      if (type === 'outcome') {
-        operationTableContainer.innerHTML += `
-      <tr class="h-10">
-        <tr>
-          <td>${description}</td>
-          <td class="flex justify-end">
-            <span class="text-xs bg-[#F4C6D9] text-[#AB0B4F] p-1 rounded">${tag}</span> 
-          </td>
-        </tr>
-        <tr>
-          <td class="font-semibold text-red-600 text-lg">-$${amount}</td>
-          <td>
-            <span class="flex justify-end">
-              <a href="#" class="py-1 px-2 rounded-full hover:bg-[#1E90FF]"> <img src="assets/images/lapiz.png" aria-label="edit" alt="pencil drawing" class="w-5"> </a> 
-              <a href="#" class="py-1 px-2 rounded-full hover:bg-[#1E90FF]"> <img src="assets/images/tachito1.png" aria-label="delete" alt="garbage drawing" class="w-5"> </a>
-            </span> 
-          </td>
-        </tr>
-      </tr>`
-      }
+      operationTableContainer.innerHTML += `
+        <tr class="h-10">
+          <tr>
+            <td>${description}</td>
+            <td class="flex justify-end">
+              <span class="text-xs bg-[#F4C6D9] text-[#AB0B4F] p-1 rounded">${tag}</span> 
+            </td>
+          </tr>
+          <tr>
+            <td class="font-semibold ${type === "income" ? "text-green-600" : "text-red-600"} text-lg">$${amount}</td>
+            <td>
+              <span class="flex justify-end">
+                <a href="#" class="py-1 px-2 rounded-full hover:bg-[#1E90FF]"> <img src="assets/images/lapiz.png" aria-label="edit" alt="pencil drawing" class="w-5"> </a> 
+                <a href="#" class="py-1 px-2 rounded-full hover:bg-[#1E90FF]"> <img src="assets/images/tachito1.png" aria-label="delete" alt="garbage drawing" class="w-5 "> </a>
+              </span> 
+            </td>
+          </tr>
+        </tr>`
     }
   }
 }
+
 
 // Showing or not showing table head
 const noResultsOrResults = () => {
