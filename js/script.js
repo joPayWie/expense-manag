@@ -8,22 +8,26 @@ const $$ = (selector) => document.querySelectorAll(selector)
 const tags = [
   {
     id: 0,
-    name: "Food"
+    name: "All"
   },
   {
     id: 1,
-    name: "Education"
+    name: "Food"
   },
   {
     id: 2,
-    name: "Transfers"
+    name: "Education"
   },
   {
     id: 3,
-    name: "Services"
+    name: "Transfers"
   },
   {
     id: 4,
+    name: "Services"
+  },
+  {
+    id: 5,
     name: "Work"
   },
 ]
