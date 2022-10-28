@@ -208,6 +208,7 @@ const operationTableContainer = $("#operations-object-table")
 const modalBtnAdd = $("#modal-btn-add")
 const noResultContainer = $("#operations-noresult-container")
 const operationHeaderTable = $("#operations-header-table")
+const divTableOpetaions = $("#div-table-opetaions")
 
 if (!noResultContainer.classList.contains("hidden")) {
   operationHeaderTable.classList.remove("md:table-header-group")
@@ -216,6 +217,8 @@ if (!noResultContainer.classList.contains("hidden")) {
 
 // Dom operations functions and events
 const mediumScreen = window.matchMedia("(min-width: 768px)")
+
+
 
 const showOperationsOnDisplay = (array) => {
   for (const { description, amount, type, tag, date } of array) {
@@ -300,6 +303,18 @@ const showOperationsOnDisplay = (array) => {
   }
 }
 
+noResultsOrResults = () => {
+  if(localOperationsArr.length === 0){
+    noResultContainer.classList.remove("hidden")
+    divTableOpetaions.classList.add("hidden")
+  } else {
+    noResultContainer.classList.add("hidden")
+    showOperationsOnDisplay(localOperationsArr)
+  }
+}
+
+noResultsOrResults()
+
 modalBtnAdd.addEventListener("click", (e) => {
   e.preventDefault()
   operationTableContainer.innerHTML = ""
@@ -307,6 +322,7 @@ modalBtnAdd.addEventListener("click", (e) => {
   localStorage.setItem("operationsList", JSON.stringify(localOperationsArr))
   showOperationsOnDisplay(localOperationsArr)
   modalContainer.classList.add("hidden")
+  divTableOpetaions.classList.remove("hidden")
   noResultContainer.classList.add("hidden")
   operationHeaderTable.classList.remove("md:hidden")
   operationHeaderTable.classList.add("md:table-header-group")
