@@ -8,22 +8,26 @@ const $$ = (selector) => document.querySelectorAll(selector)
 const tags = [
   {
     id: 0,
-    name: "Food"
+    name: "All"
   },
   {
     id: 1,
-    name: "Education"
+    name: "Food"
   },
   {
     id: 2,
-    name: "Transfers"
+    name: "Education"
   },
   {
     id: 3,
-    name: "Services"
+    name: "Transfers"
   },
   {
     id: 4,
+    name: "Services"
+  },
+  {
+    id: 5,
     name: "Work"
   },
 ]
@@ -372,14 +376,15 @@ tagTypeFilter = $("#tag-type")
 
 addTagTypeFilter = () => {
   for (const tag of localTagsArr){
-    tagTypeFilter.innerHTML += `<option value="${tag.name}">${tag.name}</option>`
+    tagTypeFilter.innerHTML += `
+    <option value="${tag.name}">${tag.name}</option>`
   }
 }
 
 addTagTypeFilter()
 
 tagTypeFilter.addEventListener("click", () => {
-  tagTypeFilter.innerHTML = ""
+  tagTypeFilter.innerHTML = `<option value="all">All</option>`
   addTagTypeFilter()
 })
 
