@@ -376,14 +376,15 @@ tagTypeFilter = $("#tag-type")
 
 addTagTypeFilter = () => {
   for (const tag of localTagsArr){
-    tagTypeFilter.innerHTML += `<option value="${tag.name}">${tag.name}</option>`
+    tagTypeFilter.innerHTML += `
+    <option value="${tag.name}">${tag.name}</option>`
   }
 }
 
 addTagTypeFilter()
 
 tagTypeFilter.addEventListener("click", () => {
-  tagTypeFilter.innerHTML = ""
+  tagTypeFilter.innerHTML = `<option value="all">All</option>`
   addTagTypeFilter()
 })
 
