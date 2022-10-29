@@ -6,28 +6,24 @@ const $$ = (selector) => document.querySelectorAll(selector)
 /********************************* DATA FUNCTIONS  *****************/
 // Data variables
 const tags = [
-  // {
-  //   id: 0,
-  //   name: "All"
-  // },
   {
-    id: 1,
+    id: 0,
     name: "Food"
   },
   {
-    id: 2,
+    id: 1,
     name: "Education"
   },
   {
-    id: 3,
+    id: 2,
     name: "Transfers"
   },
   {
-    id: 4,
+    id: 3,
     name: "Services"
   },
   {
-    id: 5,
+    id: 4,
     name: "Work"
   },
 ]
@@ -68,6 +64,11 @@ const getRandomId = (array) => {
 }
 
 /*********** Operation section ***********/
+// Local storage for operations list
+if (!localStorage.getItem("operationsList")) {
+  localStorage.setItem("operationsList", JSON.stringify(operations))
+}
+
 // Input variables for operations
 const descriptionInput = $("#description")
 const amountInput = $("#amount")
@@ -75,11 +76,6 @@ const typeModal = $("#type-modal")
 const tagModal = $("#tag-modal")
 const dateInputModal = $("#date-modal")
 const localOperationsArr = JSON.parse(localStorage.getItem("operationsList"))
-
-// Local storage for operations list
-if (!localStorage.getItem("operationsList")) {
-  localStorage.setItem("operationsList", JSON.stringify(operations))
-}
 
 // Date
 let today = new Date()
@@ -162,23 +158,27 @@ let localTotalOutcomes = JSON.parse(localStorage.getItem("totalOutcomes"))
 
 // Functions for balance section
 const calculateTotalIncomes = (array) => {
-  localTotalIncomes = 0
-  for (const { type, amount } of array) {
-    if (type === 'income') {
-      localTotalIncomes += Number(amount)
+  if ( array.length > 0 ) {
+    localTotalIncomes = 0
+    for (const { type, amount } of array) {
+      if (type === 'income') {
+        localTotalIncomes += Number(amount)
+      }
     }
-  }
-  return localTotalIncomes
+    return localTotalIncomes
+  } 
 }
 
 const calculateTotalOutcomes = (array) => {
-  localTotalOutcomes = 0
-  for (const { type, amount } of array) {
-    if (type === 'outcome') {
-      localTotalOutcomes += Number(amount)
+  if ( array.length > 0 ) {
+    localTotalOutcomes = 0
+    for (const { type, amount } of array) {
+      if (type === 'outcome') {
+        localTotalOutcomes += Number(amount)
+      }
     }
+    return localTotalOutcomes
   }
-  return localTotalOutcomes
 }
 
 const calculateTotalRemaining = () => {
@@ -205,14 +205,12 @@ const showTotalsOnDisplay = () => {
   totalRemainingDom.innerHTML = `${localTotalRemaining}`
 }
 
-
-
 // Dom operations variables 
 const operationTableContainer = $("#operations-object-table")
 const modalBtnAdd = $("#modal-btn-add")
 const noResultContainer = $("#operations-noresult-container")
 const operationHeaderTable = $("#operations-header-table")
-const divTableOperations = $("#div-table-opetaions")
+const divTableOperations = $("#div-table-operations")
 
 // Dom operations functions and events
 const mediumScreen = window.matchMedia("(min-width: 768px)")
@@ -220,85 +218,45 @@ const mediumScreen = window.matchMedia("(min-width: 768px)")
 const showOperationsOnDisplay = (array) => {
   for (const { description, amount, type, tag, date } of array) {
     if (mediumScreen.matches) {
-      if (type === 'income') {
-        operationTableContainer.innerHTML += `
-        <tr class="text-center text-sm">
-            <td>${description}</td>
-            <td>
-              <span class="text-sm bg-[#F4C6D9] text-[#AB0B4F] p-1 rounded">${tag}</span> 
-            </td>
-            <td>${date}</td>
-            <td class="font-semibold text-green-600">$${amount}</td>
-            <td>
-              <span class="flex justify-center">
-              <a href="#" class="mx-2 py-1 px-2 rounded-full hover:bg-[#1E90FF]"> <img src="assets/images/lapiz.png" aria-label="edit" alt="pencil drawing" class="w-5"> </a> 
-              <a href="#" class="mx-2 py-1 px-2 rounded-full hover:bg-[#1E90FF]"> <img src="assets/images/tachito1.png" aria-label="delete" alt="garbage drawing" class="w-5 "> </a>
-              </span> 
-            </td>
-        </tr>`
-      }
-      if (type === 'outcome') {
-        operationTableContainer.innerHTML += `
-        <tr class="text-center text-sm">
-            <td>${description}</td>
-            <td>
-              <span class="text-sm bg-[#F4C6D9] text-[#AB0B4F] p-1 rounded">${tag}</span> 
-            </td>
-            <td>${date}</td>
-            <td class="font-semibold text-red-600">-$${amount}</td>
-            <td>
-              <span class="flex justify-center">
-              <a href="#" class="mx-2 py-1 px-2 rounded-full hover:bg-[#1E90FF]"> <img src="assets/images/lapiz.png" aria-label="edit" alt="pencil drawing" class="w-5"> </a> 
-              <a href="#" class="mx-2 py-1 px-2 rounded-full hover:bg-[#1E90FF]"> <img src="assets/images/tachito1.png" aria-label="delete" alt="garbage drawing" class="w-5 "> </a>
-              </span> 
-            </td>
-        </tr>`
-      }
+      operationTableContainer.innerHTML += `
+          <tr class="text-center text-sm">
+              <td>${description}</td>
+              <td>
+                <span class="text-sm bg-[#F4C6D9] text-[#AB0B4F] p-1 rounded">${tag}</span> 
+              </td>
+              <td class="hidden md:table-cell">${date}</td>
+              <td class="font-semibold ${type === "income" ? "text-green-600" : "text-red-600"}">$${amount}</td>
+              <td>
+                <span class="flex justify-center">
+                <a href="#" class="mx-2 py-1 px-2 rounded-full hover:bg-[#1E90FF]"> <img src="assets/images/lapiz.png" aria-label="edit" alt="pencil drawing" class="w-5"> </a> 
+                <a href="#" class="mx-2 py-1 px-2 rounded-full hover:bg-[#1E90FF]"> <img src="assets/images/tachito1.png" aria-label="delete" alt="garbage drawing" class="w-5 "> </a>
+                </span> 
+              </td>
+          </tr>`
     }
     else {
-      if (type === 'income') {
-        operationTableContainer.innerHTML += `
-      <tr class="h-10">
-        <tr>
-          <td>${description}</td>
-          <td class="flex justify-end">
-            <span class="text-xs bg-[#F4C6D9] text-[#AB0B4F] p-1 rounded">${tag}</span> 
-          </td>
-        </tr>
-        <tr>
-          <td class="font-semibold text-green-600 text-lg">$${amount}</td>
-          <td>
-            <span class="flex justify-end">
-              <a href="#" class="py-1 px-2 rounded-full hover:bg-[#1E90FF]"> <img src="assets/images/lapiz.png" aria-label="edit" alt="pencil drawing" class="w-5"> </a> 
-              <a href="#" class="py-1 px-2 rounded-full hover:bg-[#1E90FF]"> <img src="assets/images/tachito1.png" aria-label="delete" alt="garbage drawing" class="w-5 "> </a>
-            </span> 
-          </td>
-        </tr>
-      </tr>`
-      }
-      if (type === 'outcome') {
-        operationTableContainer.innerHTML += `
-      <tr class="h-10">
-        <tr>
-          <td>${description}</td>
-          <td class="flex justify-end">
-            <span class="text-xs bg-[#F4C6D9] text-[#AB0B4F] p-1 rounded">${tag}</span> 
-          </td>
-        </tr>
-        <tr>
-          <td class="font-semibold text-red-600 text-lg">-$${amount}</td>
-          <td>
-            <span class="flex justify-end">
-              <a href="#" class="py-1 px-2 rounded-full hover:bg-[#1E90FF]"> <img src="assets/images/lapiz.png" aria-label="edit" alt="pencil drawing" class="w-5"> </a> 
-              <a href="#" class="py-1 px-2 rounded-full hover:bg-[#1E90FF]"> <img src="assets/images/tachito1.png" aria-label="delete" alt="garbage drawing" class="w-5"> </a>
-            </span> 
-          </td>
-        </tr>
-      </tr>`
-      }
+      operationTableContainer.innerHTML += `
+        <tr class="h-10">
+          <tr>
+            <td>${description}</td>
+            <td class="flex justify-end">
+              <span class="text-xs bg-[#F4C6D9] text-[#AB0B4F] p-1 rounded">${tag}</span> 
+            </td>
+          </tr>
+          <tr>
+            <td class="font-semibold ${type === "income" ? "text-green-600" : "text-red-600"} text-lg">$${amount}</td>
+            <td>
+              <span class="flex justify-end">
+                <a href="#" class="py-1 px-2 rounded-full hover:bg-[#1E90FF]"> <img src="assets/images/lapiz.png" aria-label="edit" alt="pencil drawing" class="w-5"> </a> 
+                <a href="#" class="py-1 px-2 rounded-full hover:bg-[#1E90FF]"> <img src="assets/images/tachito1.png" aria-label="delete" alt="garbage drawing" class="w-5 "> </a>
+              </span> 
+            </td>
+          </tr>
+        </tr>`
     }
   }
 }
+
 
 // Showing or not showing table head
 const noResultsOrResults = () => {
@@ -313,12 +271,6 @@ const noResultsOrResults = () => {
     showOperationsOnDisplay(localOperationsArr)
   }
 }
-
-
-// if (!noResultContainer.classList.contains("hidden")) {
-//   operationHeaderTable.classList.remove("md:table-header-group")
-//   operationHeaderTable.classList.add("md:hidden")
-// }  // ver qué hacemos con esto
 
 modalBtnAdd.addEventListener("click", (e) => {
   e.preventDefault()
@@ -361,7 +313,10 @@ addTagBtn.addEventListener("click", () => {
   if (!localStorage.getItem("tagList")) {
     localStorage.setItem("tagList", JSON.stringify(localTagsArr))
   }
-  else { showTagsOnDisplay(localTagsArr) }
+  else { 
+    showTagsOnDisplay(localTagsArr)
+    tagFilter.innerHTML = `<option value="all">All</option>`
+    addTagTypeFilter() }
 })
 
 // First tag execution
@@ -381,13 +336,6 @@ const addTagTypeFilter = () => {
     <option value="${tag.name}">${tag.name}</option>`
   }
 }
-
-addTagTypeFilter()
-
-tagFilter.addEventListener("click", () => {
-  tagFilter.innerHTML = `<option value="all">All</option>`
-  addTagTypeFilter()
-}) // no te deja seleccionar la tag para filtrar atenti para que lo solucionemos
 
 
 /************************ Modal *******************************/
@@ -411,7 +359,7 @@ const addTagModal = () => {
 // Modal event 
 operationBtn.addEventListener("click", () => {
   modalContainer.classList.remove("hidden")
-  operationModalForm.reset() /* tuve que cambiar el final del form para poder resetearlo sin cambiar la date ATENTI AL POLLI */
+  operationModalForm.reset()
   addTagModal() 
 })
 
@@ -490,5 +438,5 @@ for (const reportLink of reportShowLinks) {
 
 
 showTotalsOnDisplay()
-
 noResultsOrResults()
+addTagTypeFilter()
