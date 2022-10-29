@@ -35,11 +35,12 @@ const charactersForId = [
   [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
 ]
 
-const totalRemaining = 0
+const balanceObj = {
+  total: 0,
+  incomes: 0,
+  outcomes: 0
+} 
 
-const totalIncomes = 0
-
-const totalOutcomes = 0
 
 // General functions
 const getRandomCharacter = (array) => {
@@ -140,69 +141,36 @@ const createTagObject = () => {
 
 /************** Balance section *******************/
 // Variables and local first execution for balance section
-if (!localStorage.getItem("totalRemaining")) {
-  localStorage.setItem("totalRemaining", JSON.stringify(totalRemaining))
+if (!localStorage.getItem("balanceObj")) {
+  localStorage.setItem("balanceObj", JSON.stringify(balanceObj))
 }
 
-if (!localStorage.getItem("totalIncomes")) {
-  localStorage.setItem("totalIncomes", JSON.stringify(totalIncomes))
-}
-
-if (!localStorage.getItem("totalOutcomes")) {
-  localStorage.setItem("totalOutcomes", JSON.stringify(totalOutcomes))
-}
-
-let localTotalRemaining = JSON.parse(localStorage.getItem("totalRemaining"))
-let localTotalIncomes = JSON.parse(localStorage.getItem("totalIncomes"))
-let localTotalOutcomes = JSON.parse(localStorage.getItem("totalOutcomes"))
-
-// Functions for balance section
-const calculateTotalIncomes = (array) => {
-  if ( array.length > 0 ) {
-    localTotalIncomes = 0
-    for (const { type, amount } of array) {
-      if (type === 'income') {
-        localTotalIncomes += Number(amount)
-      }
+const refreshBalanceObj = (localOperationsArr) => {
+  for ( const { amount, type } of localOperationsArr ) {
+    if ( type === 'income' ) {
+      balanceObj.incomes += Number(amount)
     }
-    return localTotalIncomes
-  } 
-}
-
-const calculateTotalOutcomes = (array) => {
-  if ( array.length > 0 ) {
-    localTotalOutcomes = 0
-    for (const { type, amount } of array) {
-      if (type === 'outcome') {
-        localTotalOutcomes += Number(amount)
-      }
+    else {
+      balanceObj.outcomes += Number(amount)
     }
-    return localTotalOutcomes
   }
-}
+  balanceObj.total = balanceObj.incomes - balanceObj.outcomes
+  localStorage.setItem("balanceObj", JSON.stringify(balanceObj))
+} 
 
-const calculateTotalRemaining = () => {
-  return localTotalRemaining = calculateTotalIncomes(localOperationsArr) - calculateTotalOutcomes(localOperationsArr)
-}
-
-const saveTotalsInLocal = () => {
-  localStorage.setItem("totalRemaining", JSON.stringify(calculateTotalRemaining()))
-  localStorage.setItem("totalIncomes", JSON.stringify(calculateTotalIncomes(localOperationsArr)))
-  localStorage.setItem("totalOutcomes", JSON.stringify(calculateTotalOutcomes(localOperationsArr)))
-}
-
+const localBalanceObj = JSON.parse(localStorage.getItem("balanceObj"))
 
 /******************** DOM FUNCTIONS **********************************/
 // Dom balance variables
 const totalIncomesDom = $("#total-incomes")
 const totalOutcomesDom = $("#total-outcomes")
-const totalRemainingDom = $("#total-totalxD")
+const totalRemainingDom = $("#total-remaining")
 
 const showTotalsOnDisplay = () => {
-  saveTotalsInLocal()
-  totalIncomesDom.innerHTML = `${localTotalIncomes}`
-  totalOutcomesDom.innerHTML = `${localTotalOutcomes}`
-  totalRemainingDom.innerHTML = `${localTotalRemaining}`
+    refreshBalanceObj(localOperationsArr) 
+    totalIncomesDom.innerHTML = `${localBalanceObj.incomes}`
+    totalOutcomesDom.innerHTML = `${localBalanceObj.outcomes}`
+    totalRemainingDom.innerHTML = `${localBalanceObj.total}`
 }
 
 // Dom operations variables 
@@ -284,6 +252,7 @@ modalBtnAdd.addEventListener("click", (e) => {
   operationHeaderTable.classList.remove("md:hidden")
   operationHeaderTable.classList.add("md:table-header-group")
   showTotalsOnDisplay()
+  console.log('hice click')
 })
 
 
