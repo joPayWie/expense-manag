@@ -140,7 +140,6 @@ const createTagObject = () => {
 
 
 /************** Balance section *******************/
-// Variables and local first execution for balance section
 if (!localStorage.getItem("balanceObj")) {
   localStorage.setItem("balanceObj", JSON.stringify(balanceObj))
 }
@@ -186,6 +185,7 @@ const divTableOperations = $("#div-table-operations")
 const mediumScreen = window.matchMedia("(min-width: 768px)")
 
 const showOperationsOnDisplay = (array) => {
+  operationTableContainer.innerHTML = ''
   for (const { description, amount, type, tag, date } of array) {
     if (mediumScreen.matches) {
       operationTableContainer.innerHTML += `
@@ -365,7 +365,7 @@ hideFilters.addEventListener("click", () => {
   filterForm.classList.toggle("hidden")
 })
 
-/********************* Sections click events *************/
+/********************* Sections events *************/
 // hide and unhide sections variables
 const balanceSection = $("#main-section")
 const tagSection = $("#tag-section")
@@ -407,6 +407,11 @@ for (const reportLink of reportShowLinks) {
   })
 }
 
+
+// responsive operations section
+window.addEventListener("resize", () => {
+  showOperationsOnDisplay(localOperationsArr)
+})
 
 showTotalsOnDisplay(localBalanceObj)
 noResultsOrResults()
