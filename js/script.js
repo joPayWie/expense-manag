@@ -145,20 +145,23 @@ if (!localStorage.getItem("balanceObj")) {
   localStorage.setItem("balanceObj", JSON.stringify(balanceObj))
 }
 
+const localBalanceObj = JSON.parse(localStorage.getItem("balanceObj"))
+
 const refreshBalanceObj = (localOperationsArr) => {
+  balanceObj.incomes = 0
+  balanceObj.outcomes = 0
+  balanceObj.total = 0
   for ( const { amount, type } of localOperationsArr ) {
     if ( type === 'income' ) {
       balanceObj.incomes += Number(amount)
     }
-    else {
+    if ( type === 'outcome' ) {
       balanceObj.outcomes += Number(amount)
     }
   }
   balanceObj.total = balanceObj.incomes - balanceObj.outcomes
-  localStorage.setItem("balanceObj", JSON.stringify(balanceObj))
+  return localStorage.setItem("balanceObj", JSON.stringify(balanceObj))
 } 
-
-const localBalanceObj = JSON.parse(localStorage.getItem("balanceObj"))
 
 /******************** DOM FUNCTIONS **********************************/
 // Dom balance variables
@@ -166,11 +169,10 @@ const totalIncomesDom = $("#total-incomes")
 const totalOutcomesDom = $("#total-outcomes")
 const totalRemainingDom = $("#total-remaining")
 
-const showTotalsOnDisplay = () => {
-    refreshBalanceObj(localOperationsArr) 
-    totalIncomesDom.innerHTML = `${localBalanceObj.incomes}`
-    totalOutcomesDom.innerHTML = `${localBalanceObj.outcomes}`
-    totalRemainingDom.innerHTML = `${localBalanceObj.total}`
+const showTotalsOnDisplay = (object) => {
+    totalIncomesDom.innerHTML = `${object.incomes}`
+    totalOutcomesDom.innerHTML = `${object.outcomes}`
+    totalRemainingDom.innerHTML = `${object.total}`
 }
 
 // Dom operations variables 
@@ -193,7 +195,7 @@ const showOperationsOnDisplay = (array) => {
                 <span class="text-sm bg-[#F4C6D9] text-[#AB0B4F] p-1 rounded">${tag}</span> 
               </td>
               <td class="hidden md:table-cell">${date}</td>
-              <td class="font-semibold ${type === "income" ? "text-green-600" : "text-red-600"}">$${amount}</td>
+              <td class="font-semibold ${type === "income" ? "text-green-600" : "text-red-600"}">${type === "income" ? "$" : "-$"}${amount}</td>
               <td>
                 <span class="flex justify-center">
                 <a href="#" class="mx-2 py-1 px-2 rounded-full hover:bg-[#1E90FF]"> <img src="assets/images/lapiz.png" aria-label="edit" alt="pencil drawing" class="w-5"> </a> 
@@ -212,7 +214,7 @@ const showOperationsOnDisplay = (array) => {
             </td>
           </tr>
           <tr>
-            <td class="font-semibold ${type === "income" ? "text-green-600" : "text-red-600"} text-lg">$${amount}</td>
+            <td class="font-semibold ${type === "income" ? "text-green-600" : "text-red-600"} text-lg">${type === "income" ? "$" : "-$"}${amount}</td>
             <td>
               <span class="flex justify-end">
                 <a href="#" class="py-1 px-2 rounded-full hover:bg-[#1E90FF]"> <img src="assets/images/lapiz.png" aria-label="edit" alt="pencil drawing" class="w-5"> </a> 
@@ -246,13 +248,13 @@ modalBtnAdd.addEventListener("click", (e) => {
   addNewOperationObject(localOperationsArr, createOperationObject())
   localStorage.setItem("operationsList", JSON.stringify(localOperationsArr))
   showOperationsOnDisplay(localOperationsArr)
+  refreshBalanceObj(localOperationsArr)
+  showTotalsOnDisplay(balanceObj)
   modalContainer.classList.add("hidden")
   divTableOperations.classList.remove("hidden")
   noResultContainer.classList.add("hidden")
   operationHeaderTable.classList.remove("md:hidden")
   operationHeaderTable.classList.add("md:table-header-group")
-  showTotalsOnDisplay()
-  console.log('hice click')
 })
 
 
@@ -406,6 +408,6 @@ for (const reportLink of reportShowLinks) {
 }
 
 
-showTotalsOnDisplay()
+showTotalsOnDisplay(localBalanceObj)
 noResultsOrResults()
 addTagTypeFilter()
