@@ -122,7 +122,7 @@
                 <form id="filter-form">
                     <div class="flex flex-col">
                         <label for="filter-type" class="font-bold"> Type </label>
-                        <select name="filer-type" id="filter-type" class="border-2">
+                        <select name="filer-type" id="filter-type" class="filter-user-selection border-2">
                             <option value="all"> All </option>
                             <option value="income"> Income </option>
                             <option value="outcome"> Outcome </option>
@@ -130,17 +130,17 @@
                     </div>
                     <div class="flex flex-col">
                         <label for="filter-tag" class="font-bold mt-2"> Tag </label>
-                        <select name="filter-tag" id="filter-tag" class="border-2">
-                            <option value="All">All</option>
+                        <select name="filter-tag" id="filter-tag" class="filter-user-selection border-2">
+                            <option value="all">All</option>
                         </select>
                     </div>
                     <div class="flex flex-col">
-                        <label for="date" class="font-bold mt-2"> Since </label>
-                        <input type="date" name="date" id="date" class="border-2">
+                        <label for="filter-date" class="font-bold mt-2"> Since </label>
+                        <input type="date" name="date" id="filter-date" class="filter-user-selection border-2">
                     </div>
                     <div class="flex flex-col">
                         <label for="sort-by" class="font-bold mt-2"> Sort by </label>
-                        <select name="sort-by" id="sort-by" class="border-2">
+                        <select name="sort-by" id="sort-by" class="filter-user-selection border-2">
                             <option value="newest"> Newest </option>
                             <option value="latest"> Latest </option>
                             <option value="higher"> Higher amount </option>

@@ -39,7 +39,14 @@ const balanceObj = {
   total: 0,
   incomes: 0,
   outcomes: 0
-} 
+}
+
+const filterObj = {
+  type: "all",
+  tag: "all",
+  since: "dd/mm/aaaa",
+  sortBy: "newest"
+}
 
 
 // General functions
@@ -150,17 +157,36 @@ const refreshBalanceObj = (localOperationsArr) => {
   balanceObj.incomes = 0
   balanceObj.outcomes = 0
   balanceObj.total = 0
-  for ( const { amount, type } of localOperationsArr ) {
-    if ( type === 'income' ) {
+  for (const { amount, type } of localOperationsArr) {
+    if (type === 'income') {
       balanceObj.incomes += Number(amount)
     }
-    if ( type === 'outcome' ) {
+    if (type === 'outcome') {
       balanceObj.outcomes += Number(amount)
     }
   }
   balanceObj.total = balanceObj.incomes - balanceObj.outcomes
   return localStorage.setItem("balanceObj", JSON.stringify(balanceObj))
-} 
+}
+
+/*************** filter functions *****************/
+
+// const filterFunction = (array, {type, tag} ) => {
+//   const filterArr = array.filter(obj => { 
+//     return type === obj.type && tag === obj.tag
+//   })
+//   return filterArr
+// }
+
+
+
+const filterFunction = (array, key, value) => {
+  const filterArr = array.filter(obj => {
+    return obj[key] === value
+  })
+  return filterArr
+}
+
 
 /******************** DOM FUNCTIONS **********************************/
 // Dom balance variables
@@ -169,9 +195,9 @@ const totalOutcomesDom = $("#total-outcomes")
 const totalRemainingDom = $("#total-remaining")
 
 const showTotalsOnDisplay = (object) => {
-    totalIncomesDom.innerHTML = `${object.incomes}`
-    totalOutcomesDom.innerHTML = `${object.outcomes}`
-    totalRemainingDom.innerHTML = `${object.total}`
+  totalIncomesDom.innerHTML = `${object.incomes}`
+  totalOutcomesDom.innerHTML = `${object.outcomes}`
+  totalRemainingDom.innerHTML = `${object.total}`
 }
 
 // Dom operations variables 
@@ -230,7 +256,7 @@ const showOperationsOnDisplay = (array) => {
 
 // Showing or not showing table head
 const noResultsOrResults = () => {
-  if ( localOperationsArr.length === 0 ){
+  if (localOperationsArr.length === 0) {
     noResultContainer.classList.remove("hidden")
     divTableOperations.classList.add("hidden")
   } else {
@@ -284,10 +310,12 @@ addTagBtn.addEventListener("click", () => {
   if (!localStorage.getItem("tagList")) {
     localStorage.setItem("tagList", JSON.stringify(localTagsArr))
   }
-  else { 
+  else {
     showTagsOnDisplay(localTagsArr)
     tagFilter.innerHTML = `<option value="all">All</option>`
-    addTagTypeFilter() }
+    addTagTypeFilter()
+    inputNewTag.value = ""
+  }
 })
 
 // First tag execution
@@ -296,18 +324,51 @@ if (localStorage.getItem("tagList")) {
 }
 else { showTagsOnDisplay(localTagsArr) }
 
-/*************** filter main section tags *****************/
+/*************** filter section *****************/
 
 // Tag for filter variables
 const tagFilter = $("#filter-tag")
+const filterDate = $("#filter-date")
+const filterType = $("#filter-type")
+const filterTag = $("#filter-tag")
+const filterUserSelection = $(".filter-user-selection")
+
+let month = new Date()
+filterDate.value = today.getFullYear() + '-' + ('0' + (today.getMonth() + 1)).slice(-2) + '-' + "01";
+
 
 const addTagTypeFilter = () => {
-  for (const tag of localTagsArr){
+  for (const tag of localTagsArr) {
     tagFilter.innerHTML += `
     <option value="${tag.name}">${tag.name}</option>`
   }
 }
 
+// for (const select of filterUserSelection) {
+//   select.addEventListener("change", () => {
+//     filterObj.type = filterType.value,
+//     filterObj.tag = filterTag.value
+//     console.log(filterObj)
+//     // console.log(filterFunction(localOperationsArr, filterObj))
+//     // filterFunction(localOperationsArr, filterObj)
+//   })
+// }
+
+
+
+filterType.addEventListener("change", () => {
+  showOperationsOnDisplay(filterFunction(localOperationsArr, "type", filterType.value))
+  if (filterType.value === "all") {
+    showOperationsOnDisplay(localOperationsArr)
+  }
+})
+
+filterTag.addEventListener("change", () => {
+  showOperationsOnDisplay(filterFunction(localOperationsArr, "tag", filterTag.value))
+  if (filterTag.value === "all") {
+    showOperationsOnDisplay(localOperationsArr)
+  }
+})
 
 /************************ Modal *******************************/
 // Modal variables
@@ -321,7 +382,7 @@ const operationModalForm = $("#operation-modal-form")
 // Modal tags
 const addTagModal = () => {
   tagModal.innerHTML = ''
-  for (const { name } of localTagsArr){
+  for (const { name } of localTagsArr) {
     tagModal.innerHTML += `
     <option value="${name}">${name}</option>`
   }
@@ -331,7 +392,7 @@ const addTagModal = () => {
 operationBtn.addEventListener("click", () => {
   modalContainer.classList.remove("hidden")
   operationModalForm.reset()
-  addTagModal() 
+  addTagModal()
 })
 
 cancelBtnModal.addEventListener("click", (event) => {
