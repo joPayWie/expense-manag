@@ -470,9 +470,13 @@ for (const reportLink of reportShowLinks) {
 
 
 // responsive operations section
-window.addEventListener("resize", () => {
-  showOperationsOnDisplay(localOperationsArr)
-})
+if (mediumScreen.matches) {
+  window.addEventListener("resize", () => {
+    showOperationsOnDisplay(localOperationsArr)
+    // HOW TO DISPLAY WHEN USERS SELECTS FILTERS??
+  })
+}
+
 
 showTotalsOnDisplay(localBalanceObj)
 noResultsOrResults()
