@@ -41,13 +41,6 @@ const balanceObj = {
   outcomes: 0
 }
 
-const filterObj = {
-  type: "all",
-  tag: "all",
-  since: "dd/mm/aaaa",
-  sortBy: "newest"
-}
-
 
 // General functions
 const getRandomCharacter = (array) => {
@@ -170,15 +163,12 @@ const refreshBalanceObj = (localOperationsArr) => {
 }
 
 /*************** filter functions *****************/
-
-// const filterFunction = (array, {type, tag} ) => {
-//   const filterArr = array.filter(obj => { 
-//     return type === obj.type && tag === obj.tag
-//   })
-//   return filterArr
-// }
-
-
+// Filter variables
+const filterDate = $("#filter-date")
+const filterType = $("#filter-type")
+const filterTag = $("#filter-tag")
+const filterSort = $("#sort-by")
+const filterUserSelection = $$(".filter-user-selection")
 
 const filterFunction = (array, key, value) => {
   const filterArr = array.filter(obj => {
@@ -186,6 +176,19 @@ const filterFunction = (array, key, value) => {
   })
   return filterArr
 }
+
+const filterOperations = () => {
+  let operationsScope = localOperationsArr
+  if (filterType.value !== 'all') {
+    operationsScope = filterFunction(operationsScope, 'type', filterType.value)
+  }
+  if (filterTag.value !== 'all') {
+    operationsScope = filterFunction(operationsScope, 'tag', filterTag.value)
+  }
+  return operationsScope
+}
+
+
 
 
 /******************** DOM FUNCTIONS **********************************/
@@ -303,6 +306,20 @@ const showTagsOnDisplay = (array) => {
   }
 }
 
+const addTagTypeFilter = () => {
+  for (const tag of localTagsArr) {
+    filterTag.innerHTML += `
+    <option value="${tag.name}">${tag.name}</option>`
+  }
+}
+
+// First tag execution
+
+if (localStorage.getItem("tagList")) {
+  showTagsOnDisplay(JSON.parse(localStorage.getItem("tagList")))
+}
+else { showTagsOnDisplay(localTagsArr) }
+
 addTagBtn.addEventListener("click", () => {
   tagTable.innerHTML = ""
   addNewTagObject(localTagsArr, createTagObject(localTagsArr))
@@ -312,70 +329,30 @@ addTagBtn.addEventListener("click", () => {
   }
   else {
     showTagsOnDisplay(localTagsArr)
-    tagFilter.innerHTML = `<option value="all">All</option>`
+    filterTag.innerHTML = `<option value="all">All</option>`
     addTagTypeFilter()
     inputNewTag.value = ""
   }
 })
 
-// First tag execution
-if (localStorage.getItem("tagList")) {
-  showTagsOnDisplay(JSON.parse(localStorage.getItem("tagList")))
-}
-else { showTagsOnDisplay(localTagsArr) }
 
-/*************** filter section *****************/
-
-// Tag for filter variables
-const tagFilter = $("#filter-tag")
-const filterDate = $("#filter-date")
-const filterType = $("#filter-type")
-const filterTag = $("#filter-tag")
-const filterUserSelection = $(".filter-user-selection")
+// Dom filters
 
 let month = new Date()
 filterDate.value = today.getFullYear() + '-' + ('0' + (today.getMonth() + 1)).slice(-2) + '-' + "01";
 
 
-const addTagTypeFilter = () => {
-  for (const tag of localTagsArr) {
-    tagFilter.innerHTML += `
-    <option value="${tag.name}">${tag.name}</option>`
-  }
+for (const selection of filterUserSelection) {
+  selection.addEventListener("change", () => {
+    showOperationsOnDisplay(filterOperations())
+  })
 }
-
-// for (const select of filterUserSelection) {
-//   select.addEventListener("change", () => {
-//     filterObj.type = filterType.value,
-//     filterObj.tag = filterTag.value
-//     console.log(filterObj)
-//     // console.log(filterFunction(localOperationsArr, filterObj))
-//     // filterFunction(localOperationsArr, filterObj)
-//   })
-// }
-
-
-
-filterType.addEventListener("change", () => {
-  showOperationsOnDisplay(filterFunction(localOperationsArr, "type", filterType.value))
-  if (filterType.value === "all") {
-    showOperationsOnDisplay(localOperationsArr)
-  }
-})
-
-filterTag.addEventListener("change", () => {
-  showOperationsOnDisplay(filterFunction(localOperationsArr, "tag", filterTag.value))
-  if (filterTag.value === "all") {
-    showOperationsOnDisplay(localOperationsArr)
-  }
-})
 
 /************************ Modal *******************************/
 // Modal variables
 const operationBtn = $("#operation-btn")
 const addBtnModal = $("#modal-btn-add")
 const cancelBtnModal = $("#modal-btn-cancel")
-const modal = $(".operation-modal")
 const modalContainer = $(".container-modal")
 const operationModalForm = $("#operation-modal-form")
 
@@ -470,14 +447,14 @@ for (const reportLink of reportShowLinks) {
 
 
 // responsive operations section
-if (mediumScreen.matches) {
-  window.addEventListener("resize", () => {
-    showOperationsOnDisplay(localOperationsArr)
-    // HOW TO DISPLAY WHEN USERS SELECTS FILTERS??
+window.addEventListener("resize", () => {
+    showOperationsOnDisplay(filterOperations())
   })
-}
 
 
+// executions when refresh
 showTotalsOnDisplay(localBalanceObj)
+
 noResultsOrResults()
+
 addTagTypeFilter()
