@@ -35,7 +35,7 @@ const charactersForId = [
   [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
 ]
 
-const balanceObj = {
+let balanceObj = {
   total: 0,
   incomes: 0,
   outcomes: 0
@@ -146,11 +146,11 @@ if (!localStorage.getItem("balanceObj")) {
 
 const localBalanceObj = JSON.parse(localStorage.getItem("balanceObj"))
 
-const refreshBalanceObj = (localOperationsArr) => {
+const refreshBalanceObj = (array) => {
   balanceObj.incomes = 0
   balanceObj.outcomes = 0
   balanceObj.total = 0
-  for (const { amount, type } of localOperationsArr) {
+  for (const { amount, type } of array) {
     if (type === 'income') {
       balanceObj.incomes += Number(amount)
     }
@@ -159,6 +159,11 @@ const refreshBalanceObj = (localOperationsArr) => {
     }
   }
   balanceObj.total = balanceObj.incomes - balanceObj.outcomes
+  return balanceObj
+}
+
+const saveBalanceObj = () => {
+  balanceObj = refreshBalanceObj(localOperationsArr)
   return localStorage.setItem("balanceObj", JSON.stringify(balanceObj))
 }
 
@@ -168,7 +173,6 @@ const filterDate = $("#filter-date")
 const filterType = $("#filter-type")
 const filterTag = $("#filter-tag")
 const filterSort = $("#sort-by")
-const filterUserSelection = $$(".filter-user-selection")
 
 
 const filterFunction = (array, key, value) => {
@@ -230,6 +234,7 @@ const filterOperations = () => {
     if (filterSort.value === 'z-a') {
       operationsScope = filterZToA(operationsScope)
     }
+
     return operationsScope
 }
 
@@ -320,6 +325,7 @@ const filterOperations = () => {
     localStorage.setItem("operationsList", JSON.stringify(localOperationsArr))
     showOperationsOnDisplay(localOperationsArr)
     refreshBalanceObj(localOperationsArr)
+    saveBalanceObj()
     showTotalsOnDisplay(balanceObj)
     modalContainer.classList.add("hidden")
     divTableOperations.classList.remove("hidden")
@@ -338,11 +344,11 @@ const filterOperations = () => {
   const showTagsOnDisplay = (array) => {
     for (const tag of array) {
       tagTable.innerHTML += `
-      <div class="flex justify-between mb-3"> 
+      <div class="flex justify-between items-center mb-3"> 
         <span class="text-sm bg-[#F4C6D9] text-[#AB0B4F] p-1 rounded">${tag.name}</span> 
         <span class="flex">
-          <a href="#" class="mx-3"> <img src="assets/images/lapiz.png" alt="pencil drawing" class="w-5"> </a> 
-          <a href="#"> <img src="assets/images/tachito1.png" alt="garbage drawing" class="w-5 "> </a>
+          <a href="#" class="mx-3 py-1 px-2 rounded-full hover:bg-[#1E90FF]"> <img src="assets/images/lapiz.png" alt="pencil drawing" class="w-5"> </a> 
+          <a href="#"  class="py-1 px-2 rounded-full hover:bg-[#1E90FF]"> <img src="assets/images/tachito1.png" alt="garbage drawing" class="w-5"> </a>
         </span> 
       </div>`
     }
@@ -379,6 +385,7 @@ const filterOperations = () => {
 
 
   // Dom filters
+  const filterUserSelection = $$(".filter-user-selection")
 
   let month = new Date()
   filterDate.value = today.getFullYear() + '-' + ('0' + (today.getMonth())).slice(-2) + '-' + "01";
@@ -387,6 +394,7 @@ const filterOperations = () => {
   for (const selection of filterUserSelection) {
     selection.addEventListener("change", () => {
       showOperationsOnDisplay(filterOperations())
+      showTotalsOnDisplay(refreshBalanceObj(filterOperations()))
     })
   }
 
