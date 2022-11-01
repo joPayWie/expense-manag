@@ -100,7 +100,7 @@ const createOperationObject = () => {
   return {
     id: getRandomId(charactersForId),
     description: descriptionInput.value,
-    amount: amountInput.value,
+    amount: Number(amountInput.value),
     type: typeModal.value,
     tag: tagModal.value,
     date: dateInputModal.value
@@ -184,87 +184,101 @@ const filterFunction = (array, key, value) => {
 
 const filterDateFunction = (array) => {
   return array.filter(obj => {
-    return Number(obj.date.split("-").join("")) >= Number(filterDate.value.split("-").join("")) 
+    return Number(obj.date.split("-").join("")) >= Number(filterDate.value.split("-").join(""))
   })
 }
 
+const filterHigherAmount = (array) => {
+  return array.sort((a, b) => b.amount - a.amount)
+}
+
+const filterLowerAmount = (array) => {
+  return array.sort((a, b) => a.amount - b.amount)
+}
+
+
 const filterAToZ = (array) => {
-  return array.sort((a, b) => { 
-    if ( a.description < b.description ) {
-        return -1
+  return array.sort((a, b) => {
+    if (a.description < b.description) {
+      return -1
     }
-    else if ( a.name > b.name ) {
-        return 1
+    else if (a.name > b.name) {
+      return 1
     }
     else {
-        return 0
+      return 0
     }
-})
+  })
 }
 
 const filterZToA = (array) => {
-    return array.sort((a, b) => { 
-    if ( a.description > b.description ) {
-        return -1
+  return array.sort((a, b) => {
+    if (a.description > b.description) {
+      return -1
     }
-    else if ( a.name < b.name ) {
-        return 1
+    else if (a.name < b.name) {
+      return 1
     }
     else {
-        return 0
+      return 0
     }
-})
+  })
 }
 
 const filterOperations = () => {
-    let operationsScope = localOperationsArr
+  let operationsScope = localOperationsArr
 
-    if (filterType.value !== 'all') {
-      operationsScope = filterFunction(operationsScope, 'type', filterType.value)
-    }
-    if (filterTag.value !== 'all') {
-      operationsScope = filterFunction(operationsScope, 'tag', filterTag.value)
-    }
-
-    operationsScope = filterDateFunction(operationsScope)
-
-    if (filterSort.value === "a-z") {
-      operationsScope = filterAToZ(operationsScope)
-    }
-    if (filterSort.value === 'z-a') {
-      operationsScope = filterZToA(operationsScope)
-    }
-
-    return operationsScope
-}
-
-  /******************** DOM FUNCTIONS **********************************/
-  // Dom balance variables
-  const totalIncomesDom = $("#total-incomes")
-  const totalOutcomesDom = $("#total-outcomes")
-  const totalRemainingDom = $("#total-remaining")
-
-  const showTotalsOnDisplay = (object) => {
-    totalIncomesDom.innerHTML = `${object.incomes}`
-    totalOutcomesDom.innerHTML = `${object.outcomes}`
-    totalRemainingDom.innerHTML = `${object.total}`
+  if (filterType.value !== 'all') {
+    operationsScope = filterFunction(operationsScope, 'type', filterType.value)
+  }
+  if (filterTag.value !== 'all') {
+    operationsScope = filterFunction(operationsScope, 'tag', filterTag.value)
   }
 
-  // Dom operations variables 
-  const operationTableContainer = $("#operations-object-table")
-  const modalBtnAdd = $("#modal-btn-add")
-  const noResultContainer = $("#operations-noresult-container")
-  const operationHeaderTable = $("#operations-header-table")
-  const divTableOperations = $("#div-table-operations")
+  operationsScope = filterDateFunction(operationsScope)
 
-  // Dom operations functions and events
-  const mediumScreen = window.matchMedia("(min-width: 768px)")
+  if (filterSort.value === "a-z") {
+    operationsScope = filterAToZ(operationsScope)
+  }
+  if (filterSort.value === 'z-a') {
+    operationsScope = filterZToA(operationsScope)
+  }
+  if (filterSort.value === "higher"){
+    operationsScope = filterHigherAmount(operationsScope)
+  }
+  if(filterSort.value === "lower"){
+    operationsScope = filterLowerAmount(operationsScope)
+  }
+  return operationsScope
+}
 
-  const showOperationsOnDisplay = (array) => {
-    operationTableContainer.innerHTML = ''
-    for (const { description, amount, type, tag, date } of array) {
-      if (mediumScreen.matches) {
-        operationTableContainer.innerHTML += `
+/******************** DOM FUNCTIONS **********************************/
+// Dom balance variables
+const totalIncomesDom = $("#total-incomes")
+const totalOutcomesDom = $("#total-outcomes")
+const totalRemainingDom = $("#total-remaining")
+
+const showTotalsOnDisplay = (object) => {
+  totalIncomesDom.innerHTML = `${object.incomes}`
+  totalOutcomesDom.innerHTML = `${object.outcomes}`
+  totalRemainingDom.innerHTML = `${object.total}`
+}
+
+// Dom operations variables 
+const operationTableContainer = $("#operations-object-table")
+const modalBtnAdd = $("#modal-btn-add")
+const noResultContainer = $("#operations-noresult-container")
+const operationHeaderTable = $("#operations-header-table")
+const divTableOperations = $("#div-table-operations")
+
+// Dom operations functions and events
+const mediumScreen = window.matchMedia("(min-width: 768px)")
+
+const showOperationsOnDisplay = (array) => {
+  operationTableContainer.innerHTML = ''
+  for (const { description, amount, type, tag, date } of array) {
+    if (mediumScreen.matches) {
+      operationTableContainer.innerHTML += `
           <tr class="text-center text-sm">
               <td>${description}</td>
               <td>
@@ -279,9 +293,9 @@ const filterOperations = () => {
                 </span> 
               </td>
           </tr>`
-      }
-      else {
-        operationTableContainer.innerHTML += `
+    }
+    else {
+      operationTableContainer.innerHTML += `
         <tr class="h-10">
           <tr>
             <td>${description}</td>
@@ -299,51 +313,51 @@ const filterOperations = () => {
             </td>
           </tr>
         </tr>`
-      }
     }
   }
+}
 
 
-  // Showing or not showing table head
-  const noResultsOrResults = () => {
-    if (localOperationsArr.length === 0) {
-      noResultContainer.classList.remove("hidden")
-      divTableOperations.classList.add("hidden")
-    } else {
-      noResultContainer.classList.add("hidden")
-      divTableOperations.classList.remove("hidden")
-      operationHeaderTable.classList.remove("md:hidden")
-      operationHeaderTable.classList.add("md:table-header-group")
-      showOperationsOnDisplay(localOperationsArr)
-    }
-  }
-
-  modalBtnAdd.addEventListener("click", (e) => {
-    e.preventDefault()
-    operationTableContainer.innerHTML = ""
-    addNewOperationObject(localOperationsArr, createOperationObject())
-    localStorage.setItem("operationsList", JSON.stringify(localOperationsArr))
-    showOperationsOnDisplay(localOperationsArr)
-    refreshBalanceObj(localOperationsArr)
-    saveBalanceObj()
-    showTotalsOnDisplay(balanceObj)
-    modalContainer.classList.add("hidden")
-    divTableOperations.classList.remove("hidden")
+// Showing or not showing table head
+const noResultsOrResults = () => {
+  if (localOperationsArr.length === 0) {
+    noResultContainer.classList.remove("hidden")
+    divTableOperations.classList.add("hidden")
+  } else {
     noResultContainer.classList.add("hidden")
+    divTableOperations.classList.remove("hidden")
     operationHeaderTable.classList.remove("md:hidden")
     operationHeaderTable.classList.add("md:table-header-group")
-  })
+    showOperationsOnDisplay(localOperationsArr)
+  }
+}
+
+modalBtnAdd.addEventListener("click", (e) => {
+  e.preventDefault()
+  operationTableContainer.innerHTML = ""
+  addNewOperationObject(localOperationsArr, createOperationObject())
+  localStorage.setItem("operationsList", JSON.stringify(localOperationsArr))
+  showOperationsOnDisplay(localOperationsArr)
+  refreshBalanceObj(localOperationsArr)
+  saveBalanceObj()
+  showTotalsOnDisplay(balanceObj)
+  modalContainer.classList.add("hidden")
+  divTableOperations.classList.remove("hidden")
+  noResultContainer.classList.add("hidden")
+  operationHeaderTable.classList.remove("md:hidden")
+  operationHeaderTable.classList.add("md:table-header-group")
+})
 
 
-  // Dom tags variables
-  const tagTable = $("#tag-list")
-  const addTagBtn = $("#tag-btn")
-  const localTagsArr = JSON.parse(localStorage.getItem("tagList"))
+// Dom tags variables
+const tagTable = $("#tag-list")
+const addTagBtn = $("#tag-btn")
+const localTagsArr = JSON.parse(localStorage.getItem("tagList"))
 
-  // Dom tags functions and events
-  const showTagsOnDisplay = (array) => {
-    for (const tag of array) {
-      tagTable.innerHTML += `
+// Dom tags functions and events
+const showTagsOnDisplay = (array) => {
+  for (const tag of array) {
+    tagTable.innerHTML += `
       <div class="flex justify-between items-center mb-3"> 
         <span class="text-sm bg-[#F4C6D9] text-[#AB0B4F] p-1 rounded">${tag.name}</span> 
         <span class="flex">
@@ -351,162 +365,162 @@ const filterOperations = () => {
           <a href="#"  class="py-1 px-2 rounded-full hover:bg-[#1E90FF]"> <img src="assets/images/tachito1.png" alt="garbage drawing" class="w-5"> </a>
         </span> 
       </div>`
-    }
   }
+}
 
-  const addTagTypeFilter = () => {
-    for (const tag of localTagsArr) {
-      filterTag.innerHTML += `
+const addTagTypeFilter = () => {
+  for (const tag of localTagsArr) {
+    filterTag.innerHTML += `
     <option value="${tag.name}">${tag.name}</option>`
-    }
   }
+}
 
-  // First tag execution
+// First tag execution
 
-  if (localStorage.getItem("tagList")) {
-    showTagsOnDisplay(JSON.parse(localStorage.getItem("tagList")))
-  }
-  else { showTagsOnDisplay(localTagsArr) }
+if (localStorage.getItem("tagList")) {
+  showTagsOnDisplay(JSON.parse(localStorage.getItem("tagList")))
+}
+else { showTagsOnDisplay(localTagsArr) }
 
-  addTagBtn.addEventListener("click", () => {
-    tagTable.innerHTML = ""
-    addNewTagObject(localTagsArr, createTagObject(localTagsArr))
+addTagBtn.addEventListener("click", () => {
+  tagTable.innerHTML = ""
+  addNewTagObject(localTagsArr, createTagObject(localTagsArr))
+  localStorage.setItem("tagList", JSON.stringify(localTagsArr))
+  if (!localStorage.getItem("tagList")) {
     localStorage.setItem("tagList", JSON.stringify(localTagsArr))
-    if (!localStorage.getItem("tagList")) {
-      localStorage.setItem("tagList", JSON.stringify(localTagsArr))
-    }
-    else {
-      showTagsOnDisplay(localTagsArr)
-      filterTag.innerHTML = `<option value="all">All</option>`
-      addTagTypeFilter()
-      inputNewTag.value = ""
-    }
-  })
-
-
-  // Dom filters
-  const filterUserSelection = $$(".filter-user-selection")
-
-  let month = new Date()
-  filterDate.value = today.getFullYear() + '-' + ('0' + (today.getMonth())).slice(-2) + '-' + "01";
-
-
-  for (const selection of filterUserSelection) {
-    selection.addEventListener("change", () => {
-      showOperationsOnDisplay(filterOperations())
-      showTotalsOnDisplay(refreshBalanceObj(filterOperations()))
-    })
   }
-
-  /************************ Modal *******************************/
-  // Modal variables
-  const operationBtn = $("#operation-btn")
-  const addBtnModal = $("#modal-btn-add")
-  const cancelBtnModal = $("#modal-btn-cancel")
-  const modalContainer = $(".container-modal")
-  const operationModalForm = $("#operation-modal-form")
-
-  // Modal tags
-  const addTagModal = () => {
-    tagModal.innerHTML = ''
-    for (const { name } of localTagsArr) {
-      tagModal.innerHTML += `
-    <option value="${name}">${name}</option>`
-    }
+  else {
+    showTagsOnDisplay(localTagsArr)
+    filterTag.innerHTML = `<option value="all">All</option>`
+    addTagTypeFilter()
+    inputNewTag.value = ""
   }
-
-  // Modal event 
-  operationBtn.addEventListener("click", () => {
-    modalContainer.classList.remove("hidden")
-    operationModalForm.reset()
-    addTagModal()
-  })
-
-  cancelBtnModal.addEventListener("click", (event) => {
-    event.preventDefault()
-    modalContainer.classList.add("hidden")
-  })
+})
 
 
-  /*********************** Burger menu **************************/
-  // Burger menu variables
-  const burgerBtn = $("button.mobile-menu-button")
-  const burgerMenu = $(".mobile-menu")
-  const burgerIconLines = $("#burger-icon-lines")
-  const burgerIconX = $("#burger-icon-xmark")
+// Dom filters
+const filterUserSelection = $$(".filter-user-selection")
 
-  // Burger menu event listeners
-  burgerBtn.addEventListener("click", () => {
-    burgerMenu.classList.toggle("hidden");
-    burgerIconLines.classList.toggle("hidden")
-    burgerIconX.classList.toggle("hidden")
-  })
+let month = new Date()
+filterDate.value = today.getFullYear() + '-' + ('0' + (today.getMonth())).slice(-2) + '-' + "01";
 
 
-  /************ Hide filters  ************/
-  // hide and unhide filters variables
-  const hideFilters = $("#toggle-filter")
-  const filterForm = $("#filter-form")
-
-  // hide and unhide filters function
-  hideFilters.addEventListener("click", () => {
-    filterForm.classList.toggle("hidden")
-  })
-
-  /********************* Sections events *************/
-  // hide and unhide sections variables
-  const balanceSection = $("#main-section")
-  const tagSection = $("#tag-section")
-  const tagShowLinks = $$(".tag-show-link")
-  const reportSection = $("#report-section")
-  const reportShowLinks = $$(".report-show-link")
-  const balanceShowLinks = $$(".balance-show-link")
-
-  for (const balanceLink of balanceShowLinks) {
-    balanceLink.addEventListener("click", () => {
-      balanceSection.classList.remove("hidden")
-      tagSection.classList.add("hidden")
-      reportSection.classList.add("hidden")
-      burgerMenu.classList.add("hidden")
-      burgerIconLines.classList.remove("hidden")
-      burgerIconX.classList.add("hidden")
-    })
-  }
-
-  for (const tagLink of tagShowLinks) {
-    tagLink.addEventListener("click", () => {
-      tagSection.classList.remove("hidden")
-      balanceSection.classList.add("hidden")
-      reportSection.classList.add("hidden")
-      burgerMenu.classList.add("hidden")
-      burgerIconLines.classList.remove("hidden")
-      burgerIconX.classList.add("hidden")
-    })
-  }
-
-  for (const reportLink of reportShowLinks) {
-    reportLink.addEventListener("click", () => {
-      reportSection.classList.remove("hidden")
-      balanceSection.classList.add("hidden")
-      tagSection.classList.add("hidden")
-      burgerMenu.classList.add("hidden")
-      burgerIconLines.classList.remove("hidden")
-      burgerIconX.classList.add("hidden")
-    })
-  }
-
-
-  // responsive operations section
-  window.addEventListener("resize", () => {
+for (const selection of filterUserSelection) {
+  selection.addEventListener("change", () => {
     showOperationsOnDisplay(filterOperations())
+    showTotalsOnDisplay(refreshBalanceObj(filterOperations()))
   })
+}
+
+/************************ Modal *******************************/
+// Modal variables
+const operationBtn = $("#operation-btn")
+const addBtnModal = $("#modal-btn-add")
+const cancelBtnModal = $("#modal-btn-cancel")
+const modalContainer = $(".container-modal")
+const operationModalForm = $("#operation-modal-form")
+
+// Modal tags
+const addTagModal = () => {
+  tagModal.innerHTML = ''
+  for (const { name } of localTagsArr) {
+    tagModal.innerHTML += `
+    <option value="${name}">${name}</option>`
+  }
+}
+
+// Modal event 
+operationBtn.addEventListener("click", () => {
+  modalContainer.classList.remove("hidden")
+  operationModalForm.reset()
+  addTagModal()
+})
+
+cancelBtnModal.addEventListener("click", (event) => {
+  event.preventDefault()
+  modalContainer.classList.add("hidden")
+})
 
 
-  // executions when refresh
-  showTotalsOnDisplay(localBalanceObj)
+/*********************** Burger menu **************************/
+// Burger menu variables
+const burgerBtn = $("button.mobile-menu-button")
+const burgerMenu = $(".mobile-menu")
+const burgerIconLines = $("#burger-icon-lines")
+const burgerIconX = $("#burger-icon-xmark")
 
-  noResultsOrResults()
+// Burger menu event listeners
+burgerBtn.addEventListener("click", () => {
+  burgerMenu.classList.toggle("hidden");
+  burgerIconLines.classList.toggle("hidden")
+  burgerIconX.classList.toggle("hidden")
+})
 
-  addTagTypeFilter()
+
+/************ Hide filters  ************/
+// hide and unhide filters variables
+const hideFilters = $("#toggle-filter")
+const filterForm = $("#filter-form")
+
+// hide and unhide filters function
+hideFilters.addEventListener("click", () => {
+  filterForm.classList.toggle("hidden")
+})
+
+/********************* Sections events *************/
+// hide and unhide sections variables
+const balanceSection = $("#main-section")
+const tagSection = $("#tag-section")
+const tagShowLinks = $$(".tag-show-link")
+const reportSection = $("#report-section")
+const reportShowLinks = $$(".report-show-link")
+const balanceShowLinks = $$(".balance-show-link")
+
+for (const balanceLink of balanceShowLinks) {
+  balanceLink.addEventListener("click", () => {
+    balanceSection.classList.remove("hidden")
+    tagSection.classList.add("hidden")
+    reportSection.classList.add("hidden")
+    burgerMenu.classList.add("hidden")
+    burgerIconLines.classList.remove("hidden")
+    burgerIconX.classList.add("hidden")
+  })
+}
+
+for (const tagLink of tagShowLinks) {
+  tagLink.addEventListener("click", () => {
+    tagSection.classList.remove("hidden")
+    balanceSection.classList.add("hidden")
+    reportSection.classList.add("hidden")
+    burgerMenu.classList.add("hidden")
+    burgerIconLines.classList.remove("hidden")
+    burgerIconX.classList.add("hidden")
+  })
+}
+
+for (const reportLink of reportShowLinks) {
+  reportLink.addEventListener("click", () => {
+    reportSection.classList.remove("hidden")
+    balanceSection.classList.add("hidden")
+    tagSection.classList.add("hidden")
+    burgerMenu.classList.add("hidden")
+    burgerIconLines.classList.remove("hidden")
+    burgerIconX.classList.add("hidden")
+  })
+}
+
+
+// responsive operations section
+window.addEventListener("resize", () => {
+  showOperationsOnDisplay(filterOperations())
+})
+
+
+// executions when refresh
+showTotalsOnDisplay(localBalanceObj)
+
+noResultsOrResults()
+
+addTagTypeFilter()
 
   // showOperationsOnDisplay(filterOperations())
