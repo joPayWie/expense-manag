@@ -188,6 +188,14 @@ const filterDateFunction = (array) => {
   })
 }
 
+const filterNewest = (array) => {
+  return array.sort((a, b) => Number(b.date.split("-").join("")) - Number(a.date.split("-").join("")))
+}
+
+const filterLatest = (array) => {
+  return array.sort((a, b) => Number(a.date.split("-").join("")) - Number(b.date.split("-").join("")))
+}
+
 const filterHigherAmount = (array) => {
   return array.sort((a, b) => b.amount - a.amount)
 }
@@ -248,6 +256,12 @@ const filterOperations = () => {
   }
   if(filterSort.value === "lower"){
     operationsScope = filterLowerAmount(operationsScope)
+  }
+  if(filterSort.value === "newest"){
+    operationsScope = filterNewest(operationsScope)
+  }
+  if(filterSort.value === "latest"){
+    operationsScope = filterLatest(operationsScope)
   }
   return operationsScope
 }
