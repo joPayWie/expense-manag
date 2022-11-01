@@ -184,16 +184,52 @@ const filterDateFunction = (array) => {
   })
 }
 
+const filterAToZ = (array) => {
+  return array.sort((a, b) => { 
+    if ( a.description < b.description ) {
+        return -1
+    }
+    else if ( a.name > b.name ) {
+        return 1
+    }
+    else {
+        return 0
+    }
+})
+}
+
+const filterZToA = (array) => {
+    return array.sort((a, b) => { 
+    if ( a.description > b.description ) {
+        return -1
+    }
+    else if ( a.name < b.name ) {
+        return 1
+    }
+    else {
+        return 0
+    }
+})
+}
+
 const filterOperations = () => {
     let operationsScope = localOperationsArr
+
     if (filterType.value !== 'all') {
       operationsScope = filterFunction(operationsScope, 'type', filterType.value)
     }
     if (filterTag.value !== 'all') {
       operationsScope = filterFunction(operationsScope, 'tag', filterTag.value)
     }
+
     operationsScope = filterDateFunction(operationsScope)
 
+    if (filterSort.value === "a-z") {
+      operationsScope = filterAToZ(operationsScope)
+    }
+    if (filterSort.value === 'z-a') {
+      operationsScope = filterZToA(operationsScope)
+    }
     return operationsScope
 }
 
@@ -345,7 +381,7 @@ const filterOperations = () => {
   // Dom filters
 
   let month = new Date()
-  filterDate.value = today.getFullYear() + '-' + ('0' + (today.getMonth() + 1)).slice(-2) + '-' + "01";
+  filterDate.value = today.getFullYear() + '-' + ('0' + (today.getMonth())).slice(-2) + '-' + "01";
 
 
   for (const selection of filterUserSelection) {
