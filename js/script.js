@@ -177,6 +177,7 @@ const filterFunction = (array, key, value) => {
   })
   return filterArr
 }
+
 const filterDateFunction = (array) => {
   return array.filter(obj => {
     return Number(obj.date.split("-").join("")) >= Number(filterDate.value.split("-").join("")) 
@@ -191,8 +192,10 @@ const filterOperations = () => {
     if (filterTag.value !== 'all') {
       operationsScope = filterFunction(operationsScope, 'tag', filterTag.value)
     }
+    operationsScope = filterDateFunction(operationsScope)
+
     return operationsScope
-  }
+}
 
   /******************** DOM FUNCTIONS **********************************/
   // Dom balance variables
@@ -461,3 +464,5 @@ const filterOperations = () => {
   noResultsOrResults()
 
   addTagTypeFilter()
+
+  // showOperationsOnDisplay(filterOperations())
