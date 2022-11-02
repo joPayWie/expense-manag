@@ -152,10 +152,10 @@ const refreshBalanceObj = (array) => {
   balanceObj.total = 0
   for (const { amount, type } of array) {
     if (type === 'income') {
-      balanceObj.incomes += Number(amount)
+      balanceObj.incomes += amount
     }
     if (type === 'outcome') {
-      balanceObj.outcomes += Number(amount)
+      balanceObj.outcomes += amount
     }
   }
   balanceObj.total = balanceObj.incomes - balanceObj.outcomes
@@ -251,16 +251,16 @@ const filterOperations = () => {
   if (filterSort.value === 'z-a') {
     operationsScope = filterZToA(operationsScope)
   }
-  if (filterSort.value === "higher"){
+  if (filterSort.value === "higher") {
     operationsScope = filterHigherAmount(operationsScope)
   }
-  if(filterSort.value === "lower"){
+  if (filterSort.value === "lower") {
     operationsScope = filterLowerAmount(operationsScope)
   }
-  if(filterSort.value === "newest"){
+  if (filterSort.value === "newest") {
     operationsScope = filterNewest(operationsScope)
   }
-  if(filterSort.value === "latest"){
+  if (filterSort.value === "latest") {
     operationsScope = filterLatest(operationsScope)
   }
   return operationsScope
@@ -337,12 +337,16 @@ const noResultsOrResults = () => {
   if (localOperationsArr.length === 0) {
     noResultContainer.classList.remove("hidden")
     divTableOperations.classList.add("hidden")
+  if (filterOperations().length === 0 ) {
+    noResultContainer.classList.remove("hidden")
+    divTableOperations.classList.add("hidden")
+  }
   } else {
     noResultContainer.classList.add("hidden")
     divTableOperations.classList.remove("hidden")
     operationHeaderTable.classList.remove("md:hidden")
     operationHeaderTable.classList.add("md:table-header-group")
-    showOperationsOnDisplay(localOperationsArr)
+    showOperationsOnDisplay(filterOperations())
   }
 }
 
@@ -351,15 +355,11 @@ modalBtnAdd.addEventListener("click", (e) => {
   operationTableContainer.innerHTML = ""
   addNewOperationObject(localOperationsArr, createOperationObject())
   localStorage.setItem("operationsList", JSON.stringify(localOperationsArr))
-  showOperationsOnDisplay(localOperationsArr)
-  refreshBalanceObj(localOperationsArr)
+  refreshBalanceObj(filterOperations())
   saveBalanceObj()
   showTotalsOnDisplay(balanceObj)
+  noResultsOrResults()
   modalContainer.classList.add("hidden")
-  divTableOperations.classList.remove("hidden")
-  noResultContainer.classList.add("hidden")
-  operationHeaderTable.classList.remove("md:hidden")
-  operationHeaderTable.classList.add("md:table-header-group")
 })
 
 
@@ -485,19 +485,23 @@ hideFilters.addEventListener("click", () => {
 // hide and unhide sections variables
 const balanceSection = $("#main-section")
 const tagSection = $("#tag-section")
-const tagShowLinks = $$(".tag-show-link")
 const reportSection = $("#report-section")
 const reportShowLinks = $$(".report-show-link")
 const balanceShowLinks = $$(".balance-show-link")
+const tagShowLinks = $$(".tag-show-link")
+
+const hideBurgerMenu = () => {
+  burgerMenu.classList.add("hidden")
+  burgerIconLines.classList.remove("hidden")
+  burgerIconX.classList.add("hidden")
+}
 
 for (const balanceLink of balanceShowLinks) {
   balanceLink.addEventListener("click", () => {
     balanceSection.classList.remove("hidden")
     tagSection.classList.add("hidden")
     reportSection.classList.add("hidden")
-    burgerMenu.classList.add("hidden")
-    burgerIconLines.classList.remove("hidden")
-    burgerIconX.classList.add("hidden")
+    hideBurgerMenu()
   })
 }
 
@@ -506,9 +510,7 @@ for (const tagLink of tagShowLinks) {
     tagSection.classList.remove("hidden")
     balanceSection.classList.add("hidden")
     reportSection.classList.add("hidden")
-    burgerMenu.classList.add("hidden")
-    burgerIconLines.classList.remove("hidden")
-    burgerIconX.classList.add("hidden")
+    hideBurgerMenu()
   })
 }
 
@@ -517,9 +519,7 @@ for (const reportLink of reportShowLinks) {
     reportSection.classList.remove("hidden")
     balanceSection.classList.add("hidden")
     tagSection.classList.add("hidden")
-    burgerMenu.classList.add("hidden")
-    burgerIconLines.classList.remove("hidden")
-    burgerIconX.classList.add("hidden")
+    hideBurgerMenu()
   })
 }
 
@@ -537,4 +537,4 @@ noResultsOrResults()
 
 addTagTypeFilter()
 
-  // showOperationsOnDisplay(filterOperations())
+showOperationsOnDisplay(filterOperations())
