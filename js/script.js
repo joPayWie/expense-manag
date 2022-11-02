@@ -5,25 +5,25 @@ const $$ = (selector) => document.querySelectorAll(selector)
 
 /********************************* DATA FUNCTIONS  *****************/
 // Data variables
-const tags = [
+let tags = [
   {
-    id: 0,
+    id: "0",
     name: "Food"
   },
   {
-    id: 1,
+    id: "1",
     name: "Education"
   },
   {
-    id: 2,
+    id: "2",
     name: "Transfers"
   },
   {
-    id: 3,
+    id: "3",
     name: "Services"
   },
   {
-    id: 4,
+    id: "4",
     name: "Work"
   },
 ]
@@ -267,17 +267,20 @@ const filterOperations = () => {
 }
 
 /************* EDIT AND DELETE BUTTON FUNCTIONALITY ************/
-const getIdArray = $$(".get-id")
-
 const removeObjOfArray = (array, elementId) => array.filter(({id}) => id !== elementId)
-
 
 // Delete button
 const deleteObj = (elementId) => { 
   localOperationsArr = removeObjOfArray(localOperationsArr, elementId)
   localStorage.setItem("operationsList", JSON.stringify(localOperationsArr))
-  showOperationsOnDisplay(localOperationsArr)
+  showOperationsOnDisplay(filterOperations())
   noResultsOrResults()
+}
+
+const deleteTag = (elementId) => {
+  localTagsArr = removeObjOfArray(localTagsArr, elementId)
+  localStorage.setItem("tagList", JSON.stringify(localTagsArr))
+  showTagsOnDisplay(localTagsArr)
 }
 
 
@@ -389,17 +392,18 @@ modalBtnAdd.addEventListener("click", (e) => {
 // Dom tags variables
 const tagTable = $("#tag-list")
 const addTagBtn = $("#tag-btn")
-const localTagsArr = JSON.parse(localStorage.getItem("tagList"))
+let localTagsArr = JSON.parse(localStorage.getItem("tagList"))
 
 // Dom tags functions and events
 const showTagsOnDisplay = (array) => {
-  for (const tag of array) {
+  tagTable.innerHTML = ''
+  for (const { id, name } of array) {
     tagTable.innerHTML += `
       <div class="flex justify-between items-center mb-3"> 
-        <span class="text-sm bg-[#F4C6D9] text-[#AB0B4F] p-1 rounded">${tag.name}</span> 
+        <span class="text-sm bg-[#F4C6D9] text-[#AB0B4F] p-1 rounded">${ name }</span> 
         <span class="flex">
           <a href="#" class="mx-3 py-1 px-2 rounded-full hover:bg-[#1E90FF]"> <img src="assets/images/lapiz.png" alt="pencil drawing" class="w-5"> </a> 
-          <a href="#"  class="py-1 px-2 rounded-full hover:bg-[#1E90FF]"> <img src="assets/images/tachito1.png" alt="garbage drawing" class="w-5"> </a>
+          <a href="#" onclick='deleteTag("${id}")' class="py-1 px-2 rounded-full hover:bg-[#1E90FF]"> <img src="assets/images/tachito1.png" alt="garbage drawing" class="w-5"> </a>
         </span> 
       </div>`
   }
@@ -423,15 +427,15 @@ addTagBtn.addEventListener("click", () => {
   tagTable.innerHTML = ""
   addNewTagObject(localTagsArr, createTagObject(localTagsArr))
   localStorage.setItem("tagList", JSON.stringify(localTagsArr))
-  if (!localStorage.getItem("tagList")) {
-    localStorage.setItem("tagList", JSON.stringify(localTagsArr))
-  }
-  else {
+  // if (!localStorage.getItem("tagList")) {
+  //   localStorage.setItem("tagList", JSON.stringify(localTagsArr))
+  // }
+  // else {
     showTagsOnDisplay(localTagsArr)
     filterTag.innerHTML = `<option value="all">All</option>`
     addTagTypeFilter()
     inputNewTag.value = ""
-  }
+  // }
 })
 
 
