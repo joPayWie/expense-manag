@@ -76,7 +76,7 @@ const amountInput = $("#amount")
 const typeModal = $("#type-modal")
 const tagModal = $("#tag-modal")
 const dateInputModal = $("#date-modal")
-const localOperationsArr = JSON.parse(localStorage.getItem("operationsList"))
+let localOperationsArr = JSON.parse(localStorage.getItem("operationsList"))
 
 // Date
 let today = new Date()
@@ -266,6 +266,28 @@ const filterOperations = () => {
   return operationsScope
 }
 
+/************* EDIT AND DELETE BUTTON FUNCTIONALITY ************/
+const getIdArray = $$(".get-id")
+
+const removeObjOfArray = (array, elementId) => array.filter(({id}) => id !== elementId)
+
+
+// Delete button
+const deleteObj = (elementId) => { 
+  localOperationsArr = removeObjOfArray(localOperationsArr, elementId)
+  localStorage.setItem("operationsList", JSON.stringify(localOperationsArr))
+  showOperationsOnDisplay(localOperationsArr)
+  noResultsOrResults()
+}
+
+
+
+
+
+
+
+
+
 /******************** DOM FUNCTIONS **********************************/
 // Dom balance variables
 const totalIncomesDom = $("#total-incomes")
@@ -290,7 +312,7 @@ const mediumScreen = window.matchMedia("(min-width: 768px)")
 
 const showOperationsOnDisplay = (array) => {
   operationTableContainer.innerHTML = ''
-  for (const { description, amount, type, tag, date } of array) {
+  for (const { id, description, amount, type, tag, date } of array) {
     if (mediumScreen.matches) {
       operationTableContainer.innerHTML += `
           <tr class="text-center text-sm">
@@ -302,8 +324,8 @@ const showOperationsOnDisplay = (array) => {
               <td class="font-semibold ${type === "income" ? "text-green-600" : "text-red-600"}">${type === "income" ? "$" : "-$"}${amount}</td>
               <td>
                 <span class="flex justify-center">
-                <a href="#" class="mx-2 py-1 px-2 rounded-full hover:bg-[#1E90FF]"> <img src="assets/images/lapiz.png" aria-label="edit" alt="pencil drawing" class="w-5"> </a> 
-                <a href="#" class="mx-2 py-1 px-2 rounded-full hover:bg-[#1E90FF]"> <img src="assets/images/tachito1.png" aria-label="delete" alt="garbage drawing" class="w-5 "> </a>
+                <a href="#" data-id="${id}" class="get-id mx-2 py-1 px-2 rounded-full hover:bg-[#1E90FF]"> <img src="assets/images/lapiz.png" aria-label="edit" alt="pencil drawing" class="w-5"> </a> 
+                <a href="#" onclick='deleteObj("${id}")' data-id="${id}" class="get-id mx-2 py-1 px-2 rounded-full hover:bg-[#1E90FF]"> <img src="assets/images/tachito1.png" aria-label="delete" alt="garbage drawing" class="w-5 "> </a>
                 </span> 
               </td>
           </tr>`
@@ -321,8 +343,8 @@ const showOperationsOnDisplay = (array) => {
             <td class="font-semibold ${type === "income" ? "text-green-600" : "text-red-600"} text-lg">${type === "income" ? "$" : "-$"}${amount}</td>
             <td>
               <span class="flex justify-end">
-                <a href="#" class="py-1 px-2 rounded-full hover:bg-[#1E90FF]"> <img src="assets/images/lapiz.png" aria-label="edit" alt="pencil drawing" class="w-5"> </a> 
-                <a href="#" class="py-1 px-2 rounded-full hover:bg-[#1E90FF]"> <img src="assets/images/tachito1.png" aria-label="delete" alt="garbage drawing" class="w-5 "> </a>
+                <a href="#" data-id="${id}" class="get-id py-1 px-2 rounded-full hover:bg-[#1E90FF]"> <img src="assets/images/lapiz.png" aria-label="edit" alt="pencil drawing" class="w-5"> </a> 
+                <a href="#" onclick='deleteObj("${id}")' data-id="${id}" class="get-id py-1 px-2 rounded-full hover:bg-[#1E90FF]"> <img src="assets/images/tachito1.png" aria-label="delete" alt="garbage drawing" class="w-5 "> </a>
               </span> 
             </td>
           </tr>
@@ -337,11 +359,12 @@ const noResultsOrResults = () => {
   if (localOperationsArr.length === 0) {
     noResultContainer.classList.remove("hidden")
     divTableOperations.classList.add("hidden")
-  if (filterOperations().length === 0 ) {
-    noResultContainer.classList.remove("hidden")
-    divTableOperations.classList.add("hidden")
   }
-  } else {
+  // else if (filterOperations().length === 0) {
+  //   noResultContainer.classList.remove("hidden")
+  //   divTableOperations.classList.add("hidden")
+  // }
+   else {
     noResultContainer.classList.add("hidden")
     divTableOperations.classList.remove("hidden")
     operationHeaderTable.classList.remove("md:hidden")
