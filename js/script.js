@@ -5,25 +5,25 @@ const $$ = (selector) => document.querySelectorAll(selector)
 
 /********************************* DATA FUNCTIONS  *****************/
 // Data variables
-const tags = [
+let tags = [
   {
-    id: 0,
+    id: "0",
     name: "Food"
   },
   {
-    id: 1,
+    id: "1",
     name: "Education"
   },
   {
-    id: 2,
+    id: "2",
     name: "Transfers"
   },
   {
-    id: 3,
+    id: "3",
     name: "Services"
   },
   {
-    id: 4,
+    id: "4",
     name: "Work"
   },
 ]
@@ -40,7 +40,6 @@ let balanceObj = {
   incomes: 0,
   outcomes: 0
 }
-
 
 // General functions
 const getRandomCharacter = (array) => {
@@ -76,7 +75,7 @@ const amountInput = $("#amount")
 const typeModal = $("#type-modal")
 const tagModal = $("#tag-modal")
 const dateInputModal = $("#date-modal")
-const localOperationsArr = JSON.parse(localStorage.getItem("operationsList"))
+let localOperationsArr = JSON.parse(localStorage.getItem("operationsList"))
 
 // Date
 let today = new Date()
@@ -93,7 +92,6 @@ const addNewOperationObject = (array, object) => {
     return array
   }
   return array.push(object)
-
 }
 
 const createOperationObject = () => {
@@ -137,7 +135,6 @@ const createTagObject = () => {
     return newObj
   }
 }
-
 
 /************** Balance section *******************/
 if (!localStorage.getItem("balanceObj")) {
@@ -266,6 +263,74 @@ const filterOperations = () => {
   return operationsScope
 }
 
+/************* EDIT AND DELETE BUTTON FUNCTIONALITY ************/
+const findObj = (array, elementId) => array.find(({id}) => id === elementId)
+
+const removeObjOfArray = (array, elementId) => array.filter(({id}) => id !== elementId)
+
+// Delete button
+const deleteObj = (elementId) => { 
+  localOperationsArr = removeObjOfArray(localOperationsArr, elementId)
+  localStorage.setItem("operationsList", JSON.stringify(localOperationsArr))
+  showOperationsOnDisplay(filterOperations())
+  noResultsOrResults()
+}
+
+const deleteTag = (elementId) => {
+  localTagsArr = removeObjOfArray(localTagsArr, elementId)
+  localStorage.setItem("tagList", JSON.stringify(localTagsArr))
+  showTagsOnDisplay(localTagsArr)
+}
+
+// Edit button
+const editContainerModal = $(".edit-container-modal")
+const editDescription = $("#edit-description")
+const editAmount = $("#edit-amount")
+const editType = $("#edit-type")
+const editTag = $("#edit-tag")
+const editDate = $("#edit-date")
+const editSaveBtn = $("#edit-save-btn")
+const editCancelBtn = $("#edit-cancel-btn")
+
+const editObj = (elementId) => {
+  addTagModal(editTag)
+  let obj = findObj(localOperationsArr, elementId)
+  editContainerModal.classList.remove("hidden")
+  editDescription.value = obj.description
+  editAmount.value = obj.amount
+  editType.value = obj.type
+  editTag.value = obj.tag
+  editDate.value = obj.date
+  // THIS FUNCTION IS NOT FINISHED
+  return {
+    id: obj.id,
+    description: editDescription.value,
+    amount: Number(editAmount.value),
+    type: editType.value,
+    tag: editTag.value,
+    date: editDate.value
+  }
+
+}
+
+editSaveBtn.addEventListener("click", (e) => {
+  e.preventDefault()
+  operationTableContainer.innerHTML = ""
+  addNewOperationObject(localOperationsArr, createOperationObject())
+  localStorage.setItem("operationsList", JSON.stringify(localOperationsArr))
+  refreshBalanceObj(filterOperations())
+  saveBalanceObj()
+  showTotalsOnDisplay(balanceObj)
+  noResultsOrResults()
+  modalContainer.classList.add("hidden")
+})
+
+editCancelBtn.addEventListener("click", (e) => {
+  e.preventDefault()
+  editContainerModal.classList.add("hidden")
+})
+
+
 /******************** DOM FUNCTIONS **********************************/
 // Dom balance variables
 const totalIncomesDom = $("#total-incomes")
@@ -290,7 +355,7 @@ const mediumScreen = window.matchMedia("(min-width: 768px)")
 
 const showOperationsOnDisplay = (array) => {
   operationTableContainer.innerHTML = ''
-  for (const { description, amount, type, tag, date } of array) {
+  for (const { id, description, amount, type, tag, date } of array) {
     if (mediumScreen.matches) {
       operationTableContainer.innerHTML += `
           <tr class="text-center text-sm">
@@ -302,8 +367,8 @@ const showOperationsOnDisplay = (array) => {
               <td class="font-semibold ${type === "income" ? "text-green-600" : "text-red-600"}">${type === "income" ? "$" : "-$"}${amount}</td>
               <td>
                 <span class="flex justify-center">
-                <a href="#" class="mx-2 py-1 px-2 rounded-full hover:bg-[#1E90FF]"> <img src="assets/images/lapiz.png" aria-label="edit" alt="pencil drawing" class="w-5"> </a> 
-                <a href="#" class="mx-2 py-1 px-2 rounded-full hover:bg-[#1E90FF]"> <img src="assets/images/tachito1.png" aria-label="delete" alt="garbage drawing" class="w-5 "> </a>
+                <a href="#" onclick='editObj("${id}")' data-id="${id}" class="get-id mx-2 py-1 px-2 rounded-full hover:bg-[#1E90FF]"> <img src="assets/images/lapiz.png" aria-label="edit" alt="pencil drawing" class="w-5"> </a> 
+                <a href="#" onclick='deleteObj("${id}")' data-id="${id}" class="get-id mx-2 py-1 px-2 rounded-full hover:bg-[#1E90FF]"> <img src="assets/images/tachito1.png" aria-label="delete" alt="garbage drawing" class="w-5 "> </a>
                 </span> 
               </td>
           </tr>`
@@ -321,8 +386,8 @@ const showOperationsOnDisplay = (array) => {
             <td class="font-semibold ${type === "income" ? "text-green-600" : "text-red-600"} text-lg">${type === "income" ? "$" : "-$"}${amount}</td>
             <td>
               <span class="flex justify-end">
-                <a href="#" class="py-1 px-2 rounded-full hover:bg-[#1E90FF]"> <img src="assets/images/lapiz.png" aria-label="edit" alt="pencil drawing" class="w-5"> </a> 
-                <a href="#" class="py-1 px-2 rounded-full hover:bg-[#1E90FF]"> <img src="assets/images/tachito1.png" aria-label="delete" alt="garbage drawing" class="w-5 "> </a>
+                <a href="#" onclick='editObj("${id}")' data-id="${id}" class="get-id py-1 px-2 rounded-full hover:bg-[#1E90FF]"> <img src="assets/images/lapiz.png" aria-label="edit" alt="pencil drawing" class="w-5"> </a> 
+                <a href="#" onclick='deleteObj("${id}")' data-id="${id}" class="get-id py-1 px-2 rounded-full hover:bg-[#1E90FF]"> <img src="assets/images/tachito1.png" aria-label="delete" alt="garbage drawing" class="w-5 "> </a>
               </span> 
             </td>
           </tr>
@@ -337,11 +402,12 @@ const noResultsOrResults = () => {
   if (localOperationsArr.length === 0) {
     noResultContainer.classList.remove("hidden")
     divTableOperations.classList.add("hidden")
-  if (filterOperations().length === 0 ) {
-    noResultContainer.classList.remove("hidden")
-    divTableOperations.classList.add("hidden")
   }
-  } else {
+  // else if (filterOperations().length === 0) {
+  //   noResultContainer.classList.remove("hidden")
+  //   divTableOperations.classList.add("hidden")
+  // }
+   else {
     noResultContainer.classList.add("hidden")
     divTableOperations.classList.remove("hidden")
     operationHeaderTable.classList.remove("md:hidden")
@@ -366,17 +432,18 @@ modalBtnAdd.addEventListener("click", (e) => {
 // Dom tags variables
 const tagTable = $("#tag-list")
 const addTagBtn = $("#tag-btn")
-const localTagsArr = JSON.parse(localStorage.getItem("tagList"))
+let localTagsArr = JSON.parse(localStorage.getItem("tagList"))
 
 // Dom tags functions and events
 const showTagsOnDisplay = (array) => {
-  for (const tag of array) {
+  tagTable.innerHTML = ''
+  for (const { id, name } of array) {
     tagTable.innerHTML += `
       <div class="flex justify-between items-center mb-3"> 
-        <span class="text-sm bg-[#F4C6D9] text-[#AB0B4F] p-1 rounded">${tag.name}</span> 
+        <span class="text-sm bg-[#F4C6D9] text-[#AB0B4F] p-1 rounded">${ name }</span> 
         <span class="flex">
           <a href="#" class="mx-3 py-1 px-2 rounded-full hover:bg-[#1E90FF]"> <img src="assets/images/lapiz.png" alt="pencil drawing" class="w-5"> </a> 
-          <a href="#"  class="py-1 px-2 rounded-full hover:bg-[#1E90FF]"> <img src="assets/images/tachito1.png" alt="garbage drawing" class="w-5"> </a>
+          <a href="#" onclick='deleteTag("${id}")' class="py-1 px-2 rounded-full hover:bg-[#1E90FF]"> <img src="assets/images/tachito1.png" alt="garbage drawing" class="w-5"> </a>
         </span> 
       </div>`
   }
@@ -400,15 +467,15 @@ addTagBtn.addEventListener("click", () => {
   tagTable.innerHTML = ""
   addNewTagObject(localTagsArr, createTagObject(localTagsArr))
   localStorage.setItem("tagList", JSON.stringify(localTagsArr))
-  if (!localStorage.getItem("tagList")) {
-    localStorage.setItem("tagList", JSON.stringify(localTagsArr))
-  }
-  else {
+  // if (!localStorage.getItem("tagList")) {
+  //   localStorage.setItem("tagList", JSON.stringify(localTagsArr))
+  // }
+  // else {
     showTagsOnDisplay(localTagsArr)
     filterTag.innerHTML = `<option value="all">All</option>`
     addTagTypeFilter()
     inputNewTag.value = ""
-  }
+  // }
 })
 
 
@@ -435,10 +502,10 @@ const modalContainer = $(".container-modal")
 const operationModalForm = $("#operation-modal-form")
 
 // Modal tags
-const addTagModal = () => {
-  tagModal.innerHTML = ''
+const addTagModal = (selector) => {
+  selector.innerHTML = ''
   for (const { name } of localTagsArr) {
-    tagModal.innerHTML += `
+    selector.innerHTML += `
     <option value="${name}">${name}</option>`
   }
 }
@@ -447,7 +514,7 @@ const addTagModal = () => {
 operationBtn.addEventListener("click", () => {
   modalContainer.classList.remove("hidden")
   operationModalForm.reset()
-  addTagModal()
+  addTagModal(tagModal)
 })
 
 cancelBtnModal.addEventListener("click", (event) => {

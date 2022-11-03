@@ -225,7 +225,7 @@
         </div>
     </section>
 
-
+<!-- New operation modal -->
     <div
         class="hidden container-modal bg-[rgba(0,0,0,0.2)] fixed w-full h-full overflow-auto flex justify-center items-center">
         <div class="operation-modal bg-white min-h-fit w-10/12 md:w-1/2 rounded-md m-5 p-8 shadow-md shadow-rose-200">
@@ -267,6 +267,49 @@
                 </div>
         </div>
     </div>
+
+<!-- Edit operation modal -->
+<div
+        class="hidden edit-container-modal bg-[rgba(0,0,0,0.2)] fixed w-full h-full overflow-auto flex justify-center items-center">
+        <div class="edit-operation-modal bg-white min-h-fit w-10/12 md:w-1/2 rounded-md m-5 p-8 shadow-md shadow-rose-200">
+            <h2 class="text-3xl text-stone-800 font-bold"> Edit operation </h2>
+            <form id="">
+                <div class="flex flex-col">
+                    <label for="edit-description" class="font-bold mt-2"> Description </label>
+                    <input name="edit-description" id="edit-description" class="border-2" type="text" maxlength="16">
+                </div>
+                <div class="flex flex-col">
+                    <label for="edit-amount" class="font-bold mt-2"> Amount </label>
+                    <input name="edit-amount" id="edit-amount" class="border-2" type="number" placeholder="Put the amount in positive number">
+                </div>
+                <div class="flex flex-col">
+                    <label for="edit-type" class="font-bold mt-2"> Type </label>
+                    <select name="edit-type" id="edit-type" class="border-2">
+                        <option value="income"> Income </option>
+                        <option value="outcome"> Outcome </option>
+                    </select>
+                </div>
+                <div class="flex flex-col">
+                    <label for="edit-tag" class="font-bold mt-2"> Tag </label>
+                    <select name="edit-tag" id="edit-tag" class="border-2">
+                        <option value="all"> All </option>
+                    </select>
+                </div>
+            </form>
+                <div class="flex flex-col">
+                    <label for="edit-date" class="font-bold mt-2"> Date </label>
+                    <input type="date" name="edit-date" id="edit-date" class="border-2">
+                </div>
+                <div class="mt-5 flex justify-end">
+                    <button id="edit-save-btn"
+                        class="m-3 self-start lg:self-end text-white bg-[#E371AF] rounded-md p-3 mt-3 lg:mt-0 hover:bg-[#53AEE5] transition duration-150 hover:ease-in">
+                        Save </button>
+                    <button id="edit-cancel-btn" class="m-3 self-start lg:self-end text-white bg-red-600 rounded-md p-3 mt-3 lg:mt-0 hover:bg-[#53AEE5] transition duration-150 hover:ease-in ">
+                        Cancel </button>
+                </div>
+        </div>
+    </div>
+
 
     <!-- footer -->
     <footer class="flex flex-row justify-center bg-transparent  lg:justify-end mx-4">
