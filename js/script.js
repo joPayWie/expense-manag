@@ -41,7 +41,6 @@ let balanceObj = {
   outcomes: 0
 }
 
-
 // General functions
 const getRandomCharacter = (array) => {
   let randomIndex = Math.floor(Math.random() * array.length)
@@ -93,7 +92,6 @@ const addNewOperationObject = (array, object) => {
     return array
   }
   return array.push(object)
-
 }
 
 const createOperationObject = () => {
@@ -137,7 +135,6 @@ const createTagObject = () => {
     return newObj
   }
 }
-
 
 /************** Balance section *******************/
 if (!localStorage.getItem("balanceObj")) {
@@ -267,6 +264,8 @@ const filterOperations = () => {
 }
 
 /************* EDIT AND DELETE BUTTON FUNCTIONALITY ************/
+const findObj = (array, elementId) => array.find(({id}) => id === elementId)
+
 const removeObjOfArray = (array, elementId) => array.filter(({id}) => id !== elementId)
 
 // Delete button
@@ -283,12 +282,53 @@ const deleteTag = (elementId) => {
   showTagsOnDisplay(localTagsArr)
 }
 
+// Edit button
+const editContainerModal = $(".edit-container-modal")
+const editDescription = $("#edit-description")
+const editAmount = $("#edit-amount")
+const editType = $("#edit-type")
+const editTag = $("#edit-tag")
+const editDate = $("#edit-date")
+const editSaveBtn = $("#edit-save-btn")
+const editCancelBtn = $("#edit-cancel-btn")
 
+const editObj = (elementId) => {
+  addTagModal(editTag)
+  let obj = findObj(localOperationsArr, elementId)
+  editContainerModal.classList.remove("hidden")
+  editDescription.value = obj.description
+  editAmount.value = obj.amount
+  editType.value = obj.type
+  editTag.value = obj.tag
+  editDate.value = obj.date
+  // THIS FUNCTION IS NOT FINISHED
+  return {
+    id: obj.id,
+    description: editDescription.value,
+    amount: Number(editAmount.value),
+    type: editType.value,
+    tag: editTag.value,
+    date: editDate.value
+  }
 
+}
 
+editSaveBtn.addEventListener("click", (e) => {
+  e.preventDefault()
+  operationTableContainer.innerHTML = ""
+  addNewOperationObject(localOperationsArr, createOperationObject())
+  localStorage.setItem("operationsList", JSON.stringify(localOperationsArr))
+  refreshBalanceObj(filterOperations())
+  saveBalanceObj()
+  showTotalsOnDisplay(balanceObj)
+  noResultsOrResults()
+  modalContainer.classList.add("hidden")
+})
 
-
-
+editCancelBtn.addEventListener("click", (e) => {
+  e.preventDefault()
+  editContainerModal.classList.add("hidden")
+})
 
 
 /******************** DOM FUNCTIONS **********************************/
@@ -327,7 +367,7 @@ const showOperationsOnDisplay = (array) => {
               <td class="font-semibold ${type === "income" ? "text-green-600" : "text-red-600"}">${type === "income" ? "$" : "-$"}${amount}</td>
               <td>
                 <span class="flex justify-center">
-                <a href="#" data-id="${id}" class="get-id mx-2 py-1 px-2 rounded-full hover:bg-[#1E90FF]"> <img src="assets/images/lapiz.png" aria-label="edit" alt="pencil drawing" class="w-5"> </a> 
+                <a href="#" onclick='editObj("${id}")' data-id="${id}" class="get-id mx-2 py-1 px-2 rounded-full hover:bg-[#1E90FF]"> <img src="assets/images/lapiz.png" aria-label="edit" alt="pencil drawing" class="w-5"> </a> 
                 <a href="#" onclick='deleteObj("${id}")' data-id="${id}" class="get-id mx-2 py-1 px-2 rounded-full hover:bg-[#1E90FF]"> <img src="assets/images/tachito1.png" aria-label="delete" alt="garbage drawing" class="w-5 "> </a>
                 </span> 
               </td>
@@ -346,7 +386,7 @@ const showOperationsOnDisplay = (array) => {
             <td class="font-semibold ${type === "income" ? "text-green-600" : "text-red-600"} text-lg">${type === "income" ? "$" : "-$"}${amount}</td>
             <td>
               <span class="flex justify-end">
-                <a href="#" data-id="${id}" class="get-id py-1 px-2 rounded-full hover:bg-[#1E90FF]"> <img src="assets/images/lapiz.png" aria-label="edit" alt="pencil drawing" class="w-5"> </a> 
+                <a href="#" onclick='editObj("${id}")' data-id="${id}" class="get-id py-1 px-2 rounded-full hover:bg-[#1E90FF]"> <img src="assets/images/lapiz.png" aria-label="edit" alt="pencil drawing" class="w-5"> </a> 
                 <a href="#" onclick='deleteObj("${id}")' data-id="${id}" class="get-id py-1 px-2 rounded-full hover:bg-[#1E90FF]"> <img src="assets/images/tachito1.png" aria-label="delete" alt="garbage drawing" class="w-5 "> </a>
               </span> 
             </td>
@@ -462,10 +502,10 @@ const modalContainer = $(".container-modal")
 const operationModalForm = $("#operation-modal-form")
 
 // Modal tags
-const addTagModal = () => {
-  tagModal.innerHTML = ''
+const addTagModal = (selector) => {
+  selector.innerHTML = ''
   for (const { name } of localTagsArr) {
-    tagModal.innerHTML += `
+    selector.innerHTML += `
     <option value="${name}">${name}</option>`
   }
 }
@@ -474,7 +514,7 @@ const addTagModal = () => {
 operationBtn.addEventListener("click", () => {
   modalContainer.classList.remove("hidden")
   operationModalForm.reset()
-  addTagModal()
+  addTagModal(tagModal)
 })
 
 cancelBtnModal.addEventListener("click", (event) => {
