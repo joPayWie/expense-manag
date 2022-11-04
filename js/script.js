@@ -189,7 +189,7 @@ const filterNewest = (array) => {
   return array.sort((a, b) => Number(b.date.split("-").join("")) - Number(a.date.split("-").join("")))
 }
 
-const filterLatest = (array) => {
+const filterOldest = (array) => {
   return array.sort((a, b) => Number(a.date.split("-").join("")) - Number(b.date.split("-").join("")))
 }
 
@@ -257,8 +257,8 @@ const filterOperations = () => {
   if (filterSort.value === "newest") {
     operationsScope = filterNewest(operationsScope)
   }
-  if (filterSort.value === "latest") {
-    operationsScope = filterLatest(operationsScope)
+  if (filterSort.value === "oldest") {
+    operationsScope = filterOldest(operationsScope)
   }
   return operationsScope
 }
@@ -273,6 +273,9 @@ const deleteObj = (elementId) => {
   localOperationsArr = removeObjOfArray(localOperationsArr, elementId)
   localStorage.setItem("operationsList", JSON.stringify(localOperationsArr))
   showOperationsOnDisplay(filterOperations())
+  refreshBalanceObj(localOperationsArr)
+  saveBalanceObj()
+  showTotalsOnDisplay(balanceObj)
   noResultsOrResults()
 }
 
