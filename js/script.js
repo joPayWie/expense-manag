@@ -399,8 +399,8 @@ editTagNameCancelBtn.addEventListener("click", (e) => {
 
 /************************* REPORT SECTION *******************/ 
 
-const getObjWithMaxIncome = (array, typeSearched) => {
-  let objWithMaxIncome = {}
+const getObjWithMaxIncomeOrOutcome = (array, typeSearched) => {
+  let objWithMaxIncomeOrOutcome = {}
   let counter = 0
   for (const obj of array) {
     const { type } = obj
@@ -409,20 +409,67 @@ const getObjWithMaxIncome = (array, typeSearched) => {
       const { amount } = obj
       adding += amount
     }
-    if (adding > counter) {
-      objWithMaxIncome = obj
+    if ( adding > counter ) {
+      objWithMaxIncomeOrOutcome = obj
       counter = adding
     }
   }
-  return objWithMaxIncome
+  return objWithMaxIncomeOrOutcome
+}
+
+const filterByTag = (array, tagSearched) => {
+  return array.filter(obj => {
+    return obj.tag === tagSearched
+  })
+}
+
+const calculateReportBalance = () => {
+  let arrBalanceByTag = []
+  let objBalanceByTag = {}
+  let totalIncomes = 0
+  let totalOutcomes = 0
+  let total = 0
+  for ( const { name } of localTagsArr ) {
+    let arrayByTag = filterByTag(localOperationsArr, name)
+    totalIncomes = 0
+    totalOutcomes = 0
+    total = 0 
+    for ( const { amount, type } of arrayByTag ) { 
+      if ( type === 'income' ) {
+        totalIncomes += amount
+      }
+      if ( type === 'outcome' ) {
+        totalOutcomes += amount
+      }
+      total = totalIncomes - totalOutcomes   
+    }
+      arrBalanceByTag.push(objBalanceByTag =  {
+      tag: name,
+      incomes: totalIncomes,
+      outcomes: totalOutcomes,
+      total: total
+      })
+  }
+  return arrBalanceByTag
 }
 
 
+const getTagWithMaxBalance = () => {
+  let objWithMaxBalance = {}
+  let adding = 0
+  for ( const obj of calculateReportBalance() ) {
+    if ( adding < obj.total ) {
+      objWithMaxBalance =  {
+        name: obj.tag,
+        total: obj.total
+      }
+      adding = obj.total
+    } 
+   
+  }
+return objWithMaxBalance
+} 
 
-
-const showSummaryOnDisplay = (array) => {
-
-}
 
 
 /******************** DOM FUNCTIONS **********************************/
@@ -585,6 +632,12 @@ for (const selection of filterUserSelection) {
     showOperationsOnDisplay(filterOperations())
     showTotalsOnDisplay(refreshBalanceObj(filterOperations()))
   })
+}
+
+// Dom report 
+
+const showSummaryOnDisplay = (array) => {
+
 }
 
 /************************ Modal *******************************/
