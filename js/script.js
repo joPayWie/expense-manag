@@ -352,6 +352,7 @@ const editTagContainerModal = $(".edit-tag-name-container")
 const editTagNameInput = $("#edit-tag-name")
 const editTagNameSaveBtn = $("#edit-tag-save-btn")
 const editTagNameCancelBtn = $("#edit-tag-cancel-btn")
+const errorEditTagMessage = $(".tag-span-message")
 
 const editTagName = (elementId) => {
   editTagNameSaveBtn.setAttribute("data-id", elementId)
@@ -378,12 +379,17 @@ const editTagObj = (array, elementId) => {
 
 editTagNameSaveBtn.addEventListener("click", (e) => {
   e.preventDefault()
-  operationTableContainer.innerHTML = ""
-  const elementId = editTagNameSaveBtn.getAttribute("data-id")
-  localTagsArr = editTagObj(localTagsArr, elementId)
-  localStorage.setItem("tagList", JSON.stringify(localTagsArr))
-  showTagsOnDisplay(localTagsArr)
-  editTagContainerModal.classList.add("hidden")
+  if ( editTagNameInput.value !== '' ) {
+    tagTable.innerHTML = ""
+    const elementId = editTagNameSaveBtn.getAttribute("data-id")
+    localTagsArr = editTagObj(localTagsArr, elementId)
+    localStorage.setItem("tagList", JSON.stringify(localTagsArr))
+    showTagsOnDisplay(localTagsArr)
+    editTagContainerModal.classList.add("hidden")
+  }
+  else {
+    errorEditTagMessage.classList.remove("hidden")
+  }
 })
 
 editTagNameCancelBtn.addEventListener("click", (e) => {
