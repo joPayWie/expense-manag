@@ -399,6 +399,30 @@ editTagNameCancelBtn.addEventListener("click", (e) => {
 
 /************************* REPORT SECTION *******************/ 
 
+const getObjWithMaxIncome = (array, typeSearched) => {
+  let objWithMaxIncome = {}
+  let counter = 0
+  for (const obj of array) {
+    const { type } = obj
+    let adding = 0
+    if ( type === typeSearched ) {
+      const { amount } = obj
+      adding += amount
+    }
+    if (adding > counter) {
+      objWithMaxIncome = obj
+      counter = adding
+    }
+  }
+  return objWithMaxIncome
+}
+
+
+
+
+const showSummaryOnDisplay = (array) => {
+
+}
 
 
 /******************** DOM FUNCTIONS **********************************/
