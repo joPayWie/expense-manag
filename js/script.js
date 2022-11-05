@@ -264,12 +264,12 @@ const filterOperations = () => {
 }
 
 /************* EDIT AND DELETE BUTTON FUNCTIONALITY ************/
-const findObj = (array, elementId) => array.find(({id}) => id === elementId)
+const findObj = (array, elementId) => array.find(({ id }) => id === elementId)
 
-const removeObjOfArray = (array, elementId) => array.filter(({id}) => id !== elementId)
+const removeObjOfArray = (array, elementId) => array.filter(({ id }) => id !== elementId)
 
 // Delete button
-const deleteObj = (elementId) => { 
+const deleteObj = (elementId) => {
   localOperationsArr = removeObjOfArray(localOperationsArr, elementId)
   localStorage.setItem("operationsList", JSON.stringify(localOperationsArr))
   showOperationsOnDisplay(filterOperations())
@@ -294,8 +294,11 @@ const editTag = $("#edit-tag")
 const editDate = $("#edit-date")
 const editSaveBtn = $("#edit-save-btn")
 const editCancelBtn = $("#edit-cancel-btn")
+const editModalBtn = $$(".edit-operation-btn")
 
-const editObj = (elementId) => {
+
+const modalEdit = (elementId) => {
+  editSaveBtn.setAttribute("data-id", elementId)
   addTagModal(editTag)
   let obj = findObj(localOperationsArr, elementId)
   editContainerModal.classList.remove("hidden")
@@ -304,28 +307,39 @@ const editObj = (elementId) => {
   editType.value = obj.type
   editTag.value = obj.tag
   editDate.value = obj.date
-  // THIS FUNCTION IS NOT FINISHED
+}
+
+const updateObj = (elementId) => {
   return {
-    id: obj.id,
+    id: elementId,
     description: editDescription.value,
-    amount: Number(editAmount.value),
+    amount: editAmount.value,
     type: editType.value,
     tag: editTag.value,
     date: editDate.value
   }
+}
 
+const editObj = (elementId) => {
+  return localOperationsArr.map(obj => {
+    if (obj.id === elementId) {
+      return updateObj(elementId)
+    }
+    return obj
+  })
 }
 
 editSaveBtn.addEventListener("click", (e) => {
   e.preventDefault()
   operationTableContainer.innerHTML = ""
-  addNewOperationObject(localOperationsArr, createOperationObject())
+  const elementId = editSaveBtn.getAttribute("data-id")
+  localOperationsArr = editObj(elementId)
   localStorage.setItem("operationsList", JSON.stringify(localOperationsArr))
+  showOperationsOnDisplay(filterOperations())
   refreshBalanceObj(filterOperations())
   saveBalanceObj()
   showTotalsOnDisplay(balanceObj)
-  noResultsOrResults()
-  modalContainer.classList.add("hidden")
+  editContainerModal.classList.add("hidden")
 })
 
 editCancelBtn.addEventListener("click", (e) => {
@@ -370,8 +384,8 @@ const showOperationsOnDisplay = (array) => {
               <td class="font-semibold ${type === "income" ? "text-green-600" : "text-red-600"}">${type === "income" ? "$" : "-$"}${amount}</td>
               <td>
                 <span class="flex justify-center">
-                <a href="#" onclick='editObj("${id}")' data-id="${id}" class="get-id mx-2 py-1 px-2 rounded-full hover:bg-[#1E90FF]"> <img src="assets/images/lapiz.png" aria-label="edit" alt="pencil drawing" class="w-5"> </a> 
-                <a href="#" onclick='deleteObj("${id}")' data-id="${id}" class="get-id mx-2 py-1 px-2 rounded-full hover:bg-[#1E90FF]"> <img src="assets/images/tachito1.png" aria-label="delete" alt="garbage drawing" class="w-5 "> </a>
+                <a href="#" onclick='modalEdit("${id}")' data-id="${id}" class="edit-operation-btn get-id mx-2 py-1 px-2 rounded-full hover:bg-[#1E90FF]"> <img src="assets/images/lapiz.png" aria-label="edit" alt="pencil drawing" class="w-5"> </a> 
+                <a href="#" onclick='deleteObj("${id}")' class="get-id mx-2 py-1 px-2 rounded-full hover:bg-[#1E90FF]"> <img src="assets/images/tachito1.png" aria-label="delete" alt="garbage drawing" class="w-5 "> </a>
                 </span> 
               </td>
           </tr>`
@@ -389,8 +403,8 @@ const showOperationsOnDisplay = (array) => {
             <td class="font-semibold ${type === "income" ? "text-green-600" : "text-red-600"} text-lg">${type === "income" ? "$" : "-$"}${amount}</td>
             <td>
               <span class="flex justify-end">
-                <a href="#" onclick='editObj("${id}")' data-id="${id}" class="get-id py-1 px-2 rounded-full hover:bg-[#1E90FF]"> <img src="assets/images/lapiz.png" aria-label="edit" alt="pencil drawing" class="w-5"> </a> 
-                <a href="#" onclick='deleteObj("${id}")' data-id="${id}" class="get-id py-1 px-2 rounded-full hover:bg-[#1E90FF]"> <img src="assets/images/tachito1.png" aria-label="delete" alt="garbage drawing" class="w-5 "> </a>
+                <a href="#" onclick='modalEdit("${id}")' data-id="${id}" class="edit-operation-btn get-id py-1 px-2 rounded-full hover:bg-[#1E90FF]"> <img src="assets/images/lapiz.png" aria-label="edit" alt="pencil drawing" class="w-5"> </a> 
+                <a href="#" onclick='deleteObj("${id}")' class="get-id py-1 px-2 rounded-full hover:bg-[#1E90FF]"> <img src="assets/images/tachito1.png" aria-label="delete" alt="garbage drawing" class="w-5 "> </a>
               </span> 
             </td>
           </tr>
@@ -410,7 +424,7 @@ const noResultsOrResults = () => {
   //   noResultContainer.classList.remove("hidden")
   //   divTableOperations.classList.add("hidden")
   // }
-   else {
+  else {
     noResultContainer.classList.add("hidden")
     divTableOperations.classList.remove("hidden")
     operationHeaderTable.classList.remove("md:hidden")
@@ -443,7 +457,7 @@ const showTagsOnDisplay = (array) => {
   for (const { id, name } of array) {
     tagTable.innerHTML += `
       <div class="flex justify-between items-center mb-3"> 
-        <span class="text-sm bg-[#F4C6D9] text-[#AB0B4F] p-1 rounded">${ name }</span> 
+        <span class="text-sm bg-[#F4C6D9] text-[#AB0B4F] p-1 rounded">${name}</span> 
         <span class="flex">
           <a href="#" class="mx-3 py-1 px-2 rounded-full hover:bg-[#1E90FF]"> <img src="assets/images/lapiz.png" alt="pencil drawing" class="w-5"> </a> 
           <a href="#" onclick='deleteTag("${id}")' class="py-1 px-2 rounded-full hover:bg-[#1E90FF]"> <img src="assets/images/tachito1.png" alt="garbage drawing" class="w-5"> </a>
@@ -474,10 +488,10 @@ addTagBtn.addEventListener("click", () => {
   //   localStorage.setItem("tagList", JSON.stringify(localTagsArr))
   // }
   // else {
-    showTagsOnDisplay(localTagsArr)
-    filterTag.innerHTML = `<option value="all">All</option>`
-    addTagTypeFilter()
-    inputNewTag.value = ""
+  showTagsOnDisplay(localTagsArr)
+  filterTag.innerHTML = `<option value="all">All</option>`
+  addTagTypeFilter()
+  inputNewTag.value = ""
   // }
 })
 
