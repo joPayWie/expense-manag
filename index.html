@@ -111,7 +111,7 @@
                 </div>
             </div>
 
-            <!-- filter div -->
+            <!-- Filter div -->
             <div class="bg-white min-h-fit rounded-md m-5 p-8 shadow-md">
                 <div class="flex justify-between mb-6 items-center">
                     <h3 class="text-3xl text-stone-800 font-bold"> Filters </h3>
@@ -153,7 +153,7 @@
             </div>
         </div>
 
-        <!-- operations div -->
+        <!-- Operations div -->
         <div class="bg-white rounded-md m-5 w-10/12 lg:w-6/12 min-h-min shadow-md" id="operations-container">
             <div class="flex flex-col lg:flex-row lg:justify-between pt-8 px-8 pb-2">
                 <h3 class="text-3xl text-stone-800 font-bold"> Operations </h3>
@@ -186,7 +186,7 @@
         </div>
     </section>
 
-    <!-- tag section  -->
+    <!-- Tag section  -->
     <section id="tag-section" class="hidden justify-center items-center flex-col w-10/12 lg:w-7/12">
         <!-- tag div  -->
         <div class="flex flex-col w-full min-h-min bg-white rounded-md my-5 md:m-5 p-8 shadow-md">
@@ -207,7 +207,7 @@
         </div>
     </section>
 
-    <!-- report section -->
+    <!-- Report section -->
     <section id="report-section" class="hidden flex justify-center items-center w-full">
         <div class="bg-white rounded-md m-5 w-10/12 lg:w-6/12 min-h-min shadow-md" id="report-container">
             <div class="flex flex-col lg:flex-row lg:justify-between p-8">
@@ -301,10 +301,9 @@
     <!-- Edit operation modal -->
     <div
         class="hidden edit-container-modal bg-[rgba(0,0,0,0.2)] fixed w-full h-full overflow-auto flex justify-center items-center">
-        <div
-            class="edit-operation-modal bg-white min-h-fit w-10/12 md:w-1/2 rounded-md m-5 p-8 shadow-md shadow-rose-200">
+        <div class="bg-white min-h-fit w-10/12 md:w-1/2 rounded-md m-5 p-8 shadow-md shadow-rose-200">
             <h2 class="text-3xl text-stone-800 font-bold"> Edit operation </h2>
-            <form id="">
+            <form>
                 <div class="flex flex-col">
                     <label for="edit-description" class="font-bold mt-2"> Description </label>
                     <input name="edit-description" id="edit-description" class="border-2" type="text" maxlength="16">
@@ -342,6 +341,26 @@
             </div>
         </div>
     </div>
+
+    <!-- Edit tag modal -->
+    <div
+        class="hidden edit-tag-name-container bg-[rgba(0,0,0,0.2)] fixed w-full h-full overflow-auto flex justify-center items-center">
+        <div class="bg-white min-h-fit w-10/12 md:w-1/2 rounded-md m-3 p-4 shadow-md shadow-rose-200">
+            <h2 class="text-3xl text-stone-800 font-bold mb-4"> Edit tag </h2>
+                <div class="flex flex-col">
+                    <input name="edit-tag-name" id="edit-tag-name" class="border-2" type="text" maxlength="16">
+                </div>
+                <span class="tag-span-message hidden text-red-600 text-xs ">Oops! Please enter a tag name to continue</span>
+                <div class="mt-5 flex justify-end">
+                    <button id="edit-tag-save-btn"
+                        class="m-3 self-start lg:self-end text-white bg-[#E371AF] rounded-md p-3 mt-3 lg:mt-0 hover:bg-[#53AEE5] transition duration-150 hover:ease-in">
+                        Save </button>
+                    <button id="edit-tag-cancel-btn" class="m-3 self-start lg:self-end text-white bg-red-600 rounded-md p-3 mt-3 lg:mt-0 hover:bg-[#53AEE5] transition duration-150 hover:ease-in ">
+                        Cancel </button>
+                </div>
+        </div>
+    </div>
+
 
 
     <!-- footer -->

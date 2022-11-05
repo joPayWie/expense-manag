@@ -268,7 +268,7 @@ const findObj = (array, elementId) => array.find(({ id }) => id === elementId)
 
 const removeObjOfArray = (array, elementId) => array.filter(({ id }) => id !== elementId)
 
-// Delete button
+// Operations delete button
 const deleteObj = (elementId) => {
   localOperationsArr = removeObjOfArray(localOperationsArr, elementId)
   localStorage.setItem("operationsList", JSON.stringify(localOperationsArr))
@@ -279,13 +279,14 @@ const deleteObj = (elementId) => {
   noResultsOrResults()
 }
 
+// Tags delete button
 const deleteTag = (elementId) => {
   localTagsArr = removeObjOfArray(localTagsArr, elementId)
   localStorage.setItem("tagList", JSON.stringify(localTagsArr))
   showTagsOnDisplay(localTagsArr)
 }
 
-// Edit button
+// Operations edit button
 const editContainerModal = $(".edit-container-modal")
 const editDescription = $("#edit-description")
 const editAmount = $("#edit-amount")
@@ -295,7 +296,6 @@ const editDate = $("#edit-date")
 const editSaveBtn = $("#edit-save-btn")
 const editCancelBtn = $("#edit-cancel-btn")
 const editModalBtn = $$(".edit-operation-btn")
-
 
 const modalEdit = (elementId) => {
   editSaveBtn.setAttribute("data-id", elementId)
@@ -309,21 +309,21 @@ const modalEdit = (elementId) => {
   editDate.value = obj.date
 }
 
-const updateObj = (elementId) => {
+const updateOperationObj = (elementId) => {
   return {
     id: elementId,
     description: editDescription.value,
-    amount: editAmount.value,
+    amount: Number(editAmount.value),
     type: editType.value,
     tag: editTag.value,
     date: editDate.value
   }
 }
 
-const editObj = (elementId) => {
-  return localOperationsArr.map(obj => {
+const editOperationObj = (array, elementId) => {
+  return array.map(obj => {
     if (obj.id === elementId) {
-      return updateObj(elementId)
+      return updateOperationObj(elementId)
     }
     return obj
   })
@@ -333,7 +333,7 @@ editSaveBtn.addEventListener("click", (e) => {
   e.preventDefault()
   operationTableContainer.innerHTML = ""
   const elementId = editSaveBtn.getAttribute("data-id")
-  localOperationsArr = editObj(elementId)
+  localOperationsArr = editOperationObj(localOperationsArr, elementId)
   localStorage.setItem("operationsList", JSON.stringify(localOperationsArr))
   showOperationsOnDisplay(filterOperations())
   refreshBalanceObj(filterOperations())
@@ -345,7 +345,60 @@ editSaveBtn.addEventListener("click", (e) => {
 editCancelBtn.addEventListener("click", (e) => {
   e.preventDefault()
   editContainerModal.classList.add("hidden")
+}) // this function can be refactorized to use it with the edit tag cancel btn as well
+
+// Tag edit button
+const editTagContainerModal = $(".edit-tag-name-container")
+const editTagNameInput = $("#edit-tag-name")
+const editTagNameSaveBtn = $("#edit-tag-save-btn")
+const editTagNameCancelBtn = $("#edit-tag-cancel-btn")
+const errorEditTagMessage = $(".tag-span-message")
+
+const editTagName = (elementId) => {
+  editTagNameSaveBtn.setAttribute("data-id", elementId)
+  let obj = findObj(localTagsArr, elementId)
+  editTagContainerModal.classList.remove("hidden")
+  editTagNameInput.value = obj.name
+}
+
+const updateTagObj = (elementId) => {
+  return {
+    id: elementId,
+    name: editTagNameInput.value
+  }
+}
+
+const editTagObj = (array, elementId) => {
+  return array.map(obj => {
+    if (obj.id === elementId) {
+      return updateTagObj(elementId)
+    }
+    return obj
+  })
+}
+
+editTagNameSaveBtn.addEventListener("click", (e) => {
+  e.preventDefault()
+  if ( editTagNameInput.value !== '' ) {
+    tagTable.innerHTML = ""
+    const elementId = editTagNameSaveBtn.getAttribute("data-id")
+    localTagsArr = editTagObj(localTagsArr, elementId)
+    localStorage.setItem("tagList", JSON.stringify(localTagsArr))
+    showTagsOnDisplay(localTagsArr)
+    editTagContainerModal.classList.add("hidden")
+  }
+  else {
+    errorEditTagMessage.classList.remove("hidden")
+  }
 })
+
+editTagNameCancelBtn.addEventListener("click", (e) => {
+  e.preventDefault()
+  editTagContainerModal.classList.add("hidden")
+})
+
+/************************* REPORT SECTION *******************/ 
+
 
 
 /******************** DOM FUNCTIONS **********************************/
@@ -459,7 +512,7 @@ const showTagsOnDisplay = (array) => {
       <div class="flex justify-between items-center mb-3"> 
         <span class="text-sm bg-[#F4C6D9] text-[#AB0B4F] p-1 rounded">${name}</span> 
         <span class="flex">
-          <a href="#" class="mx-3 py-1 px-2 rounded-full hover:bg-[#1E90FF]"> <img src="assets/images/lapiz.png" alt="pencil drawing" class="w-5"> </a> 
+          <a href="#" onclick='editTagName("${id}")' class="mx-3 py-1 px-2 rounded-full hover:bg-[#1E90FF]"> <img src="assets/images/lapiz.png" alt="pencil drawing" class="w-5"> </a> 
           <a href="#" onclick='deleteTag("${id}")' class="py-1 px-2 rounded-full hover:bg-[#1E90FF]"> <img src="assets/images/tachito1.png" alt="garbage drawing" class="w-5"> </a>
         </span> 
       </div>`
