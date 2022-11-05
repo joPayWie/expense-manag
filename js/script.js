@@ -397,6 +397,10 @@ editTagNameCancelBtn.addEventListener("click", (e) => {
   editTagContainerModal.classList.add("hidden")
 })
 
+/************************* REPORT SECTION *******************/ 
+
+
+
 /******************** DOM FUNCTIONS **********************************/
 // Dom balance variables
 const totalIncomesDom = $("#total-incomes")
