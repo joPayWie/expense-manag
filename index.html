@@ -93,19 +93,19 @@
                 <h2 class="text-stone-800 text-4xl font-bold mb-8"> Balance </h2>
                 <div class="flex justify-between my-3">
                     <div class="text-start text-lg"> Incomes </div>
-                    <div class="text-green-600"> 
+                    <div class="text-green-600">
                         +$<span id="total-incomes">0</span>
                     </div>
                 </div>
                 <div class="flex justify-between my-3">
                     <div class="text-start text-lg"> Outcomes </div>
-                    <div class="text-red-600"> 
-                        -$<span id="total-outcomes">0</span> 
+                    <div class="text-red-600">
+                        -$<span id="total-outcomes">0</span>
                     </div>
                 </div>
                 <div class="flex justify-between my-3">
                     <div class="text-start text-xl"> Total </div>
-                    <div class="font-bold">$                   
+                    <div class="font-bold">$
                         <span id="total-remaining">0</span>
                     </div>
                 </div>
@@ -219,13 +219,42 @@
                 <h4 class="text-xl mt-5 font-extrabold"> Not enough operations </h4>
                 <p class="my-4"> Try by adding operations </p>
             </div>
-            <div id="report-table-container">
-                <!-- HERE GOES THE REPORT TABLE -->
+            <div class="w-full p-4" id="report-table-container">
+                <table class="w-full border-separate md:border-spacing-y-3">
+                    <h4>Summary</h4>
+                    <tbody id="report-obj-table">
+                        <!-- HERE COMES JAVASCRIPT TABLE INJECTED -->
+                    </tbody>
+                    <h4>Total by tag</h4>
+                    <thead id="report-header-tag" class="hidden">
+                        <tr>
+                            <th>Tag</th>
+                            <th>Income</th>
+                            <th>Outcome</th>
+                            <th>Balance</th>
+                        </tr>
+                    </thead>
+                    <tbody id="report-obj-tag">
+                        <!-- HERE COMES JAVASCRIPT TABLE INJECTED -->
+                    </tbody>
+                    <h4>Total by month</h4>
+                    <thead id="report-header-date" class="hidden">
+                        <tr>
+                            <th>Tag</th>
+                            <th>Income</th>
+                            <th>Outcome</th>
+                            <th>Balance</th>
+                        </tr>
+                    </thead>
+                    <tbody id="report-obj-date">
+                        <!-- HERE COMES JAVASCRIPT TABLE INJECTED -->
+                    </tbody>
+                </table>
             </div>
         </div>
     </section>
 
-<!-- New operation modal -->
+    <!-- New operation modal -->
     <div
         class="hidden container-modal bg-[rgba(0,0,0,0.2)] fixed w-full h-full overflow-auto flex justify-center items-center">
         <div class="operation-modal bg-white min-h-fit w-10/12 md:w-1/2 rounded-md m-5 p-8 shadow-md shadow-rose-200">
@@ -237,7 +266,8 @@
                 </div>
                 <div class="flex flex-col">
                     <label for="amount" class="font-bold mt-2"> Amount </label>
-                    <input name="amount" id="amount" class="border-2" type="number" placeholder="Put the amount in positive number">
+                    <input name="amount" id="amount" class="border-2" type="number"
+                        placeholder="Put the amount in positive number">
                 </div>
                 <div class="flex flex-col">
                     <label for="type-modal" class="font-bold mt-2"> Type </label>
@@ -253,25 +283,26 @@
                     </select>
                 </div>
             </form>
-                <div class="flex flex-col">
-                    <label for="date-modal" class="font-bold mt-2"> Date </label>
-                    <input type="date" name="date-modal" id="date-modal" class="border-2">
-                </div>
-                <div class="mt-5 flex justify-end">
-                    <button id="modal-btn-add"
-                        class="m-3 self-start lg:self-end text-white bg-[#E371AF] rounded-md p-3 mt-3 lg:mt-0 hover:bg-[#53AEE5] transition duration-150 hover:ease-in">
-                        Add </button>
-                    <button id="modal-btn-cancel"
-                        class="m-3 self-start lg:self-end text-white bg-red-600 rounded-md p-3 mt-3 lg:mt-0 hover:bg-[#53AEE5] transition duration-150 hover:ease-in ">
-                        Cancel </button>
-                </div>
+            <div class="flex flex-col">
+                <label for="date-modal" class="font-bold mt-2"> Date </label>
+                <input type="date" name="date-modal" id="date-modal" class="border-2">
+            </div>
+            <div class="mt-5 flex justify-end">
+                <button id="modal-btn-add"
+                    class="m-3 self-start lg:self-end text-white bg-[#E371AF] rounded-md p-3 mt-3 lg:mt-0 hover:bg-[#53AEE5] transition duration-150 hover:ease-in">
+                    Add </button>
+                <button id="modal-btn-cancel"
+                    class="m-3 self-start lg:self-end text-white bg-red-600 rounded-md p-3 mt-3 lg:mt-0 hover:bg-[#53AEE5] transition duration-150 hover:ease-in ">
+                    Cancel </button>
+            </div>
         </div>
     </div>
 
-<!-- Edit operation modal -->
-<div
+    <!-- Edit operation modal -->
+    <div
         class="hidden edit-container-modal bg-[rgba(0,0,0,0.2)] fixed w-full h-full overflow-auto flex justify-center items-center">
-        <div class="edit-operation-modal bg-white min-h-fit w-10/12 md:w-1/2 rounded-md m-5 p-8 shadow-md shadow-rose-200">
+        <div
+            class="edit-operation-modal bg-white min-h-fit w-10/12 md:w-1/2 rounded-md m-5 p-8 shadow-md shadow-rose-200">
             <h2 class="text-3xl text-stone-800 font-bold"> Edit operation </h2>
             <form id="">
                 <div class="flex flex-col">
@@ -280,7 +311,8 @@
                 </div>
                 <div class="flex flex-col">
                     <label for="edit-amount" class="font-bold mt-2"> Amount </label>
-                    <input name="edit-amount" id="edit-amount" class="border-2" type="number" placeholder="Put the amount in positive number">
+                    <input name="edit-amount" id="edit-amount" class="border-2" type="number"
+                        placeholder="Put the amount in positive number">
                 </div>
                 <div class="flex flex-col">
                     <label for="edit-type" class="font-bold mt-2"> Type </label>
@@ -296,17 +328,18 @@
                     </select>
                 </div>
             </form>
-                <div class="flex flex-col">
-                    <label for="edit-date" class="font-bold mt-2"> Date </label>
-                    <input type="date" name="edit-date" id="edit-date" class="border-2">
-                </div>
-                <div class="mt-5 flex justify-end">
-                    <button id="edit-save-btn"
-                        class="m-3 self-start lg:self-end text-white bg-[#E371AF] rounded-md p-3 mt-3 lg:mt-0 hover:bg-[#53AEE5] transition duration-150 hover:ease-in">
-                        Save </button>
-                    <button id="edit-cancel-btn" class="m-3 self-start lg:self-end text-white bg-red-600 rounded-md p-3 mt-3 lg:mt-0 hover:bg-[#53AEE5] transition duration-150 hover:ease-in ">
-                        Cancel </button>
-                </div>
+            <div class="flex flex-col">
+                <label for="edit-date" class="font-bold mt-2"> Date </label>
+                <input type="date" name="edit-date" id="edit-date" class="border-2">
+            </div>
+            <div class="mt-5 flex justify-end">
+                <button id="edit-save-btn"
+                    class="m-3 self-start lg:self-end text-white bg-[#E371AF] rounded-md p-3 mt-3 lg:mt-0 hover:bg-[#53AEE5] transition duration-150 hover:ease-in">
+                    Save </button>
+                <button id="edit-cancel-btn"
+                    class="m-3 self-start lg:self-end text-white bg-red-600 rounded-md p-3 mt-3 lg:mt-0 hover:bg-[#53AEE5] transition duration-150 hover:ease-in ">
+                    Cancel </button>
+            </div>
         </div>
     </div>
 
