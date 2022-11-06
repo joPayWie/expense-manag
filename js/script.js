@@ -691,12 +691,21 @@ for (const selection of filterUserSelection) {
 }
 
 // Dom report 
-const summaryTable = $("#summary-table-container")
+const summaryTable = $("#summary-table-container") 
+// testing github
 
 const showSummaryOnDisplay = () => {
   let tagMaxIncome = getObjWithMaxIncomeOrOutcome(calculateReportBalanceByTag(),'income')
   let tagMaxOutcome = getObjWithMaxIncomeOrOutcome(calculateReportBalanceByTag(),'outcome')
   let tagMaxBalance = getTagWithMaxBalance()
+  let monthMaxIncome = getObjWithMaxIncomeOrOutcome(calculateReportBalanceByDate(), 'income')
+  let monthMaxOutcome = getObjWithMaxIncomeOrOutcome(calculateReportBalanceByDate(), 'outcome')
+
+  monthMaxIncome.date = monthMaxIncome.date.split('')
+  monthMaxIncome.date.splice(4, 0, '/')
+  monthMaxOutcome.date = monthMaxOutcome.date.split('')
+  monthMaxOutcome.date.splice(4, 0, '/')
+
   if ( tagMaxIncome.income !== undefined && tagMaxOutcome.outcome !== undefined && tagMaxBalance.name !== undefined ) {
     summaryTable.innerHTML = `
     <tr class="text-start text-sm w-full">
@@ -719,7 +728,22 @@ const showSummaryOnDisplay = () => {
           <span class="text-sm bg-[#F4C6D9] text-[#AB0B4F] p-1 rounded">${tagMaxBalance.name}</span> 
         </td>
         <td class="text-end font-semibold">$${tagMaxBalance.total}</td>
-    </tr>`
+    </tr>
+    <tr class="text-start text-sm w-full">
+        <td class="w-1/3"> Month with highest income </td>
+        <td class="w-1/3 text-end">
+          <span>${monthMaxIncome.date.join('')}</span> 
+        </td>
+        <td class="text-end font-semibold text-green-600">$${monthMaxIncome.income}</td>
+    </tr>
+    <tr class="text-start text-sm w-full">
+        <td class="w-1/3"> Month with highest outcome </td>
+        <td class="w-1/3 text-end">
+          <span>${monthMaxOutcome.date.join('')}</span> 
+        </td>
+        <td class="text-end font-semibold text-red-600">-$${monthMaxOutcome.outcome}</td>
+</tr>
+    `
   }
   else {
     reportTableContainer.classList.add("hidden")
@@ -727,6 +751,7 @@ const showSummaryOnDisplay = () => {
   }  
 }
 
+//  // we have to rethink this to refactorize, this function es un culo.
 
 /************************ Modal *******************************/
 // Modal variables
