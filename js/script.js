@@ -398,6 +398,8 @@ editTagNameCancelBtn.addEventListener("click", (e) => {
 })
 
 /************************* REPORT SECTION *******************/ 
+// calculates "categoría con mayor ganancia" y "categoría con mayor gasto"
+// ( te devuelve el objeto entero y vos en el DOM mostrás solo categoría y el type que estás buscando)
 
 const getObjWithMaxIncomeOrOutcome = (array, typeSearched) => {
   let objWithMaxIncomeOrOutcome = {}
@@ -416,6 +418,8 @@ const getObjWithMaxIncomeOrOutcome = (array, typeSearched) => {
   }
   return objWithMaxIncomeOrOutcome
 }
+
+// for calcullating "categoría con mayor balance"
 
 const filterByTag = (array, tagSearched) => {
   return array.filter(obj => {
@@ -470,6 +474,34 @@ const getTagWithMaxBalance = () => {
 return objWithMaxBalance
 } 
 
+// calculates "mes con mayor ganancia" y "mes con mayor gasto"
+
+
+const formatArrDate = (array) => {
+    array.map(obj => {
+    return obj.date = ((obj.date.split("-").join("")).slice(0,6))
+  })
+  return array
+}
+
+const filterArrByDate = (array, dateSearched) => {
+  return array.filter(obj => {
+    return obj.date === dateSearched
+  })
+}
+
+const calculateReportByDate = (typeSearched) => {
+  let arrTotalsByDate = []
+  let objTotalsByDate = {}
+  let counter = 0
+  let operationsScope = localOperationsArr
+  for ( const obj of formatArrDate(operationsScope) ) {
+    if ( !arrTotalsByDate.includes(obj.date) ) {  // THIS FUNCTION IS NOT FINISHED
+      arrTotalsByDate.push(getObjWithMaxIncomeOrOutcome(filterArrByDate(formatArrDate(operationsScope), obj.date), typeSearched))
+    }
+  }
+  return arrTotalsByDate
+} 
 
 
 /******************** DOM FUNCTIONS **********************************/
