@@ -398,28 +398,27 @@ editTagNameCancelBtn.addEventListener("click", (e) => {
 })
 
 /************************* REPORT SECTION *******************/ 
-// calculates "categoría con mayor ganancia" y "categoría con mayor gasto"
-// ( te devuelve el objeto entero y vos en el DOM mostrás solo categoría y el type que estás buscando)
+// esta función la retoqué, y hay que usarla luego de usar calculateReportBalance() (que devuelve un array con los incomes, outcomes y totals por tag, dado que ayer nos confundimos y en verdad la primera tabla muestra los incomes/outcomes sumados, o sea la tag cuyos incomes o outcomes sumados son más grandes)
 
 const getObjWithMaxIncomeOrOutcome = (array, typeSearched) => {
   let objWithMaxIncomeOrOutcome = {}
   let counter = 0
-  for (const obj of array) {
-    const { type } = obj
+  for ( const obj of array ) {
     let adding = 0
-    if ( type === typeSearched ) {
-      const { amount } = obj
-      adding += amount
-    }
-    if ( adding > counter ) {
-      objWithMaxIncomeOrOutcome = obj
-      counter = adding
+    for ( const key of Object.keys(obj) ) { 
+      if ( key === typeSearched ) { 
+        adding += obj[key]
+      }
+      if ( adding > counter ) {
+        objWithMaxIncomeOrOutcome = obj
+        counter = adding
+      }
     }
   }
   return objWithMaxIncomeOrOutcome
 }
 
-// for calcullating "categoría con mayor balance"
+// Tags
 
 const filterByTag = (array, tagSearched) => {
   return array.filter(obj => {
@@ -449,14 +448,13 @@ const calculateReportBalance = () => {
     }
       arrBalanceByTag.push(objBalanceByTag =  {
       tag: name,
-      incomes: totalIncomes,
-      outcomes: totalOutcomes,
+      income: totalIncomes,
+      outcome: totalOutcomes,
       total: total
       })
   }
   return arrBalanceByTag
 }
-
 
 const getTagWithMaxBalance = () => {
   let objWithMaxBalance = {}
@@ -474,14 +472,13 @@ const getTagWithMaxBalance = () => {
 return objWithMaxBalance
 } 
 
-// calculates "mes con mayor ganancia" y "mes con mayor gasto"
-
-
+// Dates - calculates "mes con mayor ganancia" y "mes con mayor gasto"
 const formatArrDate = (array) => {
-    array.map(obj => {
-    return obj.date = ((obj.date.split("-").join("")).slice(0,6))
-  })
-  return array
+    return array.map(obj => {
+      return {...obj,
+        date: ((obj.date.split("-").join("")).slice(0,6))
+      }
+    })
 }
 
 const filterArrByDate = (array, dateSearched) => {
@@ -490,19 +487,42 @@ const filterArrByDate = (array, dateSearched) => {
   })
 }
 
-const calculateReportByDate = (typeSearched) => {
-  let arrTotalsByDate = []
-  let objTotalsByDate = {}
-  let counter = 0
-  let operationsScope = localOperationsArr
-  for ( const obj of formatArrDate(operationsScope) ) {
-    if ( !arrTotalsByDate.includes(obj.date) ) {  // THIS FUNCTION IS NOT FINISHED
-      arrTotalsByDate.push(getObjWithMaxIncomeOrOutcome(filterArrByDate(formatArrDate(operationsScope), obj.date), typeSearched))
+const calculateReportBalanceByDate = () => {
+  let arrBalanceByDate = []
+  let datesArr = []
+  let objBalanceByDate = {}
+  let totalIncomes = 0
+  let totalOutcomes = 0
+  let total = 0
+  let operationsScope = formatArrDate(localOperationsArr)
+  for ( const { date } of operationsScope )  {
+    if ( !datesArr.includes(date) ) {
+      datesArr.push(date)
     }
   }
-  return arrTotalsByDate
-} 
-
+  for ( const date of datesArr ) {
+    let arrayByDate = filterArrByDate(operationsScope, date)
+    totalIncomes = 0
+    totalOutcomes = 0
+    total = 0 
+    for ( const { amount, type } of arrayByDate ) { 
+      if ( type === 'income' ) {
+        totalIncomes += amount
+      }
+      if ( type === 'outcome' ) {
+        totalOutcomes += amount
+      }
+      total = totalIncomes - totalOutcomes   
+    }
+      arrBalanceByDate.push(objBalanceByDate =  {
+      date: date,
+      income: totalIncomes,
+      outcome: totalOutcomes,
+      total: total
+      })
+  }
+  return arrBalanceByDate
+} // can this function be somehow factorized?? so we can have only one calculateReportBalance function...
 
 /******************** DOM FUNCTIONS **********************************/
 // Dom balance variables
@@ -594,6 +614,7 @@ modalBtnAdd.addEventListener("click", (e) => {
   operationTableContainer.innerHTML = ""
   addNewOperationObject(localOperationsArr, createOperationObject())
   localStorage.setItem("operationsList", JSON.stringify(localOperationsArr))
+  showOperationsOnDisplay(filterOperations())
   refreshBalanceObj(filterOperations())
   saveBalanceObj()
   showTotalsOnDisplay(balanceObj)
@@ -748,6 +769,7 @@ for (const balanceLink of balanceShowLinks) {
     tagSection.classList.add("hidden")
     reportSection.classList.add("hidden")
     hideBurgerMenu()
+    showOperationsOnDisplay(filterOperations())
   })
 }
 
