@@ -420,20 +420,20 @@ const getObjWithMaxIncomeOrOutcome = (array, typeSearched) => {
 
 // Tags
 
-const filterByTag = (array, tagSearched) => {
+const filterArrByTag = (array, tagSearched) => {
   return array.filter(obj => {
     return obj.tag === tagSearched
   })
 }
 
-const calculateReportBalance = () => {
+const calculateReportBalanceByTag = () => {
   let arrBalanceByTag = []
   let objBalanceByTag = {}
   let totalIncomes = 0
   let totalOutcomes = 0
   let total = 0
   for ( const { name } of localTagsArr ) {
-    let arrayByTag = filterByTag(localOperationsArr, name)
+    let arrayByTag = filterArrByTag(localOperationsArr, name)
     totalIncomes = 0
     totalOutcomes = 0
     total = 0 
@@ -459,7 +459,7 @@ const calculateReportBalance = () => {
 const getTagWithMaxBalance = () => {
   let objWithMaxBalance = {}
   let adding = 0
-  for ( const obj of calculateReportBalance() ) {
+  for ( const obj of calculateReportBalanceByTag() ) {
     if ( adding < obj.total ) {
       objWithMaxBalance =  {
         name: obj.tag,
@@ -536,14 +536,40 @@ const showTotalsOnDisplay = (object) => {
   totalRemainingDom.innerHTML = `${object.total}`
 }
 
-// Dom operations variables 
+// Dom operations and report variables 
 const operationTableContainer = $("#operations-object-table")
 const modalBtnAdd = $("#modal-btn-add")
 const noResultContainer = $("#operations-noresult-container")
 const operationHeaderTable = $("#operations-header-table")
 const divTableOperations = $("#div-table-operations")
+const reportTableContainer = $("#report-table-container")
+const noResultReportContainer = $("#report-noresult-container")
 
 // Dom operations functions and events
+
+// Showing or not showing table head
+const noResultsOrResults = () => {
+  if (localOperationsArr.length === 0) {
+    noResultContainer.classList.remove("hidden")
+    noResultReportContainer.classList.remove("hidden")
+    divTableOperations.classList.add("hidden")
+    reportTableContainer.classList.add("hidden")
+  }
+  if ((filterOperations()).length === 0) {
+    noResultContainer.classList.remove("hidden")
+    divTableOperations.classList.add("hidden")
+  }
+  else {
+    noResultContainer.classList.add("hidden")
+    divTableOperations.classList.remove("hidden")
+    operationHeaderTable.classList.remove("md:hidden")
+    operationHeaderTable.classList.add("md:table-header-group")
+    noResultReportContainer.classList.add("hidden")
+    reportTableContainer.classList.remove("hidden")
+    showOperationsOnDisplay(filterOperations())
+  }
+}
+
 const mediumScreen = window.matchMedia("(min-width: 768px)")
 
 const showOperationsOnDisplay = (array) => {
@@ -589,25 +615,6 @@ const showOperationsOnDisplay = (array) => {
   }
 }
 
-
-// Showing or not showing table head
-const noResultsOrResults = () => {
-  if (localOperationsArr.length === 0) {
-    noResultContainer.classList.remove("hidden")
-    divTableOperations.classList.add("hidden")
-  }
-  // else if (filterOperations().length === 0) {
-  //   noResultContainer.classList.remove("hidden")
-  //   divTableOperations.classList.add("hidden")
-  // }
-  else {
-    noResultContainer.classList.add("hidden")
-    divTableOperations.classList.remove("hidden")
-    operationHeaderTable.classList.remove("md:hidden")
-    operationHeaderTable.classList.add("md:table-header-group")
-    showOperationsOnDisplay(filterOperations())
-  }
-}
 
 modalBtnAdd.addEventListener("click", (e) => {
   e.preventDefault()
@@ -661,15 +668,10 @@ addTagBtn.addEventListener("click", () => {
   tagTable.innerHTML = ""
   addNewTagObject(localTagsArr, createTagObject(localTagsArr))
   localStorage.setItem("tagList", JSON.stringify(localTagsArr))
-  // if (!localStorage.getItem("tagList")) {
-  //   localStorage.setItem("tagList", JSON.stringify(localTagsArr))
-  // }
-  // else {
   showTagsOnDisplay(localTagsArr)
   filterTag.innerHTML = `<option value="all">All</option>`
   addTagTypeFilter()
   inputNewTag.value = ""
-  // }
 })
 
 
@@ -682,16 +684,49 @@ filterDate.value = today.getFullYear() + '-' + ('0' + (today.getMonth())).slice(
 
 for (const selection of filterUserSelection) {
   selection.addEventListener("change", () => {
+    noResultsOrResults()
     showOperationsOnDisplay(filterOperations())
     showTotalsOnDisplay(refreshBalanceObj(filterOperations()))
   })
 }
 
 // Dom report 
+const summaryTable = $("#summary-table-container")
 
-const showSummaryOnDisplay = (array) => {
-
+const showSummaryOnDisplay = () => {
+  let tagMaxIncome = getObjWithMaxIncomeOrOutcome(calculateReportBalanceByTag(),'income')
+  let tagMaxOutcome = getObjWithMaxIncomeOrOutcome(calculateReportBalanceByTag(),'outcome')
+  let tagMaxBalance = getTagWithMaxBalance()
+  if ( tagMaxIncome.income !== undefined && tagMaxOutcome.outcome !== undefined && tagMaxBalance.name !== undefined ) {
+    summaryTable.innerHTML = `
+    <tr class="text-start text-sm w-full">
+        <td class="w-1/3"> Tag with highest income </td>
+        <td class="w-1/3 text-end">
+          <span class="text-sm bg-[#F4C6D9] text-[#AB0B4F] p-1 rounded">${tagMaxIncome.tag}</span> 
+        </td>
+        <td class="text-end font-semibold text-green-600">$${tagMaxIncome.income}</td>
+    </tr>
+    <tr class="text-start text-sm w-full">
+        <td class="w-1/3"> Tag with highest outcome </td>
+        <td class="w-1/3 text-end">
+          <span class="text-sm bg-[#F4C6D9] text-[#AB0B4F] p-1 rounded">${tagMaxOutcome.tag}</span> 
+        </td>
+        <td class="text-end font-semibold text-red-600">-$${tagMaxOutcome.outcome}</td>
+    </tr>
+    <tr class="text-start text-sm w-full">
+        <td class="w-1/3"> Tag with highest balance </td>
+        <td class="w-1/3 text-end">
+          <span class="text-sm bg-[#F4C6D9] text-[#AB0B4F] p-1 rounded">${tagMaxBalance.name}</span> 
+        </td>
+        <td class="text-end font-semibold">$${tagMaxBalance.total}</td>
+    </tr>`
+  }
+  else {
+    reportTableContainer.classList.add("hidden")
+    noResultReportContainer.classList.remove("hidden")
+  }  
 }
+
 
 /************************ Modal *******************************/
 // Modal variables
@@ -788,6 +823,7 @@ for (const reportLink of reportShowLinks) {
     balanceSection.classList.add("hidden")
     tagSection.classList.add("hidden")
     hideBurgerMenu()
+    showSummaryOnDisplay()
   })
 }
 

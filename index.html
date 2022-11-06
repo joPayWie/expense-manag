@@ -219,13 +219,15 @@
                 <h4 class="text-xl mt-5 font-extrabold"> Not enough operations </h4>
                 <p class="my-4"> Try by adding operations </p>
             </div>
-            <div class="hidden w-full p-4" id="report-table-container">
-                <table class="w-full border-separate md:border-spacing-y-3">
-                    <h4>Summary</h4>
+            <div  id="report-table-container" class="hidden w-full p-4">
+                <table id="summary-table-container" class="w-full border-separate border-spacing-y-7">
+                    <h4 class="text-lg font-semibold">Summary</h4>
                     <tbody id="report-obj-table">
                         <!-- HERE COMES JAVASCRIPT TABLE INJECTED -->
                     </tbody>
-                    <h4>Total by tag</h4>
+                </table>
+                <table class="w-full border-separate border-spacing-y-7">
+                    <h4 class="text-lg font-semibold">Total by tag</h4>
                     <thead id="report-header-tag" class="hidden">
                         <tr>
                             <th>Tag</th>
@@ -237,7 +239,9 @@
                     <tbody id="report-obj-tag">
                         <!-- HERE COMES JAVASCRIPT TABLE INJECTED -->
                     </tbody>
-                    <h4>Total by month</h4>
+                </table>
+                <table class="w-full border-separate border-spacing-y-7">
+                    <h4 class="text-lg font-semibold">Total by month</h4>
                     <thead id="report-header-date" class="hidden">
                         <tr>
                             <th>Tag</th>
@@ -360,8 +364,6 @@
                 </div>
         </div>
     </div>
-
-
 
     <!-- footer -->
     <footer class="flex flex-row justify-center bg-transparent  lg:justify-end mx-4">
