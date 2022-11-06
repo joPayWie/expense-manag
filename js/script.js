@@ -691,7 +691,8 @@ for (const selection of filterUserSelection) {
 }
 
 // Dom report 
-const summaryTable = $("#summary-table-container")
+const summaryTable = $("#summary-table-container") 
+// testing github
 
 const showSummaryOnDisplay = () => {
   let tagMaxIncome = getObjWithMaxIncomeOrOutcome(calculateReportBalanceByTag(),'income')
@@ -704,7 +705,7 @@ const showSummaryOnDisplay = () => {
   monthMaxIncome.date.splice(4, 0, '/')
   monthMaxOutcome.date = monthMaxOutcome.date.split('')
   monthMaxOutcome.date.splice(4, 0, '/')
-  
+
   if ( tagMaxIncome.income !== undefined && tagMaxOutcome.outcome !== undefined && tagMaxBalance.name !== undefined ) {
     summaryTable.innerHTML = `
     <tr class="text-start text-sm w-full">
