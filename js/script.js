@@ -398,8 +398,131 @@ editTagNameCancelBtn.addEventListener("click", (e) => {
 })
 
 /************************* REPORT SECTION *******************/ 
+// esta función la retoqué, y hay que usarla luego de usar calculateReportBalance() (que devuelve un array con los incomes, outcomes y totals por tag, dado que ayer nos confundimos y en verdad la primera tabla muestra los incomes/outcomes sumados, o sea la tag cuyos incomes o outcomes sumados son más grandes)
 
+const getObjWithMaxIncomeOrOutcome = (array, typeSearched) => {
+  let objWithMaxIncomeOrOutcome = {}
+  let counter = 0
+  for ( const obj of array ) {
+    let adding = 0
+    for ( const key of Object.keys(obj) ) { 
+      if ( key === typeSearched ) { 
+        adding += obj[key]
+      }
+      if ( adding > counter ) {
+        objWithMaxIncomeOrOutcome = obj
+        counter = adding
+      }
+    }
+  }
+  return objWithMaxIncomeOrOutcome
+}
 
+// Tags
+
+const filterByTag = (array, tagSearched) => {
+  return array.filter(obj => {
+    return obj.tag === tagSearched
+  })
+}
+
+const calculateReportBalance = () => {
+  let arrBalanceByTag = []
+  let objBalanceByTag = {}
+  let totalIncomes = 0
+  let totalOutcomes = 0
+  let total = 0
+  for ( const { name } of localTagsArr ) {
+    let arrayByTag = filterByTag(localOperationsArr, name)
+    totalIncomes = 0
+    totalOutcomes = 0
+    total = 0 
+    for ( const { amount, type } of arrayByTag ) { 
+      if ( type === 'income' ) {
+        totalIncomes += amount
+      }
+      if ( type === 'outcome' ) {
+        totalOutcomes += amount
+      }
+      total = totalIncomes - totalOutcomes   
+    }
+      arrBalanceByTag.push(objBalanceByTag =  {
+      tag: name,
+      income: totalIncomes,
+      outcome: totalOutcomes,
+      total: total
+      })
+  }
+  return arrBalanceByTag
+}
+
+const getTagWithMaxBalance = () => {
+  let objWithMaxBalance = {}
+  let adding = 0
+  for ( const obj of calculateReportBalance() ) {
+    if ( adding < obj.total ) {
+      objWithMaxBalance =  {
+        name: obj.tag,
+        total: obj.total
+      }
+      adding = obj.total
+    } 
+   
+  }
+return objWithMaxBalance
+} 
+
+// Dates - calculates "mes con mayor ganancia" y "mes con mayor gasto"
+const formatArrDate = (array) => {
+    return array.map(obj => {
+      return {...obj,
+        date: ((obj.date.split("-").join("")).slice(0,6))
+      }
+    })
+}
+
+const filterArrByDate = (array, dateSearched) => {
+  return array.filter(obj => {
+    return obj.date === dateSearched
+  })
+}
+
+const calculateReportBalanceByDate = () => {
+  let arrBalanceByDate = []
+  let datesArr = []
+  let objBalanceByDate = {}
+  let totalIncomes = 0
+  let totalOutcomes = 0
+  let total = 0
+  let operationsScope = formatArrDate(localOperationsArr)
+  for ( const { date } of operationsScope )  {
+    if ( !datesArr.includes(date) ) {
+      datesArr.push(date)
+    }
+  }
+  for ( const date of datesArr ) {
+    let arrayByDate = filterArrByDate(operationsScope, date)
+    totalIncomes = 0
+    totalOutcomes = 0
+    total = 0 
+    for ( const { amount, type } of arrayByDate ) { 
+      if ( type === 'income' ) {
+        totalIncomes += amount
+      }
+      if ( type === 'outcome' ) {
+        totalOutcomes += amount
+      }
+      total = totalIncomes - totalOutcomes   
+    }
+      arrBalanceByDate.push(objBalanceByDate =  {
+      date: date,
+      income: totalIncomes,
+      outcome: totalOutcomes,
+      total: total
+      })
+  }
+  return arrBalanceByDate
+} // can this function be somehow factorized?? so we can have only one calculateReportBalance function...
 
 /******************** DOM FUNCTIONS **********************************/
 // Dom balance variables
@@ -491,6 +614,7 @@ modalBtnAdd.addEventListener("click", (e) => {
   operationTableContainer.innerHTML = ""
   addNewOperationObject(localOperationsArr, createOperationObject())
   localStorage.setItem("operationsList", JSON.stringify(localOperationsArr))
+  showOperationsOnDisplay(filterOperations())
   refreshBalanceObj(filterOperations())
   saveBalanceObj()
   showTotalsOnDisplay(balanceObj)
@@ -561,6 +685,12 @@ for (const selection of filterUserSelection) {
     showOperationsOnDisplay(filterOperations())
     showTotalsOnDisplay(refreshBalanceObj(filterOperations()))
   })
+}
+
+// Dom report 
+
+const showSummaryOnDisplay = (array) => {
+
 }
 
 /************************ Modal *******************************/
@@ -639,6 +769,7 @@ for (const balanceLink of balanceShowLinks) {
     tagSection.classList.add("hidden")
     reportSection.classList.add("hidden")
     hideBurgerMenu()
+    showOperationsOnDisplay(filterOperations())
   })
 }
 
