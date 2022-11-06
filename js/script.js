@@ -379,7 +379,7 @@ const editTagObj = (array, elementId) => {
 
 editTagNameSaveBtn.addEventListener("click", (e) => {
   e.preventDefault()
-  if ( editTagNameInput.value !== '' ) {
+  if (editTagNameInput.value !== '') {
     tagTable.innerHTML = ""
     const elementId = editTagNameSaveBtn.getAttribute("data-id")
     localTagsArr = editTagObj(localTagsArr, elementId)
@@ -397,19 +397,19 @@ editTagNameCancelBtn.addEventListener("click", (e) => {
   editTagContainerModal.classList.add("hidden")
 })
 
-/************************* REPORT SECTION *******************/ 
+/************************* REPORT SECTION *******************/
 // esta función la retoqué, y hay que usarla luego de usar calculateReportBalance() (que devuelve un array con los incomes, outcomes y totals por tag, dado que ayer nos confundimos y en verdad la primera tabla muestra los incomes/outcomes sumados, o sea la tag cuyos incomes o outcomes sumados son más grandes)
 
 const getObjWithMaxIncomeOrOutcome = (array, typeSearched) => {
   let objWithMaxIncomeOrOutcome = {}
   let counter = 0
-  for ( const obj of array ) {
+  for (const obj of array) {
     let adding = 0
-    for ( const key of Object.keys(obj) ) { 
-      if ( key === typeSearched ) { 
+    for (const key of Object.keys(obj)) {
+      if (key === typeSearched) {
         adding += obj[key]
       }
-      if ( adding > counter ) {
+      if (adding > counter) {
         objWithMaxIncomeOrOutcome = obj
         counter = adding
       }
@@ -432,26 +432,26 @@ const calculateReportBalanceByTag = () => {
   let totalIncomes = 0
   let totalOutcomes = 0
   let total = 0
-  for ( const { name } of localTagsArr ) {
+  for (const { name } of localTagsArr) {
     let arrayByTag = filterArrByTag(localOperationsArr, name)
     totalIncomes = 0
     totalOutcomes = 0
-    total = 0 
-    for ( const { amount, type } of arrayByTag ) { 
-      if ( type === 'income' ) {
+    total = 0
+    for (const { amount, type } of arrayByTag) {
+      if (type === 'income') {
         totalIncomes += amount
       }
-      if ( type === 'outcome' ) {
+      if (type === 'outcome') {
         totalOutcomes += amount
       }
-      total = totalIncomes - totalOutcomes   
+      total = totalIncomes - totalOutcomes
     }
-      arrBalanceByTag.push(objBalanceByTag =  {
+    arrBalanceByTag.push(objBalanceByTag = {
       tag: name,
       income: totalIncomes,
       outcome: totalOutcomes,
       total: total
-      })
+    })
   }
   return arrBalanceByTag
 }
@@ -459,26 +459,27 @@ const calculateReportBalanceByTag = () => {
 const getTagWithMaxBalance = () => {
   let objWithMaxBalance = {}
   let adding = 0
-  for ( const obj of calculateReportBalanceByTag() ) {
-    if ( adding < obj.total ) {
-      objWithMaxBalance =  {
+  for (const obj of calculateReportBalanceByTag()) {
+    if (adding < obj.total) {
+      objWithMaxBalance = {
         name: obj.tag,
         total: obj.total
       }
       adding = obj.total
-    } 
-   
+    }
+
   }
-return objWithMaxBalance
-} 
+  return objWithMaxBalance
+}
 
 // Dates - calculates "mes con mayor ganancia" y "mes con mayor gasto"
 const formatArrDate = (array) => {
-    return array.map(obj => {
-      return {...obj,
-        date: ((obj.date.split("-").join("")).slice(0,6))
-      }
-    })
+  return array.map(obj => {
+    return {
+      ...obj,
+      date: ((obj.date.split("-").join("")).slice(0, 6))
+    }
+  })
 }
 
 const filterArrByDate = (array, dateSearched) => {
@@ -495,31 +496,31 @@ const calculateReportBalanceByDate = () => {
   let totalOutcomes = 0
   let total = 0
   let operationsScope = formatArrDate(localOperationsArr)
-  for ( const { date } of operationsScope )  {
-    if ( !datesArr.includes(date) ) {
+  for (const { date } of operationsScope) {
+    if (!datesArr.includes(date)) {
       datesArr.push(date)
     }
   }
-  for ( const date of datesArr ) {
+  for (const date of datesArr) {
     let arrayByDate = filterArrByDate(operationsScope, date)
     totalIncomes = 0
     totalOutcomes = 0
-    total = 0 
-    for ( const { amount, type } of arrayByDate ) { 
-      if ( type === 'income' ) {
+    total = 0
+    for (const { amount, type } of arrayByDate) {
+      if (type === 'income') {
         totalIncomes += amount
       }
-      if ( type === 'outcome' ) {
+      if (type === 'outcome') {
         totalOutcomes += amount
       }
-      total = totalIncomes - totalOutcomes   
+      total = totalIncomes - totalOutcomes
     }
-      arrBalanceByDate.push(objBalanceByDate =  {
+    arrBalanceByDate.push(objBalanceByDate = {
       date: date,
       income: totalIncomes,
       outcome: totalOutcomes,
       total: total
-      })
+    })
   }
   return arrBalanceByDate
 } // can this function be somehow factorized?? so we can have only one calculateReportBalance function...
@@ -691,22 +692,43 @@ for (const selection of filterUserSelection) {
 }
 
 // Dom report 
-const summaryTable = $("#summary-table-container") 
-// testing github
+const summaryTable = $("#summary-table-container")
+const totalByTagTable = $("#total-by-tag-table")
+const totalByMonthTable = $("#total-by-month-table")
 
 const showSummaryOnDisplay = () => {
-  let tagMaxIncome = getObjWithMaxIncomeOrOutcome(calculateReportBalanceByTag(),'income')
-  let tagMaxOutcome = getObjWithMaxIncomeOrOutcome(calculateReportBalanceByTag(),'outcome')
+  let tagMaxIncome = getObjWithMaxIncomeOrOutcome(calculateReportBalanceByTag(), 'income')
+  let tagMaxOutcome = getObjWithMaxIncomeOrOutcome(calculateReportBalanceByTag(), 'outcome')
   let tagMaxBalance = getTagWithMaxBalance()
   let monthMaxIncome = getObjWithMaxIncomeOrOutcome(calculateReportBalanceByDate(), 'income')
   let monthMaxOutcome = getObjWithMaxIncomeOrOutcome(calculateReportBalanceByDate(), 'outcome')
+  let arrTotalsByTag = calculateReportBalanceByTag()
+  let arrTotalsByDate = calculateReportBalanceByDate()
 
   monthMaxIncome.date = monthMaxIncome.date.split('')
   monthMaxIncome.date.splice(4, 0, '/')
   monthMaxOutcome.date = monthMaxOutcome.date.split('')
   monthMaxOutcome.date.splice(4, 0, '/')
 
-  if ( tagMaxIncome.income !== undefined && tagMaxOutcome.outcome !== undefined && tagMaxBalance.name !== undefined ) {
+  if (tagMaxIncome.income !== undefined && tagMaxOutcome.outcome !== undefined && tagMaxBalance.name !== undefined) {
+    totalByTagTable.innerHTML = `
+    <thead id="report-header-date" class="">
+    <tr>
+        <th>Tag</th>
+        <th>Income</th>
+        <th>Outcome</th>
+        <th>Balance</th>
+    </tr>
+    </thead>`
+    totalByMonthTable.innerHTML = `
+    <thead id="report-header-date" class="">
+    <tr>
+        <th>Month</th>
+        <th>Income</th>
+        <th>Outcome</th>
+        <th>Balance</th>
+    </tr>
+    </thead>`
     summaryTable.innerHTML = `
     <tr class="text-start text-sm w-full">
         <td class="w-1/3"> Tag with highest income </td>
@@ -744,14 +766,40 @@ const showSummaryOnDisplay = () => {
         <td class="text-end font-semibold text-red-600">-$${monthMaxOutcome.outcome}</td>
 </tr>
     `
+
+    for (const obj of arrTotalsByTag) {
+      totalByTagTable.innerHTML += `     
+    <tr class="text-start text-sm w-full">
+    <td class="w-1/3 text-start">
+          <span class="text-sm bg-[#F4C6D9] text-[#AB0B4F] p-1 rounded">${obj.tag}</span> 
+        </td>
+    <td class="text-center font-semibold text-green-600"> $${obj.income} </td>
+    <td class="text-center font-semibold text-red-600">-$${obj.outcome}</td>
+    <td class="text-center font-semibold">${obj.total}</td>
+    </tr> `
+    }
+
+    for (const obj of arrTotalsByDate) {
+      obj.date = obj.date.split('')
+      obj.date.splice(4, 0, '/')
+
+      totalByMonthTable.innerHTML += `     
+      <tr class="text-start text-sm w-full">
+      <td class="w-1/3"> ${obj.date.join('')} </td>
+      <td class="text-center font-semibold text-green-600"> $${obj.income} </td>
+      <td class="text-center font-semibold text-red-600">-$${obj.outcome}</td>
+      <td class="text-center font-semibold">${obj.total}</td>
+      </tr> `
+    }
   }
   else {
     reportTableContainer.classList.add("hidden")
     noResultReportContainer.classList.remove("hidden")
-  }  
+  }
 }
 
-//  // we have to rethink this to refactorize, this function es un culo.
+//  // we have to rethink this to refactorize, this function es un culo. 
+//and continua siendolo ahr 
 
 /************************ Modal *******************************/
 // Modal variables
