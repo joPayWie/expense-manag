@@ -268,11 +268,13 @@
                     <label for="description" class="font-bold mt-2"> Description </label>
                     <input name="description" id="description" class="border-2" type="text" maxlength="16">
                 </div>
+                <span class="operation-modal-error-description hidden text-red-600 text-xs ">Oops! Please enter a description to continue</span>
                 <div class="flex flex-col">
                     <label for="amount" class="font-bold mt-2"> Amount </label>
                     <input name="amount" id="amount" class="border-2" type="number"
                         placeholder="Put the amount in positive number">
                 </div>
+                <span class="operation-modal-error-amount hidden text-red-600 text-xs ">Oops! Please enter a amount to continue</span>
                 <div class="flex flex-col">
                     <label for="type-modal" class="font-bold mt-2"> Type </label>
                     <select name="type-modal" id="type-modal" class="border-2">
@@ -312,6 +314,7 @@
                     <label for="edit-description" class="font-bold mt-2"> Description </label>
                     <input name="edit-description" id="edit-description" class="border-2" type="text" maxlength="16">
                 </div>
+                <span class="edit-modal-error hidden text-red-600 text-xs ">Oops! Please enter a description to continue</span>
                 <div class="flex flex-col">
                     <label for="edit-amount" class="font-bold mt-2"> Amount </label>
                     <input name="edit-amount" id="edit-amount" class="border-2" type="number"
