@@ -344,6 +344,7 @@ editSaveBtn.addEventListener("click", (e) => {
   refreshBalanceObj(filterOperations())
   saveBalanceObj()
   showTotalsOnDisplay(balanceObj)
+  showSummaryOnDisplay()
   editContainerModal.classList.add("hidden")
 })
 
@@ -695,12 +696,17 @@ const showSummaryOnDisplay = () => {
   let arrTotalsByTag = calculateReportBalanceByTag()
   let arrTotalsByDate = calculateReportBalanceByDate()
 
-  monthMaxIncome.date = monthMaxIncome.date.split('')
-  monthMaxIncome.date.splice(4, 0, '/')
-  monthMaxOutcome.date = monthMaxOutcome.date.split('')
-  monthMaxOutcome.date.splice(4, 0, '/')
+  
+  if(Object.entries(getObjWithMaxIncomeOrOutcome(calculateReportBalanceByDate(), 'income')).length !== 0 && Object.entries(getObjWithMaxIncomeOrOutcome(calculateReportBalanceByDate(), 'outcome')).length !== 0){
+    monthMaxIncome.date = monthMaxIncome.date.split('')
+    monthMaxIncome.date.splice(4, 0, '/')
+    monthMaxOutcome.date = monthMaxOutcome.date.split('')
+    monthMaxOutcome.date.splice(4, 0, '/')
+  }
 
   if (tagMaxIncome.income !== undefined && tagMaxOutcome.outcome !== undefined && tagMaxBalance.name !== undefined) {
+    reportTableContainer.classList.remove("hidden")
+    noResultReportContainer.classList.add("hidden")
     totalByTagTable.innerHTML = `
     <thead id="report-header-date" class="">
     <tr>
