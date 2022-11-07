@@ -892,6 +892,7 @@ for (const tagLink of tagShowLinks) {
 
 for (const reportLink of reportShowLinks) {
   reportLink.addEventListener("click", () => {
+    errorMessage.classList.add("hidden")
     reportSection.classList.remove("hidden")
     balanceSection.classList.add("hidden")
     tagSection.classList.add("hidden")
