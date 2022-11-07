@@ -296,8 +296,10 @@ const editDate = $("#edit-date")
 const editSaveBtn = $("#edit-save-btn")
 const editCancelBtn = $("#edit-cancel-btn")
 const editModalBtn = $$(".edit-operation-btn")
+const editModalError = $(".edit-modal-error")
 
 const modalEdit = (elementId) => {
+  editModalError.classList.add("hidden")
   editSaveBtn.setAttribute("data-id", elementId)
   addTagModal(editTag)
   let obj = findObj(localOperationsArr, elementId)
@@ -330,6 +332,9 @@ const editOperationObj = (array, elementId) => {
 }
 
 editSaveBtn.addEventListener("click", (e) => {
+  if (editDescription.value === ""){
+    return editModalError.classList.remove("hidden")
+  }
   e.preventDefault()
   operationTableContainer.innerHTML = ""
   const elementId = editSaveBtn.getAttribute("data-id")
@@ -539,7 +544,6 @@ const showTotalsOnDisplay = (object) => {
 
 // Dom operations and report variables 
 const operationTableContainer = $("#operations-object-table")
-const modalBtnAdd = $("#modal-btn-add")
 const noResultContainer = $("#operations-noresult-container")
 const operationHeaderTable = $("#operations-header-table")
 const divTableOperations = $("#div-table-operations")
@@ -615,20 +619,6 @@ const showOperationsOnDisplay = (array) => {
     }
   }
 }
-
-
-modalBtnAdd.addEventListener("click", (e) => {
-  e.preventDefault()
-  operationTableContainer.innerHTML = ""
-  addNewOperationObject(localOperationsArr, createOperationObject())
-  localStorage.setItem("operationsList", JSON.stringify(localOperationsArr))
-  showOperationsOnDisplay(filterOperations())
-  refreshBalanceObj(filterOperations())
-  saveBalanceObj()
-  showTotalsOnDisplay(balanceObj)
-  noResultsOrResults()
-  modalContainer.classList.add("hidden")
-})
 
 
 // Dom tags variables
@@ -804,10 +794,12 @@ const showSummaryOnDisplay = () => {
 /************************ Modal *******************************/
 // Modal variables
 const operationBtn = $("#operation-btn")
-const addBtnModal = $("#modal-btn-add")
+const modalBtnAdd = $("#modal-btn-add")
 const cancelBtnModal = $("#modal-btn-cancel")
 const modalContainer = $(".container-modal")
 const operationModalForm = $("#operation-modal-form")
+const modalErrorDescription = $(".operation-modal-error-description")
+const modalErrorAmount = $(".operation-modal-error-amount")
 
 // Modal tags
 const addTagModal = (selector) => {
@@ -820,6 +812,8 @@ const addTagModal = (selector) => {
 
 // Modal event 
 operationBtn.addEventListener("click", () => {
+  modalErrorDescription.classList.add("hidden")
+  modalErrorAmount.classList.add("hidden")
   modalContainer.classList.remove("hidden")
   operationModalForm.reset()
   addTagModal(tagModal)
@@ -827,6 +821,31 @@ operationBtn.addEventListener("click", () => {
 
 cancelBtnModal.addEventListener("click", (event) => {
   event.preventDefault()
+  modalContainer.classList.add("hidden")
+})
+
+modalBtnAdd.addEventListener("click", (e) => {
+  modalErrorDescription.classList.add("hidden")
+  modalErrorAmount.classList.add("hidden")
+    if(descriptionInput.value === "" && amountInput.value === ""){
+      modalErrorDescription.classList.remove("hidden") 
+      return modalErrorAmount.classList.remove("hidden")
+    }
+    if (descriptionInput.value === "") {
+      return modalErrorDescription.classList.remove("hidden")
+    }
+    if (amountInput.value === "") {
+      return modalErrorAmount.classList.remove("hidden")
+    }
+  e.preventDefault()
+  operationTableContainer.innerHTML = ""
+  addNewOperationObject(localOperationsArr, createOperationObject())
+  localStorage.setItem("operationsList", JSON.stringify(localOperationsArr))
+  showOperationsOnDisplay(filterOperations())
+  refreshBalanceObj(filterOperations())
+  saveBalanceObj()
+  showTotalsOnDisplay(balanceObj)
+  noResultsOrResults()
   modalContainer.classList.add("hidden")
 })
 
