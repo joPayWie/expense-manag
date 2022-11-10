@@ -172,14 +172,14 @@ const filterTag = $("#filter-tag")
 const filterSort = $("#sort-by")
 
 
-const filterFunction = (array, key, value) => {
+const filterBy = (array, key, value) => {
   const filterArr = array.filter(obj => {
     return obj[key] === value
   })
   return filterArr
 }
 
-const filterDateFunction = (array) => {
+const filterByDate = (array) => {
   return array.filter(obj => {
     return Number(obj.date.split("-").join("")) >= Number(filterDate.value.split("-").join(""))
   })
@@ -234,13 +234,13 @@ const filterOperations = () => {
   let operationsScope = localOperationsArr
 
   if (filterType.value !== 'all') {
-    operationsScope = filterFunction(operationsScope, 'type', filterType.value)
+    operationsScope = filterBy(operationsScope, 'type', filterType.value)
   }
   if (filterTag.value !== 'all') {
-    operationsScope = filterFunction(operationsScope, 'tag', filterTag.value)
+    operationsScope = filterBy(operationsScope, 'tag', filterTag.value)
   }
 
-  operationsScope = filterDateFunction(operationsScope)
+  operationsScope = filterByDate(operationsScope)
 
   if (filterSort.value === "a-z") {
     operationsScope = filterAToZ(operationsScope)
