@@ -26,11 +26,11 @@
     <!-- header -->
     <header class="flex flex-row justify-between w-full bg-[#FAF7CC] px-5 h-24 items-center shadow-lg">
         <!-- logo  -->
-        <a href="index.html" id="logo-home">
+        <a href="index.html">
             <img src="assets/images/cartelbilletera2TP.png" aria-label="my expense manager logo"
                 alt="my expense manager logo" class="hidden md:block h-20 my-5">
         </a>
-        <a href="index.html" id="logo-mobile-home">
+        <a href="index.html">
             <img src="assets/images/cartelbilleteraTPmobile.png" aria-label="my expense manager logo"
                 alt="my expense manager logo" class="md:hidden h-20 my-5">
         </a>
@@ -45,8 +45,7 @@
                 <li class="tag-show-link mx-6 hover:text-[#F499CA] transition duration-150 hover:ease-in"><a href="#">
                         <i class="fa-solid fa-tag"></i>
                         Tags </a></li>
-                <li class="report-show-link mx-6 hover:text-[#F499CA] transition duration-150 hover:ease-in"><a href="#"
-                        id="report-link">
+                <li class="report-show-link mx-6 hover:text-[#F499CA] transition duration-150 hover:ease-in"><a href="#">
                         <i class="fa-solid fa-chart-pie"></i>
                         Report </a></li>
             </ul>
@@ -159,7 +158,8 @@
                 <h3 class="text-3xl text-stone-800 font-bold"> Operations </h3>
                 <button id="operation-btn"
                     class="self-start lg:self-end text-white bg-[#F499CA] rounded-md p-3 mt-3 lg:mt-0 hover:bg-[#53AEE5] transition duration-150 hover:ease-in">
-                    + New operation </button>
+                    + New operation 
+                </button>
             </div>
             <div id="operations-noresult-container"
                 class="flex flex-col justify-center items-center lg:mt-7 bg-[url('assets/images/hojita7.png')] bg-no-repeat bg-cover md:bg-[url('assets/images/hojita6.png')]">
@@ -167,7 +167,7 @@
                 <h4 class="mt-5 font-extrabold text-xl"> No results </h4>
                 <p class="my-4"> Change filters or add operations </p>
             </div>
-            <div class="w-full p-4" id="div-table-operations">
+            <div class="w-full p-4 max-h-screen overflow-y-scroll" id="div-table-operations">
                 <table class="w-full border-separate md:border-spacing-y-3">
                     <thead id="operations-header-table" class="hidden">
                         <tr>
@@ -197,7 +197,8 @@
                     <input type="text" id="tag-name" class="border-2 w-full" maxlength="12">
                     <button id="tag-btn"
                         class="justify-self-center bg-[#E371AF] font-semibold p-2 ml-2 rounded-md hover:bg-[#45C9F9] hover:text-white transition duration-150 hover:ease-in">
-                        Add </button>
+                        Add 
+                    </button>
                 </div>
                 <span class="span-message hidden text-red-600 text-xs ">Oops! Please enter a tag name to continue</span>
                 <div class="flex flex-col mt-5" id="tag-list">
@@ -207,10 +208,27 @@
         </div>
     </section>
 
+    <!-- Delete tag advertising modal -->
+    <div id="delete-tag-modal"
+    class="hidden bg-[rgba(0,0,0,0.2)] fixed w-full h-full overflow-auto flex justify-center items-center">
+    <div class="bg-white min-h-fit w-10/12 md:w-1/3 rounded-md m-3 p-4 shadow-md shadow-rose-200">
+        <p class="text-stone-800 mb-4"> If you remove this tag, <strong>all associated operations will be deleted</strong>, do you want to continue? </p>
+            <div class="mt-5 flex justify-end">
+                <button id="delete-tag-accept-btn"
+                    class="m-3 self-start lg:self-end text-white bg-[#E371AF] rounded-md p-3 mt-3 lg:mt-0 hover:bg-[#53AEE5] transition duration-150 hover:ease-in">
+                    Accept 
+                </button>
+                <button id="delete-tag-cancel-btn" class="m-3 self-start lg:self-end text-white bg-red-600 rounded-md p-3 mt-3 lg:mt-0 hover:bg-[#53AEE5] transition duration-150 hover:ease-in ">
+                    Cancel 
+                </button>
+            </div>
+    </div>
+</div>
+
     <!-- Report section -->
     <section id="report-section" class="hidden flex justify-center items-center w-full">
         <div class="bg-white rounded-md m-5 w-10/12 lg:w-6/12 min-h-min shadow-md" id="report-container">
-            <div class="flex flex-col lg:flex-row lg:justify-between p-8">
+            <div class="flex flex-col lg:flex-row lg:justify-between p-4 md:p-8 pb-3">
                 <h3 class="text-3xl font-bold text-stone-800"> Report </h3>
             </div>
             <div id="report-noresult-container"
@@ -219,35 +237,69 @@
                 <h4 class="text-xl mt-5 font-extrabold"> Not enough operations </h4>
                 <p class="my-4"> Try by adding operations </p>
             </div>
-            <div  id="report-table-container" class="hidden w-full p-4">
-                <table id="summary-table-container" class="w-full border-separate border-spacing-y-7">
-                    <h4 class="text-lg font-semibold">Summary</h4>
-                    <tbody id="report-obj-table">
-                        <!-- HERE COMES JAVASCRIPT TABLE INJECTED -->
+            <div id="report-table-container" class="hidden w-full p-4 md:p-8">
+                <h4 class="text-lg font-semibold">Summary</h4>
+                <table class="w-full border-separate border-spacing-y-7">
+                    <tbody>
+                        <tr class="text-start text-sm w-full">
+                            <td class="w-1/3"> Tag with highest income </td>
+                            <td class="w-1/3 text-end">
+                              <span id="tag-max-income" class="text-sm bg-[#F4C6D9] text-[#AB0B4F] p-1 rounded"></span> 
+                            </td>
+                            <td id="tag-max-income-amount" class="text-end font-semibold text-green-600"></td>
+                        </tr>
+                        <tr class="text-start text-sm w-full">
+                            <td class="w-1/3"> Tag with highest outcome </td>
+                            <td class="w-1/3 text-end">
+                              <span id="tag-max-outcome" class="text-sm bg-[#F4C6D9] text-[#AB0B4F] p-1 rounded"></span> 
+                            </td>
+                            <td id="tag-max-outcome-amount" class="text-end font-semibold text-red-600"></td>
+                        </tr>
+                        <tr class="text-start text-sm w-full">
+                            <td class="w-1/3"> Tag with highest balance </td>
+                            <td class="w-1/3 text-end">
+                              <span id="tag-max-balance" class="text-sm bg-[#F4C6D9] text-[#AB0B4F] p-1 rounded"></span> 
+                            </td>
+                            <td id="tag-max-balance-amount" class="text-end font-semibold"></td>
+                        </tr>
+                        <tr class="text-start text-sm w-full">
+                            <td class="w-1/3"> Month with highest income </td>
+                            <td class="w-1/3 text-end">
+                              <span id="month-max-income"></span> 
+                            </td>
+                            <td id="month-max-income-amount" class="text-end font-semibold text-green-600"></td>
+                        </tr>
+                        <tr class="text-start text-sm w-full">
+                            <td class="w-1/3"> Month with highest outcome </td>
+                            <td class="w-1/3 text-end">
+                              <span id="month-max-outcome"></span> 
+                            </td>
+                            <td id="month-max-outcome-amount" class="text-end font-semibold text-red-600"></td>
+                        </tr>
                     </tbody>
                 </table>
+                <h4 class="text-lg font-semibold">Total by tag</h4>
                 <table id="total-by-tag-table" class="w-full border-separate border-spacing-y-7">
-                    <h4 class="text-lg font-semibold">Total by tag</h4>
                     <thead id="report-header-tag" class="">
                         <tr>
-                            <th>Tag</th>
-                            <th>Income</th>
-                            <th>Outcome</th>
-                            <th>Balance</th>
+                            <th class="text-start">Tag</th>
+                            <th class="text-xs md:text-base text-end">Income</th>
+                            <th class="text-xs md:text-base text-end">Outcome</th>
+                            <th class="text-xs md:text-base text-end">Balance</th>
                         </tr>
                     </thead>
                     <tbody id="report-obj-tag">
                         <!-- HERE COMES JAVASCRIPT TABLE INJECTED -->
                     </tbody>
                 </table>
+                <h4 class="text-lg font-semibold">Total by month</h4>
                 <table id="total-by-month-table" class="w-full border-separate border-spacing-y-7">
-                    <h4 class="text-lg font-semibold">Total by month</h4>
                     <thead id="report-header-date" class="">
                         <tr>
-                            <th>Month</th>
-                            <th>Income</th>
-                            <th>Outcome</th>
-                            <th>Balance</th>
+                            <th class="text-start">Month</th>
+                            <th class="text-xs md:text-base text-end">Income</th>
+                            <th class="text-xs md:text-base text-end">Outcome</th>
+                            <th class="text-xs md:text-base text-end">Balance</th>
                         </tr>
                     </thead>
                     <tbody id="report-obj-date">
@@ -274,7 +326,7 @@
                     <input name="amount" id="amount" class="border-2" type="number"
                         placeholder="Put the amount in positive number">
                 </div>
-                <span class="operation-modal-error-amount hidden text-red-600 text-xs ">Oops! Please enter a amount to continue</span>
+                <span class="operation-modal-error-amount hidden text-red-600 text-xs ">Oops! Please enter an amount to continue</span>
                 <div class="flex flex-col">
                     <label for="type-modal" class="font-bold mt-2"> Type </label>
                     <select name="type-modal" id="type-modal" class="border-2">
@@ -341,10 +393,12 @@
             <div class="mt-5 flex justify-end">
                 <button id="edit-save-btn"
                     class="m-3 self-start lg:self-end text-white bg-[#E371AF] rounded-md p-3 mt-3 lg:mt-0 hover:bg-[#53AEE5] transition duration-150 hover:ease-in">
-                    Save </button>
+                    Save 
+                </button>
                 <button id="edit-cancel-btn"
                     class="m-3 self-start lg:self-end text-white bg-red-600 rounded-md p-3 mt-3 lg:mt-0 hover:bg-[#53AEE5] transition duration-150 hover:ease-in ">
-                    Cancel </button>
+                    Cancel 
+                </button>
             </div>
         </div>
     </div>

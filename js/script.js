@@ -3,7 +3,12 @@
 const $ = (selector) => document.querySelector(selector)
 const $$ = (selector) => document.querySelectorAll(selector)
 
-/********************************* DATA FUNCTIONS  *****************/
+/*
+------------------------------------------------------------------------
+DATA FUNCTIONS
+------------------------------------------------------------------------ 
+*/
+
 // Data variables
 let tags = [
   {
@@ -41,7 +46,11 @@ let balanceObj = {
   outcomes: 0
 }
 
-// General functions
+/*
+------------------------------------------------------------------------
+General data functions
+------------------------------------------------------------------------ 
+*/
 const getRandomCharacter = (array) => {
   let randomIndex = Math.floor(Math.random() * array.length)
   let randomSelection = array[randomIndex];
@@ -63,10 +72,19 @@ const getRandomId = (array) => {
   return randomIdArr.join('')
 }
 
-/*********** Operation section ***********/
+// localStorage functions
+const setItemInLocal = (key, array) => {
+  localStorage.setItem(key, JSON.stringify(array))
+}
+
+/*
+------------------------------------------------------------------------
+Operations data functionality
+------------------------------------------------------------------------ 
+*/
 // Local storage for operations list
 if (!localStorage.getItem("operationsList")) {
-  localStorage.setItem("operationsList", JSON.stringify(operations))
+  setItemInLocal("operationsList", operations)
 }
 
 // Input variables for operations
@@ -87,11 +105,11 @@ const formatDate = (date) => {
 }
 
 // Create operation
-const addNewOperationObject = (array, object) => {
+const addNewOperationObject = (operationsArr, operation) => {
   if (descriptionInput.value === '' || amountInput.value === "" || typeModal.value === "All" || tagModal.value === "All") {
-    return array
+    return operationsArr
   }
-  return array.push(object)
+  return operationsArr.push(operation)
 }
 
 const createOperationObject = () => {
@@ -105,49 +123,57 @@ const createOperationObject = () => {
   }
 }
 
-/************** Tags section **************/
+/*
+------------------------------------------------------------------------
+Tags data functionality
+------------------------------------------------------------------------ 
+*/
 // Input variables for tags
 const inputNewTag = $("#tag-name")
 const errorMessage = $(".span-message")
 
 // Local storage for tags list
 if (!localStorage.getItem("tagList")) {
-  localStorage.setItem("tagList", JSON.stringify(tags))
+  setItemInLocal("tagList", tags)
 }
 
 // Create tag
-const addNewTagObject = (array, object) => {
+const addNewTagObject = (tagArr, tag) => {
   if (inputNewTag.value === '') {
-    return array
+    return tagArr
   }
-  return array.push(object)
+  return tagArr.push(tag)
 }
 
 const createTagObject = () => {
   newObj = {}
   newObj.id = getRandomId(charactersForId)
   if (inputNewTag.value === '') {
-    return errorMessage.classList.remove("hidden")
+    return unhideElement(errorMessage)
   }
   else {
     newObj.name = inputNewTag.value
-    errorMessage.classList.add("hidden")
+    hideElement(errorMessage)
     return newObj
   }
 }
 
-/************** Balance section *******************/
+/*
+------------------------------------------------------------------------
+Balance data functionality
+------------------------------------------------------------------------ 
+*/
 if (!localStorage.getItem("balanceObj")) {
-  localStorage.setItem("balanceObj", JSON.stringify(balanceObj))
+  setItemInLocal("balanceObj", balanceObj)
 }
 
 const localBalanceObj = JSON.parse(localStorage.getItem("balanceObj"))
 
-const refreshBalanceObj = (array) => {
+const refreshBalanceObj = (operationsArr) => {
   balanceObj.incomes = 0
   balanceObj.outcomes = 0
   balanceObj.total = 0
-  for (const { amount, type } of array) {
+  for (const { amount, type } of operationsArr) {
     if (type === 'income') {
       balanceObj.incomes += amount
     }
@@ -161,10 +187,14 @@ const refreshBalanceObj = (array) => {
 
 const saveBalanceObj = () => {
   balanceObj = refreshBalanceObj(localOperationsArr)
-  return localStorage.setItem("balanceObj", JSON.stringify(balanceObj))
+  return setItemInLocal("balanceObj", balanceObj)
 }
 
-/*************** filter functions *****************/
+/*
+------------------------------------------------------------------------
+Filters functionality
+------------------------------------------------------------------------ 
+*/
 // Filter variables
 const filterDate = $("#filter-date")
 const filterType = $("#filter-type")
@@ -172,29 +202,29 @@ const filterTag = $("#filter-tag")
 const filterSort = $("#sort-by")
 
 
-const filterBy = (array, key, value) => {
-  const filterArr = array.filter(obj => {
-    return obj[key] === value
+const filterBy = (operationsArr, key, value) => {
+  const filterArr = operationsArr.filter(operation => {
+    return operation[key] === value
   })
   return filterArr
 }
 
-const filterByDate = (array) => {
-  return array.filter(obj => {
-    return Number(obj.date.split("-").join("")) >= Number(filterDate.value.split("-").join(""))
+const filterByDate = (operationsArr) => {
+  return operationsArr.filter(operation => {
+    return Number(operation.date.split("-").join("")) >= Number(filterDate.value.split("-").join(""))
   })
 }
 
-const filterNewest = (array) => {
-  return array.sort((a, b) => Number(b.date.split("-").join("")) - Number(a.date.split("-").join("")))
+const filterNewest = (operationsArr) => {
+  return operationsArr.sort((a, b) => Number(b.date.split("-").join("")) - Number(a.date.split("-").join("")))
 }
 
-const filterHigherAmount = (array) => {
-  return array.sort((a, b) => b.amount - a.amount)
+const filterHigherAmount = (operationsArr) => {
+  return operationsArr.sort((a, b) => b.amount - a.amount)
 }
 
-const filterAToZ = (array) => {
-  return array.sort((a, b) => {
+const filterAToZ = (operationsArr) => {
+  return operationsArr.sort((a, b) => {
     if (a.description < b.description) {
       return -1
     }
@@ -240,160 +270,22 @@ const filterOperations = () => {
   return operationsScope
 }
 
-/************* EDIT AND DELETE BUTTON FUNCTIONALITY ************/
-const findObj = (array, elementId) => array.find(({ id }) => id === elementId)
-
-const removeObjOfArray = (array, elementId) => array.filter(({ id }) => id !== elementId)
-
-// Operations delete button
-const deleteObj = (elementId) => {
-  localOperationsArr = removeObjOfArray(localOperationsArr, elementId)
-  localStorage.setItem("operationsList", JSON.stringify(localOperationsArr))
-  showOperationsOnDisplay(filterOperations())
-  refreshBalanceObj(localOperationsArr)
-  saveBalanceObj()
-  showTotalsOnDisplay(balanceObj)
-  noResultsOrResults()
-}
-
-// Tags delete button
-const deleteTag = (elementId) => {
-  localTagsArr = removeObjOfArray(localTagsArr, elementId)
-  localStorage.setItem("tagList", JSON.stringify(localTagsArr))
-  showTagsOnDisplay(localTagsArr)
-}
-
-// Operations edit button
-const editContainerModal = $(".edit-container-modal")
-const editDescription = $("#edit-description")
-const editAmount = $("#edit-amount")
-const editType = $("#edit-type")
-const editTag = $("#edit-tag")
-const editDate = $("#edit-date")
-const editSaveBtn = $("#edit-save-btn")
-const editCancelBtn = $("#edit-cancel-btn")
-const editModalBtn = $$(".edit-operation-btn")
-const editModalError = $(".edit-modal-error")
-
-const modalEdit = (elementId) => {
-  editModalError.classList.add("hidden")
-  editSaveBtn.setAttribute("data-id", elementId)
-  addTagModal(editTag)
-  let obj = findObj(localOperationsArr, elementId)
-  editContainerModal.classList.remove("hidden")
-  editDescription.value = obj.description
-  editAmount.value = obj.amount
-  editType.value = obj.type
-  editTag.value = obj.tag
-  editDate.value = obj.date
-}
-
-const updateOperationObj = (elementId) => {
-  return {
-    id: elementId,
-    description: editDescription.value,
-    amount: Number(editAmount.value),
-    type: editType.value,
-    tag: editTag.value,
-    date: editDate.value
-  }
-}
-
-const editOperationObj = (array, elementId) => {
-  return array.map(obj => {
-    if (obj.id === elementId) {
-      return updateOperationObj(elementId)
-    }
-    return obj
-  })
-}
-
-editSaveBtn.addEventListener("click", (e) => {
-  if (editDescription.value === "") {
-    return editModalError.classList.remove("hidden")
-  }
-  e.preventDefault()
-  operationTableContainer.innerHTML = ""
-  const elementId = editSaveBtn.getAttribute("data-id")
-  localOperationsArr = editOperationObj(localOperationsArr, elementId)
-  localStorage.setItem("operationsList", JSON.stringify(localOperationsArr))
-  showOperationsOnDisplay(filterOperations())
-  refreshBalanceObj(filterOperations())
-  saveBalanceObj()
-  showTotalsOnDisplay(balanceObj)
-  showSummaryOnDisplay()
-  editContainerModal.classList.add("hidden")
-})
-
-editCancelBtn.addEventListener("click", (e) => {
-  e.preventDefault()
-  editContainerModal.classList.add("hidden")
-}) // this function can be refactorized to use it with the edit tag cancel btn as well
-
-// Tag edit button
-const editTagContainerModal = $(".edit-tag-name-container")
-const editTagNameInput = $("#edit-tag-name")
-const editTagNameSaveBtn = $("#edit-tag-save-btn")
-const editTagNameCancelBtn = $("#edit-tag-cancel-btn")
-const errorEditTagMessage = $(".tag-span-message")
-
-const editTagName = (elementId) => {
-  editTagNameSaveBtn.setAttribute("data-id", elementId)
-  let obj = findObj(localTagsArr, elementId)
-  editTagContainerModal.classList.remove("hidden")
-  editTagNameInput.value = obj.name
-}
-
-const updateTagObj = (elementId) => {
-  return {
-    id: elementId,
-    name: editTagNameInput.value
-  }
-}
-
-const editTagObj = (array, elementId) => {
-  return array.map(obj => {
-    if (obj.id === elementId) {
-      return updateTagObj(elementId)
-    }
-    return obj
-  })
-}
-
-editTagNameSaveBtn.addEventListener("click", (e) => {
-  e.preventDefault()
-  if (editTagNameInput.value !== '') {
-    tagTable.innerHTML = ""
-    const elementId = editTagNameSaveBtn.getAttribute("data-id")
-    localTagsArr = editTagObj(localTagsArr, elementId)
-    localStorage.setItem("tagList", JSON.stringify(localTagsArr))
-    showTagsOnDisplay(localTagsArr)
-    editTagContainerModal.classList.add("hidden")
-  }
-  else {
-    errorEditTagMessage.classList.remove("hidden")
-  }
-})
-
-editTagNameCancelBtn.addEventListener("click", (e) => {
-  e.preventDefault()
-  editTagContainerModal.classList.add("hidden")
-})
-
-/************************* REPORT SECTION *******************/
-// esta función la retoqué, y hay que usarla luego de usar calculateReportBalance() (que devuelve un array con los incomes, outcomes y totals por tag, dado que ayer nos confundimos y en verdad la primera tabla muestra los incomes/outcomes sumados, o sea la tag cuyos incomes o outcomes sumados son más grandes)
-
-const getObjWithMaxIncomeOrOutcome = (array, typeSearched) => {
+/*
+------------------------------------------------------------------------
+Report section functionality
+------------------------------------------------------------------------ 
+*/
+const getObjWithMaxIncomeOrOutcome = (operationsArr, typeSearched) => {
   let objWithMaxIncomeOrOutcome = {}
   let counter = 0
-  for (const obj of array) {
+  for (const operation of operationsArr) {
     let adding = 0
-    for (const key of Object.keys(obj)) {
+    for (const key of Object.keys(operation)) {
       if (key === typeSearched) {
-        adding += obj[key]
+        adding += operation[key]
       }
       if (adding > counter) {
-        objWithMaxIncomeOrOutcome = obj
+        objWithMaxIncomeOrOutcome = operation
         counter = adding
       }
     }
@@ -402,10 +294,9 @@ const getObjWithMaxIncomeOrOutcome = (array, typeSearched) => {
 }
 
 // Tags
-
-const filterArrByTag = (array, tagSearched) => {
-  return array.filter(obj => {
-    return obj.tag === tagSearched
+const filterArrByTag = (operationsArr, tagSearched) => {
+  return operationsArr.filter(operation => {
+    return operation.tag === tagSearched
   })
 }
 
@@ -441,7 +332,7 @@ const calculateReportBalanceByTag = () => {
 const getTagWithMaxBalance = () => {
   let objWithMaxBalance = {}
   let adding = 0
-  for (const obj of calculateReportBalanceByTag()) {
+  for (const obj of calculateReportBalanceByTag()) { 
     if (adding < obj.total) {
       objWithMaxBalance = {
         name: obj.tag,
@@ -449,24 +340,23 @@ const getTagWithMaxBalance = () => {
       }
       adding = obj.total
     }
-
   }
   return objWithMaxBalance
 }
 
-// Dates - calculates "mes con mayor ganancia" y "mes con mayor gasto"
-const formatArrDate = (array) => {
-  return array.map(obj => {
+// Dates
+const formatArrDate = (operationsArr) => {
+  return operationsArr.map(operation => {
     return {
-      ...obj,
-      date: ((obj.date.split("-").join("")).slice(0, 6))
+      ...operation,
+      date: ((operation.date.split("-").join("")).slice(0, 6))
     }
   })
 }
 
-const filterArrByDate = (array, dateSearched) => {
-  return array.filter(obj => {
-    return obj.date === dateSearched
+const filterArrByDate = (operationsArr, dateSearched) => {
+  return operationsArr.filter(operation => {
+    return operation.date === dateSearched
   })
 }
 
@@ -504,9 +394,26 @@ const calculateReportBalanceByDate = () => {
     })
   }
   return arrBalanceByDate
-} // can this function be somehow factorized?? so we can have only one calculateReportBalance function...
+}
 
-/******************** DOM FUNCTIONS **********************************/
+/*
+------------------------------------------------------------------------
+DOM FUNCTIONS
+------------------------------------------------------------------------ 
+*/
+// Dom general functions
+const cleanHTML = (selector) => {
+  selector.innerHTML = ''
+}
+
+const hideElement = (selector) => {
+  selector.classList.add("hidden")
+} 
+
+const unhideElement = (selector) => {
+  selector.classList.remove("hidden")
+}
+
 // Dom balance variables
 const totalIncomesDom = $("#total-incomes")
 const totalOutcomesDom = $("#total-outcomes")
@@ -531,31 +438,32 @@ const noResultReportContainer = $("#report-noresult-container")
 // Showing or not showing table head
 const noResultsOrResults = () => {
   if (localOperationsArr.length === 0) {
-    noResultContainer.classList.remove("hidden")
-    noResultReportContainer.classList.remove("hidden")
-    divTableOperations.classList.add("hidden")
-    reportTableContainer.classList.add("hidden")
+    unhideElement(noResultContainer)
+    unhideElement(noResultReportContainer)
+    hideElement(divTableOperations)
+    hideElement(reportTableContainer)
   }
   if ((filterOperations()).length === 0) {
-    noResultContainer.classList.remove("hidden")
-    divTableOperations.classList.add("hidden")
+    unhideElement(noResultContainer)
+    hideElement(divTableOperations)
   }
   else {
-    noResultContainer.classList.add("hidden")
-    divTableOperations.classList.remove("hidden")
+    hideElement(noResultContainer)
+    unhideElement(divTableOperations)
     operationHeaderTable.classList.remove("md:hidden")
     operationHeaderTable.classList.add("md:table-header-group")
-    noResultReportContainer.classList.add("hidden")
-    reportTableContainer.classList.remove("hidden")
+    hideElement(noResultReportContainer)
+    unhideElement(reportTableContainer)
     showOperationsOnDisplay(filterOperations())
   }
 }
 
+// for responsive
 const mediumScreen = window.matchMedia("(min-width: 768px)")
 
-const showOperationsOnDisplay = (array) => {
-  operationTableContainer.innerHTML = ''
-  for (const { id, description, amount, type, tag, date } of array) {
+const showOperationsOnDisplay = (operationsArr) => {
+  cleanHTML(operationTableContainer)
+  for (const { id, description, amount, type, tag, date } of operationsArr) {
     if (mediumScreen.matches) {
       operationTableContainer.innerHTML += `
           <tr class="text-center text-sm">
@@ -603,15 +511,15 @@ const addTagBtn = $("#tag-btn")
 let localTagsArr = JSON.parse(localStorage.getItem("tagList"))
 
 // Dom tags functions and events
-const showTagsOnDisplay = (array) => {
-  tagTable.innerHTML = ''
-  for (const { id, name } of array) {
+const showTagsOnDisplay = (tagArr) => {
+  cleanHTML(tagTable)
+  for (const { id, name } of tagArr) {
     tagTable.innerHTML += `
       <div class="flex justify-between items-center mb-3"> 
         <span class="text-sm bg-[#F4C6D9] text-[#AB0B4F] p-1 rounded">${name}</span> 
         <span class="flex">
           <a href="#" onclick='editTagName("${id}")' class="mx-3 py-1 px-2 rounded-full hover:bg-[#1E90FF]"> <img src="assets/images/lapiz.png" alt="pencil drawing" class="w-5"> </a> 
-          <a href="#" onclick='deleteTag("${id}")' class="py-1 px-2 rounded-full hover:bg-[#1E90FF]"> <img src="assets/images/tachito1.png" alt="garbage drawing" class="w-5"> </a>
+          <a href="#" onclick='deleteTagAdvertising("${id}")' class="py-1 px-2 rounded-full hover:bg-[#1E90FF]"> <img src="assets/images/tachito1.png" alt="garbage drawing" class="w-5"> </a>
         </span> 
       </div>`
   }
@@ -625,16 +533,15 @@ const addTagTypeFilter = () => {
 }
 
 // First tag execution
-
 if (localStorage.getItem("tagList")) {
   showTagsOnDisplay(JSON.parse(localStorage.getItem("tagList")))
 }
 else { showTagsOnDisplay(localTagsArr) }
 
 addTagBtn.addEventListener("click", () => {
-  tagTable.innerHTML = ""
+  cleanHTML(tagTable)
   addNewTagObject(localTagsArr, createTagObject(localTagsArr))
-  localStorage.setItem("tagList", JSON.stringify(localTagsArr))
+  setItemInLocal("tagList", localTagsArr)
   showTagsOnDisplay(localTagsArr)
   filterTag.innerHTML = `<option value="all">All</option>`
   addTagTypeFilter()
@@ -645,9 +552,8 @@ addTagBtn.addEventListener("click", () => {
 // Dom filters
 const filterUserSelection = $$(".filter-user-selection")
 
-let month = new Date()
-filterDate.value = today.getFullYear() + '-' + ('0' + (today.getMonth())).slice(-2) + '-' + "01";
-
+let todayFirst = new Date()
+filterDate.value = todayFirst.getFullYear() + '-' + (todayFirst.getMonth() + 1) + '-' + "01";
 
 for (const selection of filterUserSelection) {
   selection.addEventListener("change", () => {
@@ -657,10 +563,31 @@ for (const selection of filterUserSelection) {
   })
 }
 
+filterTag.addEventListener("click", () => {
+  cleanHTML(filterTag)
+  filterTag.innerHTML = `<option value="all">All</option>`
+  addTagTypeFilter()
+})
+
 // Dom report 
-const summaryTable = $("#summary-table-container")
 const totalByTagTable = $("#total-by-tag-table")
 const totalByMonthTable = $("#total-by-month-table")
+const tagWithMaxIncome = $("#tag-max-income")
+const tagWithMaxIncomeAmount = $("#tag-max-income-amount")
+const tagWithMaxOutcome = $("#tag-max-outcome")
+const tagWithMaxOutcomeAmount = $("#tag-max-outcome-amount")
+const tagWithMaxBalance = $("#tag-max-balance")
+const tagWithMaxBalanceAmount = $("#tag-max-balance-amount")
+const monthWithMaxIncome = $("#month-max-income")
+let monthWithMaxIncomeAmount = $("#month-max-income-amount")
+let monthWithMaxOutcome = $("#month-max-outcome")
+let monthWithMaxOutcomeAmount = $("#month-max-outcome-amount")
+
+const editSummaryDate = (monthVariable) => {
+  monthVariable.date = monthVariable.date.split('')
+  monthVariable.date.splice(4, 0, '/')
+  return monthVariable
+}
 
 const showSummaryOnDisplay = () => {
   let tagMaxIncome = getObjWithMaxIncomeOrOutcome(calculateReportBalanceByTag(), 'income')
@@ -669,110 +596,247 @@ const showSummaryOnDisplay = () => {
   let monthMaxIncome = getObjWithMaxIncomeOrOutcome(calculateReportBalanceByDate(), 'income')
   let monthMaxOutcome = getObjWithMaxIncomeOrOutcome(calculateReportBalanceByDate(), 'outcome')
   let arrTotalsByTag = calculateReportBalanceByTag()
-  let arrTotalsByDate = calculateReportBalanceByDate()
+  let arrTotalsByDate = filterNewest(calculateReportBalanceByDate())
 
+  cleanHTML(totalByTagTable)
+  cleanHTML(totalByMonthTable)
 
-  if (Object.entries(getObjWithMaxIncomeOrOutcome(calculateReportBalanceByDate(), 'income')).length !== 0 && Object.entries(getObjWithMaxIncomeOrOutcome(calculateReportBalanceByDate(), 'outcome')).length !== 0) {
-    monthMaxIncome.date = monthMaxIncome.date.split('')
-    monthMaxIncome.date.splice(4, 0, '/')
-    monthMaxOutcome.date = monthMaxOutcome.date.split('')
-    monthMaxOutcome.date.splice(4, 0, '/')
-  }
+  if (!!tagMaxIncome.income && !!tagMaxOutcome.outcome && !!tagMaxBalance.name) {
+    unhideElement(reportTableContainer)
+    hideElement(noResultReportContainer)
+    editSummaryDate(monthMaxIncome)
+    editSummaryDate(monthMaxOutcome)
+    tagWithMaxIncome.innerHTML = `${tagMaxIncome.tag}`
+    tagWithMaxIncomeAmount.innerHTML = `$${tagMaxIncome.income}`
+    tagWithMaxOutcome.innerHTML = `${tagMaxOutcome.tag}`
+    tagWithMaxOutcomeAmount.innerHTML = `-$${tagMaxOutcome.outcome}`
+    tagWithMaxBalance.innerHTML = `${tagMaxBalance.name}`
+    tagWithMaxBalanceAmount.innerHTML = `$${tagMaxBalance.total}`
+    monthWithMaxIncome.innerHTML = `${monthMaxIncome.date.join('')}`
+    monthWithMaxIncomeAmount.innerHTML = `$${monthMaxIncome.income}`
+    monthWithMaxOutcome.innerHTML = `${monthMaxOutcome.date.join('')}`
+    monthWithMaxOutcomeAmount.innerHTML = `-$${monthMaxOutcome.outcome}`
 
-  if (tagMaxIncome.income !== undefined && tagMaxOutcome.outcome !== undefined && tagMaxBalance.name !== undefined) {
-    reportTableContainer.classList.remove("hidden")
-    noResultReportContainer.classList.add("hidden")
-    totalByTagTable.innerHTML = `
-    <thead id="report-header-date" class="">
-    <tr>
-        <th>Tag</th>
-        <th>Income</th>
-        <th>Outcome</th>
-        <th>Balance</th>
-    </tr>
-    </thead>`
-    totalByMonthTable.innerHTML = `
-    <thead id="report-header-date" class="">
-    <tr>
-        <th>Month</th>
-        <th>Income</th>
-        <th>Outcome</th>
-        <th>Balance</th>
-    </tr>
-    </thead>`
-    summaryTable.innerHTML = `
-    <tr class="text-start text-sm w-full">
-        <td class="w-1/3"> Tag with highest income </td>
-        <td class="w-1/3 text-end">
-          <span class="text-sm bg-[#F4C6D9] text-[#AB0B4F] p-1 rounded">${tagMaxIncome.tag}</span> 
-        </td>
-        <td class="text-end font-semibold text-green-600">$${tagMaxIncome.income}</td>
-    </tr>
-    <tr class="text-start text-sm w-full">
-        <td class="w-1/3"> Tag with highest outcome </td>
-        <td class="w-1/3 text-end">
-          <span class="text-sm bg-[#F4C6D9] text-[#AB0B4F] p-1 rounded">${tagMaxOutcome.tag}</span> 
-        </td>
-        <td class="text-end font-semibold text-red-600">-$${tagMaxOutcome.outcome}</td>
-    </tr>
-    <tr class="text-start text-sm w-full">
-        <td class="w-1/3"> Tag with highest balance </td>
-        <td class="w-1/3 text-end">
-          <span class="text-sm bg-[#F4C6D9] text-[#AB0B4F] p-1 rounded">${tagMaxBalance.name}</span> 
-        </td>
-        <td class="text-end font-semibold">$${tagMaxBalance.total}</td>
-    </tr>
-    <tr class="text-start text-sm w-full">
-        <td class="w-1/3"> Month with highest income </td>
-        <td class="w-1/3 text-end">
-          <span>${monthMaxIncome.date.join('')}</span> 
-        </td>
-        <td class="text-end font-semibold text-green-600">$${monthMaxIncome.income}</td>
-    </tr>
-    <tr class="text-start text-sm w-full">
-        <td class="w-1/3"> Month with highest outcome </td>
-        <td class="w-1/3 text-end">
-          <span>${monthMaxOutcome.date.join('')}</span> 
-        </td>
-        <td class="text-end font-semibold text-red-600">-$${monthMaxOutcome.outcome}</td>
-</tr>
-    `
-
-    for (const obj of arrTotalsByTag) {
+    for (const tagObj of arrTotalsByTag) {
       totalByTagTable.innerHTML += `     
-    <tr class="text-start text-sm w-full">
-    <td class="w-1/3 text-start">
-          <span class="text-sm bg-[#F4C6D9] text-[#AB0B4F] p-1 rounded">${obj.tag}</span> 
-        </td>
-    <td class="text-center font-semibold text-green-600"> $${obj.income} </td>
-    <td class="text-center font-semibold text-red-600">-$${obj.outcome}</td>
-    <td class="text-center font-semibold">${obj.total}</td>
-    </tr> `
+      <tr class="text-start text-sm w-full">
+        <td class="w-1/3 text-start">
+              <span class="text-sm bg-[#F4C6D9] text-[#AB0B4F] p-1 rounded">${tagObj.tag}</span> 
+            </td>
+        <td class="text-end font-semibold text-green-600"> $${tagObj.income} </td>
+        <td class="text-end font-semibold text-red-600">-$${tagObj.outcome}</td>
+        <td class="text-end font-semibold">$${tagObj.total}</td>
+      </tr> `
     }
 
-    for (const obj of arrTotalsByDate) {
-      obj.date = obj.date.split('')
-      obj.date.splice(4, 0, '/')
-
+    for (const dateObj of arrTotalsByDate) {
+      editSummaryDate(dateObj)
       totalByMonthTable.innerHTML += `     
       <tr class="text-start text-sm w-full">
-      <td class="w-1/3"> ${obj.date.join('')} </td>
-      <td class="text-center font-semibold text-green-600"> $${obj.income} </td>
-      <td class="text-center font-semibold text-red-600">-$${obj.outcome}</td>
-      <td class="text-center font-semibold">${obj.total}</td>
+        <td class="w-1/3"> ${dateObj.date.join('')} </td>
+        <td class="text-end font-semibold text-green-600"> $${dateObj.income} </td>
+        <td class="text-end font-semibold text-red-600">-$${dateObj.outcome}</td>
+        <td class="text-end font-semibold">$${dateObj.total}</td>
       </tr> `
     }
   }
   else {
-    reportTableContainer.classList.add("hidden")
-    noResultReportContainer.classList.remove("hidden")
+    hideElement(reportTableContainer)
+    unhideElement(noResultReportContainer)
   }
 }
 
-//  // we have to rethink this to refactorize, this function es un culo. 
-//and continua siendolo ahr 
+/*
+------------------------------------------------------------------------
+EDIT and DELETE buttons functionality
+------------------------------------------------------------------------ 
+*/
+const findObj = (arr, elementId) => arr.find(({ id }) => id === elementId)
 
-/************************ Modal *******************************/
+const removeObjOfArray = (operationsArr, elementId) => operationsArr.filter(({ id }) => id !== elementId)
+
+// Operations delete button
+const deleteObj = (elementId) => {
+  localOperationsArr = removeObjOfArray(localOperationsArr, elementId)
+  setItemInLocal("operationsList", localOperationsArr)
+  showOperationsOnDisplay(filterOperations())
+  refreshBalanceObj(localOperationsArr)
+  saveBalanceObj()
+  showTotalsOnDisplay(balanceObj)
+  noResultsOrResults()
+}
+
+// Tags delete button
+const deleteTagModal = $("#delete-tag-modal")
+const deleteTagAcceptBtn = $("#delete-tag-accept-btn")
+const deleteTagCancelBtn = $("#delete-tag-cancel-btn")
+
+const deleteTagAdvertising = (elementId) => {
+  unhideElement(deleteTagModal)
+  deleteTagAcceptBtn.setAttribute("data-id", elementId)
+  
+}
+
+const deleteTag = () => {
+  let tagId = deleteTagAcceptBtn.getAttribute("data-id")
+  let tagToDelete = findObj(localTagsArr, tagId)
+  for (const operation of localOperationsArr) {
+    const { id, tag } = operation 
+    if ( tagToDelete.name === tag ) {
+      deleteObj(id)
+    }
+  }
+  localTagsArr = removeObjOfArray(localTagsArr, tagId)
+  setItemInLocal("tagList", localTagsArr)
+  showTagsOnDisplay(localTagsArr)
+}
+
+deleteTagAcceptBtn.addEventListener("click", () => {
+  deleteTag()
+  hideElement(deleteTagModal)
+  addTagTypeFilter()
+  if (localTagsArr.length === 0) {
+    tagTable.innerHTML = `<span class="text-red-600"> It seems that you are out of tags! Please add one to continue </span>`
+  }
+})
+
+deleteTagCancelBtn.addEventListener("click", () => {
+  hideElement(deleteTagModal)
+})
+
+// Operations edit button
+const editContainerModal = $(".edit-container-modal")
+const editDescription = $("#edit-description")
+const editAmount = $("#edit-amount")
+const editType = $("#edit-type")
+const editTag = $("#edit-tag")
+const editDate = $("#edit-date")
+const editSaveBtn = $("#edit-save-btn")
+const editCancelBtn = $("#edit-cancel-btn")
+const editModalBtn = $$(".edit-operation-btn")
+const editModalError = $(".edit-modal-error")
+
+const modalEdit = (elementId) => {
+  hideElement(editModalError)
+  editSaveBtn.setAttribute("data-id", elementId)
+  addTagModal(editTag)
+  let obj = findObj(localOperationsArr, elementId)
+  unhideElement(editContainerModal)
+  editDescription.value = obj.description
+  editAmount.value = obj.amount
+  editType.value = obj.type
+  editTag.value = obj.tag
+  editDate.value = obj.date
+}
+
+const updateOperationObj = (elementId) => {
+  return {
+    id: elementId,
+    description: editDescription.value,
+    amount: Number(editAmount.value),
+    type: editType.value,
+    tag: editTag.value,
+    date: editDate.value
+  }
+}
+
+const editOperationObj = (operationsArr, elementId) => {
+  return operationsArr.map(obj => {
+    if (obj.id === elementId) {
+      return updateOperationObj(elementId)
+    }
+    return obj
+  })
+}
+
+editSaveBtn.addEventListener("click", (e) => {
+  e.preventDefault()
+  if (editDescription.value === "") {
+    return unhideElement(editModalError)
+  } 
+  operationTableContainer.innerHTML = ""
+  const elementId = editSaveBtn.getAttribute("data-id")
+  localOperationsArr = editOperationObj(localOperationsArr, elementId)
+  setItemInLocal("operationsList", localOperationsArr)
+  showOperationsOnDisplay(filterOperations())
+  refreshBalanceObj(filterOperations())
+  saveBalanceObj()
+  showTotalsOnDisplay(balanceObj)
+  showSummaryOnDisplay()
+  hideElement(editContainerModal)
+})
+
+editCancelBtn.addEventListener("click", (e) => {
+  e.preventDefault()
+  hideElement(editContainerModal)
+})
+
+// Tag edit button
+const editTagContainerModal = $(".edit-tag-name-container")
+const editTagNameInput = $("#edit-tag-name")
+const editTagNameSaveBtn = $("#edit-tag-save-btn")
+const editTagNameCancelBtn = $("#edit-tag-cancel-btn")
+const errorEditTagMessage = $(".tag-span-message")
+
+const editTagName = (elementId) => {
+  editTagNameSaveBtn.setAttribute("data-id", elementId)
+  let tagObj = findObj(localTagsArr, elementId)
+  editTagNameSaveBtn.setAttribute("old-tag-name", tagObj.name)
+  unhideElement(editTagContainerModal)
+  editTagNameInput.value = tagObj.name
+}
+
+const updateTagObj = (elementId) => {
+  return {
+    id: elementId,
+    name: editTagNameInput.value
+  }
+}
+
+const editTagObj = (tagArr, elementId) => {
+  return tagArr.map(tag => {
+    if (tag.id === elementId) {
+      return updateTagObj(elementId)
+    }
+    return tag
+  })
+}
+
+editTagNameSaveBtn.addEventListener("click", (e) => {
+  e.preventDefault()
+  if (editTagNameInput.value !== '') {
+    tagTable.innerHTML = ""
+    const elementId = editTagNameSaveBtn.getAttribute("data-id")
+    const oldTagName = editTagNameSaveBtn.getAttribute("old-tag-name")
+    localTagsArr = editTagObj(localTagsArr, elementId)
+    setItemInLocal("tagList", localTagsArr)
+    showTagsOnDisplay(localTagsArr)
+    hideElement(editTagContainerModal)
+    for (const operation of localOperationsArr) {
+      if ( operation.tag === oldTagName ) {
+
+        operation.tag = editTagNameInput.value
+      }
+    }
+  setItemInLocal("operationsList", localOperationsArr)
+  }
+  else {
+    unhideElement(errorEditTagMessage)
+  }
+})
+
+editTagNameCancelBtn.addEventListener("click", (e) => {
+  e.preventDefault()
+  hideElement(editTagContainerModal)
+})
+
+
+
+/*
+------------------------------------------------------------------------
+MODAL
+------------------------------------------------------------------------ 
+*/
 // Modal variables
 const operationBtn = $("#operation-btn")
 const modalBtnAdd = $("#modal-btn-add")
@@ -784,7 +848,7 @@ const modalErrorAmount = $(".operation-modal-error-amount")
 
 // Modal tags
 const addTagModal = (selector) => {
-  selector.innerHTML = ''
+  cleanHTML(selector)
   for (const { name } of localTagsArr) {
     selector.innerHTML += `
     <option value="${name}">${name}</option>`
@@ -793,45 +857,49 @@ const addTagModal = (selector) => {
 
 // Modal event 
 operationBtn.addEventListener("click", () => {
-  modalErrorDescription.classList.add("hidden")
-  modalErrorAmount.classList.add("hidden")
-  modalContainer.classList.remove("hidden")
+  hideElement(modalErrorDescription)
+  hideElement(modalErrorAmount)
+  unhideElement(modalContainer)
   operationModalForm.reset()
   addTagModal(tagModal)
 })
 
-cancelBtnModal.addEventListener("click", (event) => {
-  event.preventDefault()
-  modalContainer.classList.add("hidden")
+cancelBtnModal.addEventListener("click", (e) => {
+  e.preventDefault()
+  hideElement(modalContainer)
 })
 
 modalBtnAdd.addEventListener("click", (e) => {
   e.preventDefault()
-  modalErrorDescription.classList.add("hidden")
-  modalErrorAmount.classList.add("hidden")
+  hideElement(modalErrorDescription)
+  hideElement(modalErrorAmount)
   if (descriptionInput.value === "" && amountInput.value === "") {
-    modalErrorDescription.classList.remove("hidden")
-    return modalErrorAmount.classList.remove("hidden")
+    unhideElement(modalErrorDescription)
+    return unhideElement(modalErrorAmount)
   }
   if (descriptionInput.value === "") {
-    return modalErrorDescription.classList.remove("hidden")
+    return unhideElement(modalErrorDescription)
   }
   if (amountInput.value === "") {
-    return modalErrorAmount.classList.remove("hidden")
+    return unhideElement(modalErrorAmount)
   }
-  operationTableContainer.innerHTML = ""
+  cleanHTML(operationTableContainer)
   addNewOperationObject(localOperationsArr, createOperationObject())
-  localStorage.setItem("operationsList", JSON.stringify(localOperationsArr))
+  setItemInLocal("operationsList", localOperationsArr)
   showOperationsOnDisplay(filterOperations())
   refreshBalanceObj(filterOperations())
   saveBalanceObj()
   showTotalsOnDisplay(balanceObj)
   noResultsOrResults()
-  modalContainer.classList.add("hidden")
+  hideElement(modalContainer)
 })
 
 
-/*********************** Burger menu **************************/
+/*
+------------------------------------------------------------------------
+BURGER MENU
+------------------------------------------------------------------------ 
+*/
 // Burger menu variables
 const burgerBtn = $("button.mobile-menu-button")
 const burgerMenu = $(".mobile-menu")
@@ -856,7 +924,11 @@ hideFilters.addEventListener("click", () => {
   filterForm.classList.toggle("hidden")
 })
 
-/********************* Sections events *************/
+/*
+------------------------------------------------------------------------
+SECTIONS hide and unhide events
+------------------------------------------------------------------------ 
+*/
 // hide and unhide sections variables
 const balanceSection = $("#main-section")
 const tagSection = $("#tag-section")
@@ -866,16 +938,16 @@ const balanceShowLinks = $$(".balance-show-link")
 const tagShowLinks = $$(".tag-show-link")
 
 const hideBurgerMenu = () => {
-  burgerMenu.classList.add("hidden")
-  burgerIconLines.classList.remove("hidden")
-  burgerIconX.classList.add("hidden")
+  hideElement(burgerMenu)
+  unhideElement(burgerIconLines)
+  hideElement(burgerIconX)
 }
 
 for (const balanceLink of balanceShowLinks) {
   balanceLink.addEventListener("click", () => {
-    balanceSection.classList.remove("hidden")
-    tagSection.classList.add("hidden")
-    reportSection.classList.add("hidden")
+    unhideElement(balanceSection)
+    hideElement(tagSection)
+    hideElement(reportSection)
     hideBurgerMenu()
     showOperationsOnDisplay(filterOperations())
   })
@@ -883,19 +955,18 @@ for (const balanceLink of balanceShowLinks) {
 
 for (const tagLink of tagShowLinks) {
   tagLink.addEventListener("click", () => {
-    tagSection.classList.remove("hidden")
-    balanceSection.classList.add("hidden")
-    reportSection.classList.add("hidden")
+    unhideElement(tagSection)
+    hideElement(balanceSection)
+    hideElement(reportSection)
     hideBurgerMenu()
   })
 }
 
 for (const reportLink of reportShowLinks) {
   reportLink.addEventListener("click", () => {
-    errorMessage.classList.add("hidden")
-    reportSection.classList.remove("hidden")
-    balanceSection.classList.add("hidden")
-    tagSection.classList.add("hidden")
+    unhideElement(reportSection)
+    hideElement(balanceSection)
+    hideElement(tagSection)
     hideBurgerMenu()
     showSummaryOnDisplay()
   })
