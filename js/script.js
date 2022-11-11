@@ -73,9 +73,7 @@ const getRandomId = (array) => {
 }
 
 // localStorage functions
-const setItemInLocal = (key, array) => {
-  localStorage.setItem(key, JSON.stringify(array))
-}
+const setItemInLocal = (key, array) => localStorage.setItem(key, JSON.stringify(array))
 
 /*
 ------------------------------------------------------------------------
@@ -402,17 +400,13 @@ DOM FUNCTIONS
 ------------------------------------------------------------------------ 
 */
 // Dom general functions
-const cleanHTML = (selector) => {
-  selector.innerHTML = ''
-}
+const cleanHTML = (selector) => selector.innerHTML = ''
 
-const hideElement = (selector) => {
-  selector.classList.add("hidden")
-} 
 
-const unhideElement = (selector) => {
-  selector.classList.remove("hidden")
-}
+const hideElement = (selector) => selector.classList.add("hidden")
+
+
+const unhideElement = (selector) => selector.classList.remove("hidden")
 
 // Dom balance variables
 const totalIncomesDom = $("#total-incomes")
@@ -572,16 +566,16 @@ filterTag.addEventListener("click", () => {
 // Dom report 
 const totalByTagTable = $("#total-by-tag-table")
 const totalByMonthTable = $("#total-by-month-table")
-const tagWithMaxIncome = $("#tag-max-income")
-const tagWithMaxIncomeAmount = $("#tag-max-income-amount")
-const tagWithMaxOutcome = $("#tag-max-outcome")
-const tagWithMaxOutcomeAmount = $("#tag-max-outcome-amount")
-const tagWithMaxBalance = $("#tag-max-balance")
-const tagWithMaxBalanceAmount = $("#tag-max-balance-amount")
-const monthWithMaxIncome = $("#month-max-income")
-let monthWithMaxIncomeAmount = $("#month-max-income-amount")
-let monthWithMaxOutcome = $("#month-max-outcome")
-let monthWithMaxOutcomeAmount = $("#month-max-outcome-amount")
+const tagWithMaxInc = $("#tag-max-income")
+const tagWithMaxIncAmount = $("#tag-max-income-amount")
+const tagWithMaxOut = $("#tag-max-outcome")
+const tagWithMaxOutAmount = $("#tag-max-outcome-amount")
+const tagWithMaxBal = $("#tag-max-balance")
+const tagWithMaxBalAmount = $("#tag-max-balance-amount")
+let monthWithMaxInc = $("#month-max-income")
+let monthWithMaxIncAmount = $("#month-max-income-amount")
+let monthWithMaxOut = $("#month-max-outcome")
+let monthWithMaxOutAmount = $("#month-max-outcome-amount")
 
 const editSummaryDate = (monthVariable) => {
   monthVariable.date = monthVariable.date.split('')
@@ -606,16 +600,16 @@ const showSummaryOnDisplay = () => {
     hideElement(noResultReportContainer)
     editSummaryDate(monthMaxIncome)
     editSummaryDate(monthMaxOutcome)
-    tagWithMaxIncome.innerHTML = `${tagMaxIncome.tag}`
-    tagWithMaxIncomeAmount.innerHTML = `$${tagMaxIncome.income}`
-    tagWithMaxOutcome.innerHTML = `${tagMaxOutcome.tag}`
-    tagWithMaxOutcomeAmount.innerHTML = `-$${tagMaxOutcome.outcome}`
-    tagWithMaxBalance.innerHTML = `${tagMaxBalance.name}`
-    tagWithMaxBalanceAmount.innerHTML = `$${tagMaxBalance.total}`
-    monthWithMaxIncome.innerHTML = `${monthMaxIncome.date.join('')}`
-    monthWithMaxIncomeAmount.innerHTML = `$${monthMaxIncome.income}`
-    monthWithMaxOutcome.innerHTML = `${monthMaxOutcome.date.join('')}`
-    monthWithMaxOutcomeAmount.innerHTML = `-$${monthMaxOutcome.outcome}`
+    tagWithMaxInc.innerHTML = `${tagMaxIncome.tag}`
+    tagWithMaxIncAmount.innerHTML = `$${tagMaxIncome.income}`
+    tagWithMaxOut.innerHTML = `${tagMaxOutcome.tag}`
+    tagWithMaxOutAmount.innerHTML = `-$${tagMaxOutcome.outcome}`
+    tagWithMaxBal.innerHTML = `${tagMaxBalance.name}`
+    tagWithMaxBalAmount.innerHTML = `$${tagMaxBalance.total}`
+    monthWithMaxInc.innerHTML = `${monthMaxIncome.date.join('')}`
+    monthWithMaxIncAmount.innerHTML = `$${monthMaxIncome.income}`
+    monthWithMaxOut.innerHTML = `${monthMaxOutcome.date.join('')}`
+    monthWithMaxOutAmount.innerHTML = `-$${monthMaxOutcome.outcome}`
 
     for (const tagObj of arrTotalsByTag) {
       totalByTagTable.innerHTML += `     
@@ -674,7 +668,6 @@ const deleteTagCancelBtn = $("#delete-tag-cancel-btn")
 const deleteTagAdvertising = (elementId) => {
   unhideElement(deleteTagModal)
   deleteTagAcceptBtn.setAttribute("data-id", elementId)
-  
 }
 
 const deleteTag = () => {
@@ -814,7 +807,6 @@ editTagNameSaveBtn.addEventListener("click", (e) => {
     hideElement(editTagContainerModal)
     for (const operation of localOperationsArr) {
       if ( operation.tag === oldTagName ) {
-
         operation.tag = editTagNameInput.value
       }
     }
@@ -829,8 +821,6 @@ editTagNameCancelBtn.addEventListener("click", (e) => {
   e.preventDefault()
   hideElement(editTagContainerModal)
 })
-
-
 
 /*
 ------------------------------------------------------------------------
@@ -894,7 +884,6 @@ modalBtnAdd.addEventListener("click", (e) => {
   hideElement(modalContainer)
 })
 
-
 /*
 ------------------------------------------------------------------------
 BURGER MENU
@@ -912,7 +901,6 @@ burgerBtn.addEventListener("click", () => {
   burgerIconLines.classList.toggle("hidden")
   burgerIconX.classList.toggle("hidden")
 })
-
 
 /************ Hide filters  ************/
 // hide and unhide filters variables
