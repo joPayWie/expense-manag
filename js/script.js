@@ -133,11 +133,11 @@ const createTagObject = () => {
   newObj = {}
   newObj.id = getRandomId(charactersForId)
   if (inputNewTag.value === '') {
-    return errorMessage.classList.remove("hidden")
+    return unhideElement(errorMessage)
   }
   else {
     newObj.name = inputNewTag.value
-    errorMessage.classList.add("hidden")
+    hideElement(errorMessage)
     return newObj
   }
 }
@@ -282,11 +282,11 @@ const editModalBtn = $$(".edit-operation-btn")
 const editModalError = $(".edit-modal-error")
 
 const modalEdit = (elementId) => {
-  editModalError.classList.add("hidden")
+  hideElement(editModalError)
   editSaveBtn.setAttribute("data-id", elementId)
   addTagModal(editTag)
   let obj = findObj(localOperationsArr, elementId)
-  editContainerModal.classList.remove("hidden")
+  unhideElement(editContainerModal)
   editDescription.value = obj.description
   editAmount.value = obj.amount
   editType.value = obj.type
@@ -317,7 +317,7 @@ const editOperationObj = (operationsArr, elementId) => {
 editSaveBtn.addEventListener("click", (e) => {
   e.preventDefault()
   if (editDescription.value === "") {
-    return editModalError.classList.remove("hidden")
+    return unhideElement(editModalError)
   } 
   operationTableContainer.innerHTML = ""
   const elementId = editSaveBtn.getAttribute("data-id")
@@ -328,12 +328,12 @@ editSaveBtn.addEventListener("click", (e) => {
   saveBalanceObj()
   showTotalsOnDisplay(balanceObj)
   showSummaryOnDisplay()
-  editContainerModal.classList.add("hidden")
+  hideElement(editContainerModal)
 })
 
 editCancelBtn.addEventListener("click", (e) => {
   e.preventDefault()
-  editContainerModal.classList.add("hidden")
+  hideElement(editContainerModal)
 }) // this function can be refactorized to use it with the edit tag cancel btn as well
 
 // Tag edit button
@@ -346,7 +346,7 @@ const errorEditTagMessage = $(".tag-span-message")
 const editTagName = (elementId) => {
   editTagNameSaveBtn.setAttribute("data-id", elementId)
   let tagObj = findObj(localTagsArr, elementId)
-  editTagContainerModal.classList.remove("hidden")
+  unhideElement(editTagContainerModal)
   editTagNameInput.value = tagObj.name
 }
 
@@ -374,16 +374,16 @@ editTagNameSaveBtn.addEventListener("click", (e) => {
     localTagsArr = editTagObj(localTagsArr, elementId)
     setItemInLocal("tagList", localTagsArr)
     showTagsOnDisplay(localTagsArr)
-    editTagContainerModal.classList.add("hidden")
+    hideElement(editTagContainerModal)
   }
   else {
-    errorEditTagMessage.classList.remove("hidden")
+    unhideElement(errorEditTagMessage)
   }
 })
 
 editTagNameCancelBtn.addEventListener("click", (e) => {
   e.preventDefault()
-  editTagContainerModal.classList.add("hidden")
+  hideElement(editTagContainerModal)
 })
 
 /************************* REPORT SECTION *******************/
