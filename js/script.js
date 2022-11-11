@@ -332,7 +332,7 @@ const calculateReportBalanceByTag = () => {
 const getTagWithMaxBalance = () => {
   let objWithMaxBalance = {}
   let adding = 0
-  for (const obj of calculateReportBalanceByTag()) {
+  for (const obj of calculateReportBalanceByTag()) { 
     if (adding < obj.total) {
       objWithMaxBalance = {
         name: obj.tag,
@@ -563,6 +563,12 @@ for (const selection of filterUserSelection) {
   })
 }
 
+filterTag.addEventListener("click", () => {
+  cleanHTML(filterTag)
+  filterTag.innerHTML = `<option value="all">All</option>`
+  addTagTypeFilter()
+})
+
 // Dom report 
 const totalByTagTable = $("#total-by-tag-table")
 const totalByMonthTable = $("#total-by-month-table")
@@ -688,6 +694,7 @@ const deleteTag = () => {
 deleteTagAcceptBtn.addEventListener("click", () => {
   deleteTag()
   hideElement(deleteTagModal)
+  addTagTypeFilter()
   if (localTagsArr.length === 0) {
     tagTable.innerHTML = `<span class="text-red-600"> It seems that you are out of tags! Please add one to continue </span>`
   }
@@ -807,9 +814,11 @@ editTagNameSaveBtn.addEventListener("click", (e) => {
     hideElement(editTagContainerModal)
     for (const operation of localOperationsArr) {
       if ( operation.tag === oldTagName ) {
+
         operation.tag = editTagNameInput.value
       }
     }
+  setItemInLocal("operationsList", localOperationsArr)
   }
   else {
     unhideElement(errorEditTagMessage)
