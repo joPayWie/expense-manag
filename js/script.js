@@ -459,7 +459,7 @@ const getTagWithMaxBalance = () => {
   return objWithMaxBalance
 }
 
-// Dates - calculates "mes con mayor ganancia" y "mes con mayor gasto"
+// Dates
 const formatArrDate = (operationsArr) => {
   return operationsArr.map(operation => {
     return {
@@ -511,7 +511,7 @@ const calculateReportBalanceByDate = () => {
   return arrBalanceByDate
 }
 
-/******************** DOM FUNCTIONS **********************************/
+/*********************** DOM FUNCTIONS **********************************/
 
 const cleanHTML = (selector) => {
   selector.innerHTML = ''
@@ -572,9 +572,9 @@ const noResultsOrResults = () => {
 // for responsive
 const mediumScreen = window.matchMedia("(min-width: 768px)")
 
-const showOperationsOnDisplay = (array) => {
+const showOperationsOnDisplay = (operationsArr) => {
   cleanHTML(operationTableContainer)
-  for (const { id, description, amount, type, tag, date } of array) {
+  for (const { id, description, amount, type, tag, date } of operationsArr) {
     if (mediumScreen.matches) {
       operationTableContainer.innerHTML += `
           <tr class="text-center text-sm">
@@ -676,9 +676,24 @@ for (const selection of filterUserSelection) {
 }
 
 // Dom report 
-const summaryTable = $("#summary-table-container")
 const totalByTagTable = $("#total-by-tag-table")
 const totalByMonthTable = $("#total-by-month-table")
+const tagWithMaxIncome = $("#tag-max-income")
+const tagWithMaxIncomeAmount = $("#tag-max-income-amount")
+const tagWithMaxOutcome = $("#tag-max-outcome")
+const tagWithMaxOutcomeAmount = $("#tag-max-outcome-amount")
+const tagWithMaxBalance = $("#tag-max-balance")
+const tagWithMaxBalanceAmount = $("#tag-max-balance-amount")
+const monthWithMaxIncome = $("#month-max-income")
+let monthWithMaxIncomeAmount = $("#month-max-income-amount")
+let monthWithMaxOutcome = $("#month-max-outcome")
+let monthWithMaxOutcomeAmount = $("#month-max-outcome-amount")
+
+const editSummaryDate = (monthVariable) => {
+  monthVariable.date = monthVariable.date.split('')
+  monthVariable.date.splice(4, 0, '/')
+  return monthVariable
+}
 
 const showSummaryOnDisplay = () => {
   let tagMaxIncome = getObjWithMaxIncomeOrOutcome(calculateReportBalanceByTag(), 'income')
@@ -687,107 +702,56 @@ const showSummaryOnDisplay = () => {
   let monthMaxIncome = getObjWithMaxIncomeOrOutcome(calculateReportBalanceByDate(), 'income')
   let monthMaxOutcome = getObjWithMaxIncomeOrOutcome(calculateReportBalanceByDate(), 'outcome')
   let arrTotalsByTag = calculateReportBalanceByTag()
-  let arrTotalsByDate = calculateReportBalanceByDate()
+  let arrTotalsByDate = filterNewest(calculateReportBalanceByDate())
 
-  if (Object.entries(monthMaxIncome).length !== 0 && Object.entries(monthMaxOutcome).length !== 0) {
-    monthMaxIncome.date = monthMaxIncome.date.split('')
-    monthMaxIncome.date.splice(4, 0, '/')
-    monthMaxOutcome.date = monthMaxOutcome.date.split('')
-    monthMaxOutcome.date.splice(4, 0, '/')
-  }
-  
+  cleanHTML(totalByTagTable)
+  cleanHTML(totalByMonthTable)
+
   if (!!tagMaxIncome.income && !!tagMaxOutcome.outcome && !!tagMaxBalance.name) {
-    reportTableContainer.classList.remove("hidden")
-    noResultReportContainer.classList.add("hidden")
-    totalByTagTable.innerHTML = `
-    <thead id="report-header-date" class="">
-    <tr>
-        <th>Tag</th>
-        <th>Income</th>
-        <th>Outcome</th>
-        <th>Balance</th>
-    </tr>
-    </thead>`
-    totalByMonthTable.innerHTML = `
-    <thead id="report-header-date" class="">
-    <tr>
-        <th>Month</th>
-        <th>Income</th>
-        <th>Outcome</th>
-        <th>Balance</th>
-    </tr>
-    </thead>`
-    summaryTable.innerHTML = `
-    <tr class="text-start text-sm w-full">
-        <td class="w-1/3"> Tag with highest income </td>
-        <td class="w-1/3 text-end">
-          <span class="text-sm bg-[#F4C6D9] text-[#AB0B4F] p-1 rounded">${tagMaxIncome.tag}</span> 
-        </td>
-        <td class="text-end font-semibold text-green-600">$${tagMaxIncome.income}</td>
-    </tr>
-    <tr class="text-start text-sm w-full">
-        <td class="w-1/3"> Tag with highest outcome </td>
-        <td class="w-1/3 text-end">
-          <span class="text-sm bg-[#F4C6D9] text-[#AB0B4F] p-1 rounded">${tagMaxOutcome.tag}</span> 
-        </td>
-        <td class="text-end font-semibold text-red-600">-$${tagMaxOutcome.outcome}</td>
-    </tr>
-    <tr class="text-start text-sm w-full">
-        <td class="w-1/3"> Tag with highest balance </td>
-        <td class="w-1/3 text-end">
-          <span class="text-sm bg-[#F4C6D9] text-[#AB0B4F] p-1 rounded">${tagMaxBalance.name}</span> 
-        </td>
-        <td class="text-end font-semibold">$${tagMaxBalance.total}</td>
-    </tr>
-    <tr class="text-start text-sm w-full">
-        <td class="w-1/3"> Month with highest income </td>
-        <td class="w-1/3 text-end">
-          <span>${monthMaxIncome.date.join('')}</span> 
-        </td>
-        <td class="text-end font-semibold text-green-600">$${monthMaxIncome.income}</td>
-    </tr>
-    <tr class="text-start text-sm w-full">
-        <td class="w-1/3"> Month with highest outcome </td>
-        <td class="w-1/3 text-end">
-          <span>${monthMaxOutcome.date.join('')}</span> 
-        </td>
-        <td class="text-end font-semibold text-red-600">-$${monthMaxOutcome.outcome}</td>
-</tr>
-    `
+    unhideElement(reportTableContainer)
+    hideElement(noResultReportContainer)
+    editSummaryDate(monthMaxIncome)
+    editSummaryDate(monthMaxOutcome)
+    tagWithMaxIncome.innerHTML = `${tagMaxIncome.tag}`
+    tagWithMaxIncomeAmount.innerHTML = `$${tagMaxIncome.income}`
+    tagWithMaxOutcome.innerHTML = `${tagMaxOutcome.tag}`
+    tagWithMaxOutcomeAmount.innerHTML = `-$${tagMaxOutcome.outcome}`
+    tagWithMaxBalance.innerHTML = `${tagMaxBalance.name}`
+    tagWithMaxBalanceAmount.innerHTML = `$${tagMaxBalance.total}`
+    monthWithMaxIncome.innerHTML = `${monthMaxIncome.date.join('')}`
+    monthWithMaxIncomeAmount.innerHTML = `$${monthMaxIncome.income}`
+    monthWithMaxOutcome.innerHTML = `${monthMaxOutcome.date.join('')}`
+    monthWithMaxOutcomeAmount.innerHTML = `-$${monthMaxOutcome.outcome}`
 
-    for (const obj of arrTotalsByTag) {
+    for (const tagObj of arrTotalsByTag) {
       totalByTagTable.innerHTML += `     
-    <tr class="text-start text-sm w-full">
-    <td class="w-1/3 text-start">
-          <span class="text-sm bg-[#F4C6D9] text-[#AB0B4F] p-1 rounded">${obj.tag}</span> 
-        </td>
-    <td class="text-center font-semibold text-green-600"> $${obj.income} </td>
-    <td class="text-center font-semibold text-red-600">-$${obj.outcome}</td>
-    <td class="text-center font-semibold">${obj.total}</td>
-    </tr> `
+      <tr class="text-start text-sm w-full">
+        <td class="w-1/3 text-start">
+              <span class="text-sm bg-[#F4C6D9] text-[#AB0B4F] p-1 rounded">${tagObj.tag}</span> 
+            </td>
+        <td class="text-end font-semibold text-green-600"> $${tagObj.income} </td>
+        <td class="text-end font-semibold text-red-600">-$${tagObj.outcome}</td>
+        <td class="text-end font-semibold">$${tagObj.total}</td>
+      </tr> `
     }
 
-    for (const obj of arrTotalsByDate) {
-      obj.date = obj.date.split('')
-      obj.date.splice(4, 0, '/')
-
+    for (const dateObj of arrTotalsByDate) {
+      editSummaryDate(dateObj)
       totalByMonthTable.innerHTML += `     
       <tr class="text-start text-sm w-full">
-      <td class="w-1/3"> ${obj.date.join('')} </td>
-      <td class="text-center font-semibold text-green-600"> $${obj.income} </td>
-      <td class="text-center font-semibold text-red-600">-$${obj.outcome}</td>
-      <td class="text-center font-semibold">${obj.total}</td>
+        <td class="w-1/3"> ${dateObj.date.join('')} </td>
+        <td class="text-end font-semibold text-green-600"> $${dateObj.income} </td>
+        <td class="text-end font-semibold text-red-600">-$${dateObj.outcome}</td>
+        <td class="text-end font-semibold">$${dateObj.total}</td>
       </tr> `
     }
   }
   else {
-    reportTableContainer.classList.add("hidden")
-    noResultReportContainer.classList.remove("hidden")
+    hideElement(reportTableContainer)
+    unhideElement(noResultReportContainer)
   }
 }
 
-//  // we have to rethink this to refactorize, this function es un culo. 
-//and continua siendolo ahr 
 
 /************************ Modal *******************************/
 // Modal variables
