@@ -272,150 +272,6 @@ const filterOperations = () => {
 
 /*
 ------------------------------------------------------------------------
-EDIT and DELETE buttons functionality
------------------------------------------------------------------------- 
-*/
-const findObj = (operationsArr, elementId) => operationsArr.find(({ id }) => id === elementId)
-
-const removeObjOfArray = (operationsArr, elementId) => operationsArr.filter(({ id }) => id !== elementId)
-
-// Operations delete button
-const deleteObj = (elementId) => {
-  localOperationsArr = removeObjOfArray(localOperationsArr, elementId)
-  setItemInLocal("operationsList", localOperationsArr)
-  showOperationsOnDisplay(filterOperations())
-  refreshBalanceObj(localOperationsArr)
-  saveBalanceObj()
-  showTotalsOnDisplay(balanceObj)
-  noResultsOrResults()
-}
-
-// Tags delete button
-const deleteTag = (elementId) => {
-  localTagsArr = removeObjOfArray(localTagsArr, elementId)
-  setItemInLocal("tagList", localTagsArr)
-  showTagsOnDisplay(localTagsArr)
-}
-
-// Operations edit button
-const editContainerModal = $(".edit-container-modal")
-const editDescription = $("#edit-description")
-const editAmount = $("#edit-amount")
-const editType = $("#edit-type")
-const editTag = $("#edit-tag")
-const editDate = $("#edit-date")
-const editSaveBtn = $("#edit-save-btn")
-const editCancelBtn = $("#edit-cancel-btn")
-const editModalBtn = $$(".edit-operation-btn")
-const editModalError = $(".edit-modal-error")
-
-const modalEdit = (elementId) => {
-  hideElement(editModalError)
-  editSaveBtn.setAttribute("data-id", elementId)
-  addTagModal(editTag)
-  let obj = findObj(localOperationsArr, elementId)
-  unhideElement(editContainerModal)
-  editDescription.value = obj.description
-  editAmount.value = obj.amount
-  editType.value = obj.type
-  editTag.value = obj.tag
-  editDate.value = obj.date
-}
-
-const updateOperationObj = (elementId) => {
-  return {
-    id: elementId,
-    description: editDescription.value,
-    amount: Number(editAmount.value),
-    type: editType.value,
-    tag: editTag.value,
-    date: editDate.value
-  }
-}
-
-const editOperationObj = (operationsArr, elementId) => {
-  return operationsArr.map(obj => {
-    if (obj.id === elementId) {
-      return updateOperationObj(elementId)
-    }
-    return obj
-  })
-}
-
-editSaveBtn.addEventListener("click", (e) => {
-  e.preventDefault()
-  if (editDescription.value === "") {
-    return unhideElement(editModalError)
-  } 
-  operationTableContainer.innerHTML = ""
-  const elementId = editSaveBtn.getAttribute("data-id")
-  localOperationsArr = editOperationObj(localOperationsArr, elementId)
-  setItemInLocal("operationsList", localOperationsArr)
-  showOperationsOnDisplay(filterOperations())
-  refreshBalanceObj(filterOperations())
-  saveBalanceObj()
-  showTotalsOnDisplay(balanceObj)
-  showSummaryOnDisplay()
-  hideElement(editContainerModal)
-})
-
-editCancelBtn.addEventListener("click", (e) => {
-  e.preventDefault()
-  hideElement(editContainerModal)
-})
-
-// Tag edit button
-const editTagContainerModal = $(".edit-tag-name-container")
-const editTagNameInput = $("#edit-tag-name")
-const editTagNameSaveBtn = $("#edit-tag-save-btn")
-const editTagNameCancelBtn = $("#edit-tag-cancel-btn")
-const errorEditTagMessage = $(".tag-span-message")
-
-const editTagName = (elementId) => {
-  editTagNameSaveBtn.setAttribute("data-id", elementId)
-  let tagObj = findObj(localTagsArr, elementId)
-  unhideElement(editTagContainerModal)
-  editTagNameInput.value = tagObj.name
-}
-
-const updateTagObj = (elementId) => {
-  return {
-    id: elementId,
-    name: editTagNameInput.value
-  }
-}
-
-const editTagObj = (tagArr, elementId) => {
-  return tagArr.map(tag => {
-    if (tag.id === elementId) {
-      return updateTagObj(elementId)
-    }
-    return tag
-  })
-}
-
-editTagNameSaveBtn.addEventListener("click", (e) => {
-  e.preventDefault()
-  if (editTagNameInput.value !== '') {
-    tagTable.innerHTML = ""
-    const elementId = editTagNameSaveBtn.getAttribute("data-id")
-    localTagsArr = editTagObj(localTagsArr, elementId)
-    setItemInLocal("tagList", localTagsArr)
-    showTagsOnDisplay(localTagsArr)
-    hideElement(editTagContainerModal)
-  }
-  else {
-    unhideElement(errorEditTagMessage)
-  }
-})
-
-editTagNameCancelBtn.addEventListener("click", (e) => {
-  e.preventDefault()
-  hideElement(editTagContainerModal)
-})
-
-/*
-------------------------------------------------------------------------
 Report section functionality
 ------------------------------------------------------------------------ 
 */
@@ -663,7 +519,7 @@ const showTagsOnDisplay = (tagArr) => {
         <span class="text-sm bg-[#F4C6D9] text-[#AB0B4F] p-1 rounded">${name}</span> 
         <span class="flex">
           <a href="#" onclick='editTagName("${id}")' class="mx-3 py-1 px-2 rounded-full hover:bg-[#1E90FF]"> <img src="assets/images/lapiz.png" alt="pencil drawing" class="w-5"> </a> 
-          <a href="#" onclick='deleteTag("${id}")' class="py-1 px-2 rounded-full hover:bg-[#1E90FF]"> <img src="assets/images/tachito1.png" alt="garbage drawing" class="w-5"> </a>
+          <a href="#" onclick='deleteTagAdvertising("${id}")' class="py-1 px-2 rounded-full hover:bg-[#1E90FF]"> <img src="assets/images/tachito1.png" alt="garbage drawing" class="w-5"> </a>
         </span> 
       </div>`
   }
@@ -783,6 +639,188 @@ const showSummaryOnDisplay = () => {
     unhideElement(noResultReportContainer)
   }
 }
+
+/*
+------------------------------------------------------------------------
+EDIT and DELETE buttons functionality
+------------------------------------------------------------------------ 
+*/
+const findObj = (arr, elementId) => arr.find(({ id }) => id === elementId)
+
+const removeObjOfArray = (operationsArr, elementId) => operationsArr.filter(({ id }) => id !== elementId)
+
+// Operations delete button
+const deleteObj = (elementId) => {
+  localOperationsArr = removeObjOfArray(localOperationsArr, elementId)
+  setItemInLocal("operationsList", localOperationsArr)
+  showOperationsOnDisplay(filterOperations())
+  refreshBalanceObj(localOperationsArr)
+  saveBalanceObj()
+  showTotalsOnDisplay(balanceObj)
+  noResultsOrResults()
+}
+
+// Tags delete button
+const deleteTagModal = $("#delete-tag-modal")
+const deleteTagAcceptBtn = $("#delete-tag-accept-btn")
+const deleteTagCancelBtn = $("#delete-tag-cancel-btn")
+
+const deleteTagAdvertising = (elementId) => {
+  unhideElement(deleteTagModal)
+  deleteTagAcceptBtn.setAttribute("data-id", elementId)
+  
+}
+
+const deleteTag = () => {
+  let tagId = deleteTagAcceptBtn.getAttribute("data-id")
+  let tagToDelete = findObj(localTagsArr, tagId)
+  for (const operation of localOperationsArr) {
+    const { id, tag } = operation 
+    if ( tagToDelete.name === tag ) {
+      deleteObj(id)
+    }
+  }
+  localTagsArr = removeObjOfArray(localTagsArr, tagId)
+  setItemInLocal("tagList", localTagsArr)
+  showTagsOnDisplay(localTagsArr)
+}
+
+deleteTagAcceptBtn.addEventListener("click", () => {
+  deleteTag()
+  hideElement(deleteTagModal)
+  if (localTagsArr.length === 0) {
+    tagTable.innerHTML = `<span class="text-red-600"> It seems that you are out of tags! Please add one to continue </span>`
+  }
+})
+
+deleteTagCancelBtn.addEventListener("click", () => {
+  hideElement(deleteTagModal)
+})
+
+// Operations edit button
+const editContainerModal = $(".edit-container-modal")
+const editDescription = $("#edit-description")
+const editAmount = $("#edit-amount")
+const editType = $("#edit-type")
+const editTag = $("#edit-tag")
+const editDate = $("#edit-date")
+const editSaveBtn = $("#edit-save-btn")
+const editCancelBtn = $("#edit-cancel-btn")
+const editModalBtn = $$(".edit-operation-btn")
+const editModalError = $(".edit-modal-error")
+
+const modalEdit = (elementId) => {
+  hideElement(editModalError)
+  editSaveBtn.setAttribute("data-id", elementId)
+  addTagModal(editTag)
+  let obj = findObj(localOperationsArr, elementId)
+  unhideElement(editContainerModal)
+  editDescription.value = obj.description
+  editAmount.value = obj.amount
+  editType.value = obj.type
+  editTag.value = obj.tag
+  editDate.value = obj.date
+}
+
+const updateOperationObj = (elementId) => {
+  return {
+    id: elementId,
+    description: editDescription.value,
+    amount: Number(editAmount.value),
+    type: editType.value,
+    tag: editTag.value,
+    date: editDate.value
+  }
+}
+
+const editOperationObj = (operationsArr, elementId) => {
+  return operationsArr.map(obj => {
+    if (obj.id === elementId) {
+      return updateOperationObj(elementId)
+    }
+    return obj
+  })
+}
+
+editSaveBtn.addEventListener("click", (e) => {
+  e.preventDefault()
+  if (editDescription.value === "") {
+    return unhideElement(editModalError)
+  } 
+  operationTableContainer.innerHTML = ""
+  const elementId = editSaveBtn.getAttribute("data-id")
+  localOperationsArr = editOperationObj(localOperationsArr, elementId)
+  setItemInLocal("operationsList", localOperationsArr)
+  showOperationsOnDisplay(filterOperations())
+  refreshBalanceObj(filterOperations())
+  saveBalanceObj()
+  showTotalsOnDisplay(balanceObj)
+  showSummaryOnDisplay()
+  hideElement(editContainerModal)
+})
+
+editCancelBtn.addEventListener("click", (e) => {
+  e.preventDefault()
+  hideElement(editContainerModal)
+})
+
+// Tag edit button
+const editTagContainerModal = $(".edit-tag-name-container")
+const editTagNameInput = $("#edit-tag-name")
+const editTagNameSaveBtn = $("#edit-tag-save-btn")
+const editTagNameCancelBtn = $("#edit-tag-cancel-btn")
+const errorEditTagMessage = $(".tag-span-message")
+
+const editTagName = (elementId) => {
+  editTagNameSaveBtn.setAttribute("data-id", elementId)
+  let tagObj = findObj(localTagsArr, elementId)
+  editTagNameSaveBtn.setAttribute("old-tag-name", tagObj.name)
+  unhideElement(editTagContainerModal)
+  editTagNameInput.value = tagObj.name
+}
+
+const updateTagObj = (elementId) => {
+  return {
+    id: elementId,
+    name: editTagNameInput.value
+  }
+}
+
+const editTagObj = (tagArr, elementId) => {
+  return tagArr.map(tag => {
+    if (tag.id === elementId) {
+      return updateTagObj(elementId)
+    }
+    return tag
+  })
+}
+
+editTagNameSaveBtn.addEventListener("click", (e) => {
+  e.preventDefault()
+  if (editTagNameInput.value !== '') {
+    tagTable.innerHTML = ""
+    const elementId = editTagNameSaveBtn.getAttribute("data-id")
+    const oldTagName = editTagNameSaveBtn.getAttribute("old-tag-name")
+    localTagsArr = editTagObj(localTagsArr, elementId)
+    setItemInLocal("tagList", localTagsArr)
+    showTagsOnDisplay(localTagsArr)
+    hideElement(editTagContainerModal)
+    for (const operation of localOperationsArr) {
+      if ( operation.tag === oldTagName ) {
+        operation.tag = editTagNameInput.value
+      }
+    }
+  }
+  else {
+    unhideElement(errorEditTagMessage)
+  }
+})
+
+editTagNameCancelBtn.addEventListener("click", (e) => {
+  e.preventDefault()
+  hideElement(editTagContainerModal)
+})
+
 
 
 /*
