@@ -411,7 +411,6 @@ const filterArrByTag = (array, tagSearched) => {
 
 const calculateReportBalanceByTag = () => {
   let arrBalanceByTag = []
-  let objBalanceByTag = {}
   let totalIncomes = 0
   let totalOutcomes = 0
   let total = 0
@@ -429,7 +428,7 @@ const calculateReportBalanceByTag = () => {
       }
       total = totalIncomes - totalOutcomes
     }
-    arrBalanceByTag.push(objBalanceByTag = {
+    arrBalanceByTag.push({
       tag: name,
       income: totalIncomes,
       outcome: totalOutcomes,
@@ -474,7 +473,6 @@ const filterArrByDate = (array, dateSearched) => {
 const calculateReportBalanceByDate = () => {
   let arrBalanceByDate = []
   let datesArr = []
-  let objBalanceByDate = {}
   let totalIncomes = 0
   let totalOutcomes = 0
   let total = 0
@@ -498,7 +496,7 @@ const calculateReportBalanceByDate = () => {
       }
       total = totalIncomes - totalOutcomes
     }
-    arrBalanceByDate.push(objBalanceByDate = {
+    arrBalanceByDate.push({
       date: date,
       income: totalIncomes,
       outcome: totalOutcomes,
@@ -808,6 +806,7 @@ cancelBtnModal.addEventListener("click", (event) => {
 })
 
 modalBtnAdd.addEventListener("click", (e) => {
+  e.preventDefault()
   modalErrorDescription.classList.add("hidden")
   modalErrorAmount.classList.add("hidden")
   if (descriptionInput.value === "" && amountInput.value === "") {
@@ -820,7 +819,6 @@ modalBtnAdd.addEventListener("click", (e) => {
   if (amountInput.value === "") {
     return modalErrorAmount.classList.remove("hidden")
   }
-  e.preventDefault()
   operationTableContainer.innerHTML = ""
   addNewOperationObject(localOperationsArr, createOperationObject())
   localStorage.setItem("operationsList", JSON.stringify(localOperationsArr))
