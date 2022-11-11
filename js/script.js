@@ -63,10 +63,16 @@ const getRandomId = (array) => {
   return randomIdArr.join('')
 }
 
+// local storage functions
+
+const setItemInLocal = (key, array) => {
+  localStorage.setItem(key, JSON.stringify(array))
+}
+
 /*********** Operation section ***********/
 // Local storage for operations list
 if (!localStorage.getItem("operationsList")) {
-  localStorage.setItem("operationsList", JSON.stringify(operations))
+  setItemInLocal("operationsList", operations)
 }
 
 // Input variables for operations
@@ -87,11 +93,11 @@ const formatDate = (date) => {
 }
 
 // Create operation
-const addNewOperationObject = (array, object) => {
+const addNewOperationObject = (operationsArr, operation) => {
   if (descriptionInput.value === '' || amountInput.value === "" || typeModal.value === "All" || tagModal.value === "All") {
-    return array
+    return operationsArr
   }
-  return array.push(object)
+  return operationsArr.push(operation)
 }
 
 const createOperationObject = () => {
@@ -112,15 +118,15 @@ const errorMessage = $(".span-message")
 
 // Local storage for tags list
 if (!localStorage.getItem("tagList")) {
-  localStorage.setItem("tagList", JSON.stringify(tags))
+  setItemInLocal("tagList", tags)
 }
 
 // Create tag
-const addNewTagObject = (array, object) => {
+const addNewTagObject = (tagArr, tag) => {
   if (inputNewTag.value === '') {
-    return array
+    return tagArr
   }
-  return array.push(object)
+  return tagArr.push(tag)
 }
 
 const createTagObject = () => {
@@ -138,16 +144,16 @@ const createTagObject = () => {
 
 /************** Balance section *******************/
 if (!localStorage.getItem("balanceObj")) {
-  localStorage.setItem("balanceObj", JSON.stringify(balanceObj))
+  setItemInLocal("balanceObj", balanceObj)
 }
 
 const localBalanceObj = JSON.parse(localStorage.getItem("balanceObj"))
 
-const refreshBalanceObj = (array) => {
+const refreshBalanceObj = (operationsArr) => {
   balanceObj.incomes = 0
   balanceObj.outcomes = 0
   balanceObj.total = 0
-  for (const { amount, type } of array) {
+  for (const { amount, type } of operationsArr) {
     if (type === 'income') {
       balanceObj.incomes += amount
     }
@@ -161,7 +167,7 @@ const refreshBalanceObj = (array) => {
 
 const saveBalanceObj = () => {
   balanceObj = refreshBalanceObj(localOperationsArr)
-  return localStorage.setItem("balanceObj", JSON.stringify(balanceObj))
+  return setItemInLocal("balanceObj", balanceObj)
 }
 
 /*************** filter functions *****************/
@@ -172,29 +178,29 @@ const filterTag = $("#filter-tag")
 const filterSort = $("#sort-by")
 
 
-const filterBy = (array, key, value) => {
-  const filterArr = array.filter(obj => {
-    return obj[key] === value
+const filterBy = (operationsArr, key, value) => {
+  const filterArr = operationsArr.filter(operation => {
+    return operation[key] === value
   })
   return filterArr
 }
 
-const filterByDate = (array) => {
-  return array.filter(obj => {
-    return Number(obj.date.split("-").join("")) >= Number(filterDate.value.split("-").join(""))
+const filterByDate = (operationsArr) => {
+  return operationsArr.filter(operation => {
+    return Number(operation.date.split("-").join("")) >= Number(filterDate.value.split("-").join(""))
   })
 }
 
-const filterNewest = (array) => {
-  return array.sort((a, b) => Number(b.date.split("-").join("")) - Number(a.date.split("-").join("")))
+const filterNewest = (operationsArr) => {
+  return operationsArr.sort((a, b) => Number(b.date.split("-").join("")) - Number(a.date.split("-").join("")))
 }
 
-const filterHigherAmount = (array) => {
-  return array.sort((a, b) => b.amount - a.amount)
+const filterHigherAmount = (operationsArr) => {
+  return operationsArr.sort((a, b) => b.amount - a.amount)
 }
 
-const filterAToZ = (array) => {
-  return array.sort((a, b) => {
+const filterAToZ = (operationsArr) => {
+  return operationsArr.sort((a, b) => {
     if (a.description < b.description) {
       return -1
     }
@@ -241,14 +247,14 @@ const filterOperations = () => {
 }
 
 /************* EDIT AND DELETE BUTTON FUNCTIONALITY ************/
-const findObj = (array, elementId) => array.find(({ id }) => id === elementId)
+const findObj = (operationsArr, elementId) => operationsArr.find(({ id }) => id === elementId)
 
-const removeObjOfArray = (array, elementId) => array.filter(({ id }) => id !== elementId)
+const removeObjOfArray = (operationsArr, elementId) => operationsArr.filter(({ id }) => id !== elementId)
 
 // Operations delete button
 const deleteObj = (elementId) => {
   localOperationsArr = removeObjOfArray(localOperationsArr, elementId)
-  localStorage.setItem("operationsList", JSON.stringify(localOperationsArr))
+  setItemInLocal("operationsList", localOperationsArr)
   showOperationsOnDisplay(filterOperations())
   refreshBalanceObj(localOperationsArr)
   saveBalanceObj()
@@ -259,7 +265,7 @@ const deleteObj = (elementId) => {
 // Tags delete button
 const deleteTag = (elementId) => {
   localTagsArr = removeObjOfArray(localTagsArr, elementId)
-  localStorage.setItem("tagList", JSON.stringify(localTagsArr))
+  setItemInLocal("tagList", localTagsArr)
   showTagsOnDisplay(localTagsArr)
 }
 
@@ -299,8 +305,8 @@ const updateOperationObj = (elementId) => {
   }
 }
 
-const editOperationObj = (array, elementId) => {
-  return array.map(obj => {
+const editOperationObj = (operationsArr, elementId) => {
+  return operationsArr.map(obj => {
     if (obj.id === elementId) {
       return updateOperationObj(elementId)
     }
@@ -309,14 +315,14 @@ const editOperationObj = (array, elementId) => {
 }
 
 editSaveBtn.addEventListener("click", (e) => {
+  e.preventDefault()
   if (editDescription.value === "") {
     return editModalError.classList.remove("hidden")
-  }
-  e.preventDefault()
+  } 
   operationTableContainer.innerHTML = ""
   const elementId = editSaveBtn.getAttribute("data-id")
   localOperationsArr = editOperationObj(localOperationsArr, elementId)
-  localStorage.setItem("operationsList", JSON.stringify(localOperationsArr))
+  setItemInLocal("operationsList", localOperationsArr)
   showOperationsOnDisplay(filterOperations())
   refreshBalanceObj(filterOperations())
   saveBalanceObj()
@@ -339,9 +345,9 @@ const errorEditTagMessage = $(".tag-span-message")
 
 const editTagName = (elementId) => {
   editTagNameSaveBtn.setAttribute("data-id", elementId)
-  let obj = findObj(localTagsArr, elementId)
+  let tagObj = findObj(localTagsArr, elementId)
   editTagContainerModal.classList.remove("hidden")
-  editTagNameInput.value = obj.name
+  editTagNameInput.value = tagObj.name
 }
 
 const updateTagObj = (elementId) => {
@@ -351,12 +357,12 @@ const updateTagObj = (elementId) => {
   }
 }
 
-const editTagObj = (array, elementId) => {
-  return array.map(obj => {
-    if (obj.id === elementId) {
+const editTagObj = (tagArr, elementId) => {
+  return tagArr.map(tag => {
+    if (tag.id === elementId) {
       return updateTagObj(elementId)
     }
-    return obj
+    return tag
   })
 }
 
@@ -366,7 +372,7 @@ editTagNameSaveBtn.addEventListener("click", (e) => {
     tagTable.innerHTML = ""
     const elementId = editTagNameSaveBtn.getAttribute("data-id")
     localTagsArr = editTagObj(localTagsArr, elementId)
-    localStorage.setItem("tagList", JSON.stringify(localTagsArr))
+    setItemInLocal("tagList", localTagsArr)
     showTagsOnDisplay(localTagsArr)
     editTagContainerModal.classList.add("hidden")
   }
@@ -383,17 +389,17 @@ editTagNameCancelBtn.addEventListener("click", (e) => {
 /************************* REPORT SECTION *******************/
 // esta función la retoqué, y hay que usarla luego de usar calculateReportBalance() (que devuelve un array con los incomes, outcomes y totals por tag, dado que ayer nos confundimos y en verdad la primera tabla muestra los incomes/outcomes sumados, o sea la tag cuyos incomes o outcomes sumados son más grandes)
 
-const getObjWithMaxIncomeOrOutcome = (array, typeSearched) => {
+const getObjWithMaxIncomeOrOutcome = (operationsArr, typeSearched) => {
   let objWithMaxIncomeOrOutcome = {}
   let counter = 0
-  for (const obj of array) {
+  for (const operation of operationsArr) {
     let adding = 0
-    for (const key of Object.keys(obj)) {
+    for (const key of Object.keys(operation)) {
       if (key === typeSearched) {
-        adding += obj[key]
+        adding += operation[key]
       }
       if (adding > counter) {
-        objWithMaxIncomeOrOutcome = obj
+        objWithMaxIncomeOrOutcome = operation
         counter = adding
       }
     }
@@ -403,9 +409,9 @@ const getObjWithMaxIncomeOrOutcome = (array, typeSearched) => {
 
 // Tags
 
-const filterArrByTag = (array, tagSearched) => {
-  return array.filter(obj => {
-    return obj.tag === tagSearched
+const filterArrByTag = (operationsArr, tagSearched) => {
+  return operationsArr.filter(operation => {
+    return operation.tag === tagSearched
   })
 }
 
@@ -449,24 +455,23 @@ const getTagWithMaxBalance = () => {
       }
       adding = obj.total
     }
-
   }
   return objWithMaxBalance
 }
 
 // Dates - calculates "mes con mayor ganancia" y "mes con mayor gasto"
-const formatArrDate = (array) => {
-  return array.map(obj => {
+const formatArrDate = (operationsArr) => {
+  return operationsArr.map(operation => {
     return {
-      ...obj,
-      date: ((obj.date.split("-").join("")).slice(0, 6))
+      ...operation,
+      date: ((operation.date.split("-").join("")).slice(0, 6))
     }
   })
 }
 
-const filterArrByDate = (array, dateSearched) => {
-  return array.filter(obj => {
-    return obj.date === dateSearched
+const filterArrByDate = (operationsArr, dateSearched) => {
+  return operationsArr.filter(operation => {
+    return operation.date === dateSearched
   })
 }
 
@@ -504,7 +509,7 @@ const calculateReportBalanceByDate = () => {
     })
   }
   return arrBalanceByDate
-} // can this function be somehow factorized?? so we can have only one calculateReportBalance function...
+}
 
 /******************** DOM FUNCTIONS **********************************/
 // Dom balance variables
@@ -551,6 +556,7 @@ const noResultsOrResults = () => {
   }
 }
 
+// for responsive
 const mediumScreen = window.matchMedia("(min-width: 768px)")
 
 const showOperationsOnDisplay = (array) => {
@@ -603,9 +609,9 @@ const addTagBtn = $("#tag-btn")
 let localTagsArr = JSON.parse(localStorage.getItem("tagList"))
 
 // Dom tags functions and events
-const showTagsOnDisplay = (array) => {
+const showTagsOnDisplay = (tagArr) => {
   tagTable.innerHTML = ''
-  for (const { id, name } of array) {
+  for (const { id, name } of tagArr) {
     tagTable.innerHTML += `
       <div class="flex justify-between items-center mb-3"> 
         <span class="text-sm bg-[#F4C6D9] text-[#AB0B4F] p-1 rounded">${name}</span> 
@@ -634,7 +640,7 @@ else { showTagsOnDisplay(localTagsArr) }
 addTagBtn.addEventListener("click", () => {
   tagTable.innerHTML = ""
   addNewTagObject(localTagsArr, createTagObject(localTagsArr))
-  localStorage.setItem("tagList", JSON.stringify(localTagsArr))
+  setItemInLocal("tagList", localTagsArr)
   showTagsOnDisplay(localTagsArr)
   filterTag.innerHTML = `<option value="all">All</option>`
   addTagTypeFilter()
@@ -645,9 +651,8 @@ addTagBtn.addEventListener("click", () => {
 // Dom filters
 const filterUserSelection = $$(".filter-user-selection")
 
-let month = new Date()
-filterDate.value = today.getFullYear() + '-' + ('0' + (today.getMonth())).slice(-2) + '-' + "01";
-
+let todayFirst = new Date()
+filterDate.value = todayFirst.getFullYear() + '-' + (todayFirst.getMonth() + 1) + '-' + "01";
 
 for (const selection of filterUserSelection) {
   selection.addEventListener("change", () => {
@@ -800,8 +805,8 @@ operationBtn.addEventListener("click", () => {
   addTagModal(tagModal)
 })
 
-cancelBtnModal.addEventListener("click", (event) => {
-  event.preventDefault()
+cancelBtnModal.addEventListener("click", (e) => {
+  e.preventDefault()
   modalContainer.classList.add("hidden")
 })
 
@@ -821,7 +826,7 @@ modalBtnAdd.addEventListener("click", (e) => {
   }
   operationTableContainer.innerHTML = ""
   addNewOperationObject(localOperationsArr, createOperationObject())
-  localStorage.setItem("operationsList", JSON.stringify(localOperationsArr))
+  setItemInLocal("operationsList", localOperationsArr)
   showOperationsOnDisplay(filterOperations())
   refreshBalanceObj(filterOperations())
   saveBalanceObj()
