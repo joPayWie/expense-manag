@@ -512,6 +512,19 @@ const calculateReportBalanceByDate = () => {
 }
 
 /******************** DOM FUNCTIONS **********************************/
+
+const cleanHTML = (selector) => {
+  selector.innerHTML = ''
+}
+
+const hideElement = (selector) => {
+  selector.classList.add("hidden")
+} 
+
+const unhideElement = (selector) => {
+  selector.classList.remove("hidden")
+}
+
 // Dom balance variables
 const totalIncomesDom = $("#total-incomes")
 const totalOutcomesDom = $("#total-outcomes")
@@ -536,22 +549,22 @@ const noResultReportContainer = $("#report-noresult-container")
 // Showing or not showing table head
 const noResultsOrResults = () => {
   if (localOperationsArr.length === 0) {
-    noResultContainer.classList.remove("hidden")
-    noResultReportContainer.classList.remove("hidden")
-    divTableOperations.classList.add("hidden")
-    reportTableContainer.classList.add("hidden")
+    unhideElement(noResultContainer)
+    unhideElement(noResultReportContainer)
+    hideElement(divTableOperations)
+    hideElement(reportTableContainer)
   }
   if ((filterOperations()).length === 0) {
-    noResultContainer.classList.remove("hidden")
-    divTableOperations.classList.add("hidden")
+    unhideElement(noResultContainer)
+    hideElement(divTableOperations)
   }
   else {
-    noResultContainer.classList.add("hidden")
-    divTableOperations.classList.remove("hidden")
+    hideElement(noResultContainer)
+    unhideElement(divTableOperations)
     operationHeaderTable.classList.remove("md:hidden")
     operationHeaderTable.classList.add("md:table-header-group")
-    noResultReportContainer.classList.add("hidden")
-    reportTableContainer.classList.remove("hidden")
+    hideElement(noResultReportContainer)
+    unhideElement(reportTableContainer)
     showOperationsOnDisplay(filterOperations())
   }
 }
@@ -560,7 +573,7 @@ const noResultsOrResults = () => {
 const mediumScreen = window.matchMedia("(min-width: 768px)")
 
 const showOperationsOnDisplay = (array) => {
-  operationTableContainer.innerHTML = ''
+  cleanHTML(operationTableContainer)
   for (const { id, description, amount, type, tag, date } of array) {
     if (mediumScreen.matches) {
       operationTableContainer.innerHTML += `
@@ -610,7 +623,7 @@ let localTagsArr = JSON.parse(localStorage.getItem("tagList"))
 
 // Dom tags functions and events
 const showTagsOnDisplay = (tagArr) => {
-  tagTable.innerHTML = ''
+  cleanHTML(tagTable)
   for (const { id, name } of tagArr) {
     tagTable.innerHTML += `
       <div class="flex justify-between items-center mb-3"> 
@@ -638,7 +651,7 @@ if (localStorage.getItem("tagList")) {
 else { showTagsOnDisplay(localTagsArr) }
 
 addTagBtn.addEventListener("click", () => {
-  tagTable.innerHTML = ""
+  cleanHTML(tagTable)
   addNewTagObject(localTagsArr, createTagObject(localTagsArr))
   setItemInLocal("tagList", localTagsArr)
   showTagsOnDisplay(localTagsArr)
@@ -676,15 +689,14 @@ const showSummaryOnDisplay = () => {
   let arrTotalsByTag = calculateReportBalanceByTag()
   let arrTotalsByDate = calculateReportBalanceByDate()
 
-
-  if (Object.entries(getObjWithMaxIncomeOrOutcome(calculateReportBalanceByDate(), 'income')).length !== 0 && Object.entries(getObjWithMaxIncomeOrOutcome(calculateReportBalanceByDate(), 'outcome')).length !== 0) {
+  if (Object.entries(monthMaxIncome).length !== 0 && Object.entries(monthMaxOutcome).length !== 0) {
     monthMaxIncome.date = monthMaxIncome.date.split('')
     monthMaxIncome.date.splice(4, 0, '/')
     monthMaxOutcome.date = monthMaxOutcome.date.split('')
     monthMaxOutcome.date.splice(4, 0, '/')
   }
-
-  if (tagMaxIncome.income !== undefined && tagMaxOutcome.outcome !== undefined && tagMaxBalance.name !== undefined) {
+  
+  if (!!tagMaxIncome.income && !!tagMaxOutcome.outcome && !!tagMaxBalance.name) {
     reportTableContainer.classList.remove("hidden")
     noResultReportContainer.classList.add("hidden")
     totalByTagTable.innerHTML = `
@@ -789,7 +801,7 @@ const modalErrorAmount = $(".operation-modal-error-amount")
 
 // Modal tags
 const addTagModal = (selector) => {
-  selector.innerHTML = ''
+  cleanHTML(selector)
   for (const { name } of localTagsArr) {
     selector.innerHTML += `
     <option value="${name}">${name}</option>`
@@ -798,33 +810,33 @@ const addTagModal = (selector) => {
 
 // Modal event 
 operationBtn.addEventListener("click", () => {
-  modalErrorDescription.classList.add("hidden")
-  modalErrorAmount.classList.add("hidden")
-  modalContainer.classList.remove("hidden")
+  hideElement(modalErrorDescription)
+  hideElement(modalErrorAmount)
+  unhideElement(modalContainer)
   operationModalForm.reset()
   addTagModal(tagModal)
 })
 
 cancelBtnModal.addEventListener("click", (e) => {
   e.preventDefault()
-  modalContainer.classList.add("hidden")
+  hideElement(modalContainer)
 })
 
 modalBtnAdd.addEventListener("click", (e) => {
   e.preventDefault()
-  modalErrorDescription.classList.add("hidden")
-  modalErrorAmount.classList.add("hidden")
+  hideElement(modalErrorDescription)
+  hideElement(modalErrorAmount)
   if (descriptionInput.value === "" && amountInput.value === "") {
-    modalErrorDescription.classList.remove("hidden")
-    return modalErrorAmount.classList.remove("hidden")
+    unhideElement(modalErrorDescription)
+    return unhideElement(modalErrorAmount)
   }
   if (descriptionInput.value === "") {
-    return modalErrorDescription.classList.remove("hidden")
+    return unhideElement(modalErrorDescription)
   }
   if (amountInput.value === "") {
-    return modalErrorAmount.classList.remove("hidden")
+    return unhideElement(modalErrorAmount)
   }
-  operationTableContainer.innerHTML = ""
+  cleanHTML(operationTableContainer)
   addNewOperationObject(localOperationsArr, createOperationObject())
   setItemInLocal("operationsList", localOperationsArr)
   showOperationsOnDisplay(filterOperations())
@@ -832,7 +844,7 @@ modalBtnAdd.addEventListener("click", (e) => {
   saveBalanceObj()
   showTotalsOnDisplay(balanceObj)
   noResultsOrResults()
-  modalContainer.classList.add("hidden")
+  hideElement(modalContainer)
 })
 
 
@@ -871,16 +883,16 @@ const balanceShowLinks = $$(".balance-show-link")
 const tagShowLinks = $$(".tag-show-link")
 
 const hideBurgerMenu = () => {
-  burgerMenu.classList.add("hidden")
-  burgerIconLines.classList.remove("hidden")
-  burgerIconX.classList.add("hidden")
+  hideElement(burgerMenu)
+  unhideElement(burgerIconLines)
+  hideElement(burgerIconX)
 }
 
 for (const balanceLink of balanceShowLinks) {
   balanceLink.addEventListener("click", () => {
-    balanceSection.classList.remove("hidden")
-    tagSection.classList.add("hidden")
-    reportSection.classList.add("hidden")
+    unhideElement(balanceSection)
+    hideElement(tagSection)
+    hideElement(reportSection)
     hideBurgerMenu()
     showOperationsOnDisplay(filterOperations())
   })
@@ -888,19 +900,18 @@ for (const balanceLink of balanceShowLinks) {
 
 for (const tagLink of tagShowLinks) {
   tagLink.addEventListener("click", () => {
-    tagSection.classList.remove("hidden")
-    balanceSection.classList.add("hidden")
-    reportSection.classList.add("hidden")
+    unhideElement(tagSection)
+    hideElement(balanceSection)
+    hideElement(reportSection)
     hideBurgerMenu()
   })
 }
 
 for (const reportLink of reportShowLinks) {
   reportLink.addEventListener("click", () => {
-    errorMessage.classList.add("hidden")
-    reportSection.classList.remove("hidden")
-    balanceSection.classList.add("hidden")
-    tagSection.classList.add("hidden")
+    unhideElement(reportSection)
+    hideElement(balanceSection)
+    hideElement(tagSection)
     hideBurgerMenu()
     showSummaryOnDisplay()
   })
