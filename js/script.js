@@ -3,7 +3,12 @@
 const $ = (selector) => document.querySelector(selector)
 const $$ = (selector) => document.querySelectorAll(selector)
 
-/********************************* DATA FUNCTIONS  *****************/
+/*
+------------------------------------------------------------------------
+DATA FUNCTIONS
+------------------------------------------------------------------------ 
+*/
+
 // Data variables
 let tags = [
   {
@@ -41,7 +46,11 @@ let balanceObj = {
   outcomes: 0
 }
 
-// General functions
+/*
+------------------------------------------------------------------------
+General data functions
+------------------------------------------------------------------------ 
+*/
 const getRandomCharacter = (array) => {
   let randomIndex = Math.floor(Math.random() * array.length)
   let randomSelection = array[randomIndex];
@@ -63,13 +72,16 @@ const getRandomId = (array) => {
   return randomIdArr.join('')
 }
 
-// local storage functions
-
+// localStorage functions
 const setItemInLocal = (key, array) => {
   localStorage.setItem(key, JSON.stringify(array))
 }
 
-/*********** Operation section ***********/
+/*
+------------------------------------------------------------------------
+Operations data functionality
+------------------------------------------------------------------------ 
+*/
 // Local storage for operations list
 if (!localStorage.getItem("operationsList")) {
   setItemInLocal("operationsList", operations)
@@ -111,7 +123,11 @@ const createOperationObject = () => {
   }
 }
 
-/************** Tags section **************/
+/*
+------------------------------------------------------------------------
+Tags data functionality
+------------------------------------------------------------------------ 
+*/
 // Input variables for tags
 const inputNewTag = $("#tag-name")
 const errorMessage = $(".span-message")
@@ -142,7 +158,11 @@ const createTagObject = () => {
   }
 }
 
-/************** Balance section *******************/
+/*
+------------------------------------------------------------------------
+Balance data functionality
+------------------------------------------------------------------------ 
+*/
 if (!localStorage.getItem("balanceObj")) {
   setItemInLocal("balanceObj", balanceObj)
 }
@@ -170,7 +190,11 @@ const saveBalanceObj = () => {
   return setItemInLocal("balanceObj", balanceObj)
 }
 
-/*************** filter functions *****************/
+/*
+------------------------------------------------------------------------
+Filters functionality
+------------------------------------------------------------------------ 
+*/
 // Filter variables
 const filterDate = $("#filter-date")
 const filterType = $("#filter-type")
@@ -246,7 +270,11 @@ const filterOperations = () => {
   return operationsScope
 }
 
-/************* EDIT AND DELETE BUTTON FUNCTIONALITY ************/
+/*
+------------------------------------------------------------------------
+EDIT and DELETE buttons functionality
+------------------------------------------------------------------------ 
+*/
 const findObj = (operationsArr, elementId) => operationsArr.find(({ id }) => id === elementId)
 
 const removeObjOfArray = (operationsArr, elementId) => operationsArr.filter(({ id }) => id !== elementId)
@@ -334,7 +362,7 @@ editSaveBtn.addEventListener("click", (e) => {
 editCancelBtn.addEventListener("click", (e) => {
   e.preventDefault()
   hideElement(editContainerModal)
-}) // this function can be refactorized to use it with the edit tag cancel btn as well
+})
 
 // Tag edit button
 const editTagContainerModal = $(".edit-tag-name-container")
@@ -386,9 +414,11 @@ editTagNameCancelBtn.addEventListener("click", (e) => {
   hideElement(editTagContainerModal)
 })
 
-/************************* REPORT SECTION *******************/
-// esta función la retoqué, y hay que usarla luego de usar calculateReportBalance() (que devuelve un array con los incomes, outcomes y totals por tag, dado que ayer nos confundimos y en verdad la primera tabla muestra los incomes/outcomes sumados, o sea la tag cuyos incomes o outcomes sumados son más grandes)
-
+/*
+------------------------------------------------------------------------
+Report section functionality
+------------------------------------------------------------------------ 
+*/
 const getObjWithMaxIncomeOrOutcome = (operationsArr, typeSearched) => {
   let objWithMaxIncomeOrOutcome = {}
   let counter = 0
@@ -408,7 +438,6 @@ const getObjWithMaxIncomeOrOutcome = (operationsArr, typeSearched) => {
 }
 
 // Tags
-
 const filterArrByTag = (operationsArr, tagSearched) => {
   return operationsArr.filter(operation => {
     return operation.tag === tagSearched
@@ -511,8 +540,12 @@ const calculateReportBalanceByDate = () => {
   return arrBalanceByDate
 }
 
-/*********************** DOM FUNCTIONS **********************************/
-
+/*
+------------------------------------------------------------------------
+DOM FUNCTIONS
+------------------------------------------------------------------------ 
+*/
+// Dom general functions
 const cleanHTML = (selector) => {
   selector.innerHTML = ''
 }
@@ -644,7 +677,6 @@ const addTagTypeFilter = () => {
 }
 
 // First tag execution
-
 if (localStorage.getItem("tagList")) {
   showTagsOnDisplay(JSON.parse(localStorage.getItem("tagList")))
 }
@@ -753,7 +785,11 @@ const showSummaryOnDisplay = () => {
 }
 
 
-/************************ Modal *******************************/
+/*
+------------------------------------------------------------------------
+MODAL
+------------------------------------------------------------------------ 
+*/
 // Modal variables
 const operationBtn = $("#operation-btn")
 const modalBtnAdd = $("#modal-btn-add")
@@ -812,7 +848,11 @@ modalBtnAdd.addEventListener("click", (e) => {
 })
 
 
-/*********************** Burger menu **************************/
+/*
+------------------------------------------------------------------------
+BURGER MENU
+------------------------------------------------------------------------ 
+*/
 // Burger menu variables
 const burgerBtn = $("button.mobile-menu-button")
 const burgerMenu = $(".mobile-menu")
@@ -837,7 +877,11 @@ hideFilters.addEventListener("click", () => {
   filterForm.classList.toggle("hidden")
 })
 
-/********************* Sections events *************/
+/*
+------------------------------------------------------------------------
+SECTIONS hide and unhide events
+------------------------------------------------------------------------ 
+*/
 // hide and unhide sections variables
 const balanceSection = $("#main-section")
 const tagSection = $("#tag-section")
