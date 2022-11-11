@@ -189,18 +189,9 @@ const filterNewest = (array) => {
   return array.sort((a, b) => Number(b.date.split("-").join("")) - Number(a.date.split("-").join("")))
 }
 
-const filterOldest = (array) => {
-  return array.sort((a, b) => Number(a.date.split("-").join("")) - Number(b.date.split("-").join("")))
-}
-
 const filterHigherAmount = (array) => {
   return array.sort((a, b) => b.amount - a.amount)
 }
-
-const filterLowerAmount = (array) => {
-  return array.sort((a, b) => a.amount - b.amount)
-}
-
 
 const filterAToZ = (array) => {
   return array.sort((a, b) => {
@@ -208,20 +199,6 @@ const filterAToZ = (array) => {
       return -1
     }
     else if (a.name > b.name) {
-      return 1
-    }
-    else {
-      return 0
-    }
-  })
-}
-
-const filterZToA = (array) => {
-  return array.sort((a, b) => {
-    if (a.description > b.description) {
-      return -1
-    }
-    else if (a.name < b.name) {
       return 1
     }
     else {
@@ -246,19 +223,19 @@ const filterOperations = () => {
     operationsScope = filterAToZ(operationsScope)
   }
   if (filterSort.value === 'z-a') {
-    operationsScope = filterZToA(operationsScope)
+    operationsScope = filterAToZ(operationsScope).reverse()
   }
   if (filterSort.value === "higher") {
     operationsScope = filterHigherAmount(operationsScope)
   }
   if (filterSort.value === "lower") {
-    operationsScope = filterLowerAmount(operationsScope)
+    operationsScope = filterHigherAmount(operationsScope).reverse()
   }
   if (filterSort.value === "newest") {
     operationsScope = filterNewest(operationsScope)
   }
   if (filterSort.value === "oldest") {
-    operationsScope = filterOldest(operationsScope)
+    operationsScope = filterNewest(operationsScope).reverse()
   }
   return operationsScope
 }
@@ -332,7 +309,7 @@ const editOperationObj = (array, elementId) => {
 }
 
 editSaveBtn.addEventListener("click", (e) => {
-  if (editDescription.value === ""){
+  if (editDescription.value === "") {
     return editModalError.classList.remove("hidden")
   }
   e.preventDefault()
@@ -696,8 +673,8 @@ const showSummaryOnDisplay = () => {
   let arrTotalsByTag = calculateReportBalanceByTag()
   let arrTotalsByDate = calculateReportBalanceByDate()
 
-  
-  if(Object.entries(getObjWithMaxIncomeOrOutcome(calculateReportBalanceByDate(), 'income')).length !== 0 && Object.entries(getObjWithMaxIncomeOrOutcome(calculateReportBalanceByDate(), 'outcome')).length !== 0){
+
+  if (Object.entries(getObjWithMaxIncomeOrOutcome(calculateReportBalanceByDate(), 'income')).length !== 0 && Object.entries(getObjWithMaxIncomeOrOutcome(calculateReportBalanceByDate(), 'outcome')).length !== 0) {
     monthMaxIncome.date = monthMaxIncome.date.split('')
     monthMaxIncome.date.splice(4, 0, '/')
     monthMaxOutcome.date = monthMaxOutcome.date.split('')
@@ -833,16 +810,16 @@ cancelBtnModal.addEventListener("click", (event) => {
 modalBtnAdd.addEventListener("click", (e) => {
   modalErrorDescription.classList.add("hidden")
   modalErrorAmount.classList.add("hidden")
-    if(descriptionInput.value === "" && amountInput.value === ""){
-      modalErrorDescription.classList.remove("hidden") 
-      return modalErrorAmount.classList.remove("hidden")
-    }
-    if (descriptionInput.value === "") {
-      return modalErrorDescription.classList.remove("hidden")
-    }
-    if (amountInput.value === "") {
-      return modalErrorAmount.classList.remove("hidden")
-    }
+  if (descriptionInput.value === "" && amountInput.value === "") {
+    modalErrorDescription.classList.remove("hidden")
+    return modalErrorAmount.classList.remove("hidden")
+  }
+  if (descriptionInput.value === "") {
+    return modalErrorDescription.classList.remove("hidden")
+  }
+  if (amountInput.value === "") {
+    return modalErrorAmount.classList.remove("hidden")
+  }
   e.preventDefault()
   operationTableContainer.innerHTML = ""
   addNewOperationObject(localOperationsArr, createOperationObject())
