@@ -3,7 +3,7 @@ by **Solange Aimery** and **Jo Pay**
 
 ![Desktop version](/assets/readme-images/expmanag1.png)
 
-## This web application allows you to control your expenses.
+## 💵 This web application allows you to control your expenses.
 
 It is 100% responsive, and supports desktop, tablet and mobile devices.
 
@@ -29,6 +29,12 @@ Finally, the report section shows you the tags and months with the highest profi
 In addition, it makes a summary by tag and by month.
 
 ![Report section](/assets/readme-images/unifiedreport.png)
+
+## 🛠️ Build entirely with:
+- Vanilla JavaScript
+- HTML 5
+- Tailwind
+- CSS
 
 You can check the app deployment on the following link: [Expense manager](https://jopaywie.github.io/expense-manag/) 
 
