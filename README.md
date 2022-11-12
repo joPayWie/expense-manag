@@ -3,7 +3,7 @@ by **Solange Aimery** and **Jo Pay**
 
 ![Desktop version](/assets/readme-images/expmanag1.png)
 
-## 💵 This web application allows you to control your expenses.
+## 💵 This web application helps you controlling your expenses.
 
 It is 100% responsive, and supports desktop, tablet and mobile devices.
 
