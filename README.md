@@ -31,9 +31,9 @@ In addition, it makes a summary by tag and by month.
 ![Report section](/assets/readme-images/unifiedreport.png)
 
 ## 🛠️ Build entirely with:
-- Vanilla JavaScript
+- *Vanilla* JavaScript 🍦
+- [Tailwind](https://tailwindcss.com/docs/installation)
 - HTML 5
-- Tailwind
 - CSS
 
 You can check the app deployment on the following link: [Expense manager](https://jopaywie.github.io/expense-manag/) 
