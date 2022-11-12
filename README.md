@@ -13,7 +13,7 @@ By uploading, editing and deleting your monetary income and outcome operations, 
 
 ![New operation](/assets/readme-images/newoperation.png)
 
-You can also use filters yo track your operations. Available filters:
+You can also use filters to track your operations. Available filters:
 - By type (income or outcome)
 - By tag
 - By date
