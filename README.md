@@ -19,7 +19,7 @@ You can also use filters for your operations. Available filters:
 - By date
 - Sort by newest, oldest, amount, A to Z and Z to A
 
-![Filters](/assets/readme-images/filters.png)
+![Filters](/assets/readme-images/newfilter.png)
 
 Tags can be created, edited and deleted too. You can create your own tags that best fit your needs!
 
