@@ -21,7 +21,7 @@ You can also use filters for your operations. Available filters:
 
 ![Filters](/assets/readme-images/newfilter.png)
 
-Tags can be created, edited and deleted too. You can create your own tags that best fit your needs!
+Tags can be created, edited and deleted too. You can create your own tags to best fit your needs!
 
 ![Tags](/assets/readme-images/tags.png)
 
