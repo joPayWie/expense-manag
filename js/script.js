@@ -912,7 +912,7 @@ hideFilters.addEventListener("click", () => {
   filterForm.classList.toggle("hidden")
 })
 
-/*
+/* 
 ------------------------------------------------------------------------
 SECTIONS hide and unhide events
 ------------------------------------------------------------------------ 
