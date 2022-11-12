@@ -28,7 +28,7 @@ Tags can be created, edited and deleted too. You can create your own tags that b
 Finally, the report section shows you the tags and months with the highest profit and highest expense. 
 In addition, it makes a summary by tag and by month.
 
-![Report section](/assets/readme-images/unifiedreport.png.png)
+![Report section](/assets/readme-images/unifiedreport.png)
 
 You can check the app deployment on the following link: [Expense manager](https://jopaywie.github.io/expense-manag/) 
 
