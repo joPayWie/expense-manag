@@ -7,7 +7,7 @@ by **Solange Aimery** and **Jo Pay**
 
 It is 100% responsive, and supports desktop, tablet and mobile devices.
 
-![Mobile version](/assets/readme-images/expmanagmobile.png) ![Mobile version](/assets/readme-images/expmanagmobile2.png)
+![Mobile version](/assets/readme-images/expmanagmobile.png)
 
 By uploading, editing and deleting your monetary income and outcome operations, you will easily manage your personal finances.
 
