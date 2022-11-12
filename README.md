@@ -7,7 +7,7 @@ by **Solange Aimery** and **Jo Pay**
 
 It is 100% responsive, and supports desktop, tablet and mobile devices.
 
-![Mobile version](/assets/readme-images/expmanagmobile.png)
+![Mobile version](/assets/readme-images/newexpmanagmobile.png)
 
 By uploading, editing and deleting your monetary income and outcome operations, you will easily manage your personal finances.
 
@@ -28,7 +28,7 @@ Tags can be created, edited and deleted too. You can create your own tags that b
 Finally, the report section shows you the tags and months with the highest profit and highest expense. 
 In addition, it makes a summary by tag and by month.
 
-![Report section](/assets/readme-images/report.png) ![Report section](/assets/readme-images/report2.png)
+![Report section](/assets/readme-images/unifiedreport.png.png)
 
 You can check the app deployment on the following link: [Expense manager](https://jopaywie.github.io/expense-manag/) 
 
