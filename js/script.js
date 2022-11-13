@@ -330,7 +330,7 @@ const calculateReportBalanceByTag = () => {
 const getTagWithMaxBalance = () => {
   let objWithMaxBalance = {}
   let adding = 0
-  for (const obj of calculateReportBalanceByTag()) { 
+  for (const obj of calculateReportBalanceByTag()) {
     if (adding < obj.total) {
       objWithMaxBalance = {
         name: obj.tag,
@@ -542,6 +542,18 @@ addTagBtn.addEventListener("click", () => {
   inputNewTag.value = ""
 })
 
+inputNewTag.addEventListener("keyup", (event) => {
+  if (event.keyCode === 13) {
+    cleanHTML(tagTable)
+    addNewTagObject(localTagsArr, createTagObject(localTagsArr))
+    setItemInLocal("tagList", localTagsArr)
+    showTagsOnDisplay(localTagsArr)
+    filterTag.innerHTML = `<option value="all">All</option>`
+    addTagTypeFilter()
+    inputNewTag.value = "";
+  }
+})
+
 
 // Dom filters
 const filterUserSelection = $$(".filter-user-selection")
@@ -674,8 +686,8 @@ const deleteTag = () => {
   let tagId = deleteTagAcceptBtn.getAttribute("data-id")
   let tagToDelete = findObj(localTagsArr, tagId)
   for (const operation of localOperationsArr) {
-    const { id, tag } = operation 
-    if ( tagToDelete.name === tag ) {
+    const { id, tag } = operation
+    if (tagToDelete.name === tag) {
       deleteObj(id)
     }
   }
@@ -746,7 +758,7 @@ editSaveBtn.addEventListener("click", (e) => {
   e.preventDefault()
   if (editDescription.value === "") {
     return unhideElement(editModalError)
-  } 
+  }
   operationTableContainer.innerHTML = ""
   const elementId = editSaveBtn.getAttribute("data-id")
   localOperationsArr = editOperationObj(localOperationsArr, elementId)
@@ -763,6 +775,30 @@ editCancelBtn.addEventListener("click", (e) => {
   e.preventDefault()
   hideElement(editContainerModal)
 })
+
+editContainerModal.addEventListener("keyup", (e) => {
+  if (event.keyCode === 13) {
+    e.preventDefault()
+    if (editDescription.value === "") {
+      return unhideElement(editModalError)
+    }
+    operationTableContainer.innerHTML = ""
+    const elementId = editSaveBtn.getAttribute("data-id")
+    localOperationsArr = editOperationObj(localOperationsArr, elementId)
+    setItemInLocal("operationsList", localOperationsArr)
+    showOperationsOnDisplay(filterOperations())
+    refreshBalanceObj(filterOperations())
+    saveBalanceObj()
+    showTotalsOnDisplay(balanceObj)
+    showSummaryOnDisplay()
+    hideElement(editContainerModal)
+  }
+  if (event.keyCode === 27) {
+    e.preventDefault()
+    hideElement(editContainerModal);
+  }
+});
+
 
 // Tag edit button
 const editTagContainerModal = $(".edit-tag-name-container")
@@ -806,11 +842,11 @@ editTagNameSaveBtn.addEventListener("click", (e) => {
     showTagsOnDisplay(localTagsArr)
     hideElement(editTagContainerModal)
     for (const operation of localOperationsArr) {
-      if ( operation.tag === oldTagName ) {
+      if (operation.tag === oldTagName) {
         operation.tag = editTagNameInput.value
       }
     }
-  setItemInLocal("operationsList", localOperationsArr)
+    setItemInLocal("operationsList", localOperationsArr)
   }
   else {
     unhideElement(errorEditTagMessage)
@@ -828,6 +864,7 @@ MODAL
 ------------------------------------------------------------------------ 
 */
 // Modal variables
+const operationsContainer = $("#operations-container")
 const operationBtn = $("#operation-btn")
 const modalBtnAdd = $("#modal-btn-add")
 const cancelBtnModal = $("#modal-btn-cancel")
@@ -883,6 +920,37 @@ modalBtnAdd.addEventListener("click", (e) => {
   noResultsOrResults()
   hideElement(modalContainer)
 })
+
+modalContainer.addEventListener("keyup", (e) => {
+  if (event.keyCode === 13) {
+    e.preventDefault()
+    hideElement(modalErrorDescription)
+    hideElement(modalErrorAmount)
+    if (descriptionInput.value === "" && amountInput.value === "") {
+      unhideElement(modalErrorDescription)
+      return unhideElement(modalErrorAmount)
+    }
+    if (descriptionInput.value === "") {
+      return unhideElement(modalErrorDescription)
+    }
+    if (amountInput.value === "") {
+      return unhideElement(modalErrorAmount)
+    }
+    cleanHTML(operationTableContainer)
+    addNewOperationObject(localOperationsArr, createOperationObject())
+    setItemInLocal("operationsList", localOperationsArr)
+    showOperationsOnDisplay(filterOperations())
+    refreshBalanceObj(filterOperations())
+    saveBalanceObj()
+    showTotalsOnDisplay(balanceObj)
+    noResultsOrResults()
+    hideElement(modalContainer);
+  }
+  if (event.keyCode === 27) {
+    e.preventDefault()
+    hideElement(modalContainer);
+  }
+});
 
 /*
 ------------------------------------------------------------------------
@@ -946,6 +1014,7 @@ for (const tagLink of tagShowLinks) {
     unhideElement(tagSection)
     hideElement(balanceSection)
     hideElement(reportSection)
+    hideElement(errorMessage)
     hideBurgerMenu()
   })
 }
