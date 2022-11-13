@@ -542,6 +542,18 @@ addTagBtn.addEventListener("click", () => {
   inputNewTag.value = ""
 })
 
+inputNewTag.addEventListener("keyup", (event) => {
+  if (event.keyCode === 13) {
+    cleanHTML(tagTable)
+    addNewTagObject(localTagsArr, createTagObject(localTagsArr))
+    setItemInLocal("tagList", localTagsArr)
+    showTagsOnDisplay(localTagsArr)
+    filterTag.innerHTML = `<option value="all">All</option>`
+    addTagTypeFilter()
+    inputNewTag.value = "";
+  }
+})
+
 
 // Dom filters
 const filterUserSelection = $$(".filter-user-selection")
