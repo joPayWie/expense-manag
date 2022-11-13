@@ -709,6 +709,24 @@ deleteTagCancelBtn.addEventListener("click", () => {
   hideElement(deleteTagModal)
 })
 
+$("body").addEventListener("keyup", (event) => {
+  if(!deleteTagModal.classList.contains("hidden")){
+    if (event.keyCode === 13) {
+      console.log("enter")
+      deleteTag()
+      hideElement(deleteTagModal)
+      addTagTypeFilter()
+      if (localTagsArr.length === 0) {
+        tagTable.innerHTML = `<span class="text-red-600"> It seems that you are out of tags! Please add one to continue </span>`
+      }
+    }
+    if (event.keyCode === 27) {
+      console.log("esc")
+      hideElement(deleteTagModal)
+    }
+  }
+})
+
 // Operations edit button
 const editContainerModal = $(".edit-container-modal")
 const editDescription = $("#edit-description")
@@ -777,7 +795,7 @@ editCancelBtn.addEventListener("click", (e) => {
 })
 
 editContainerModal.addEventListener("keyup", (e) => {
-  if (event.keyCode === 13) {
+  if (e.keyCode === 13) {
     e.preventDefault()
     if (editDescription.value === "") {
       return unhideElement(editModalError)
@@ -793,7 +811,7 @@ editContainerModal.addEventListener("keyup", (e) => {
     showSummaryOnDisplay()
     hideElement(editContainerModal)
   }
-  if (event.keyCode === 27) {
+  if (e.keyCode === 27) {
     e.preventDefault()
     hideElement(editContainerModal);
   }
@@ -857,6 +875,34 @@ editTagNameCancelBtn.addEventListener("click", (e) => {
   e.preventDefault()
   hideElement(editTagContainerModal)
 })
+
+editTagContainerModal.addEventListener("keyup", (e) => {
+  if (e.keyCode === 13) {
+    e.preventDefault()
+    if (editTagNameInput.value !== '') {
+      tagTable.innerHTML = ""
+      const elementId = editTagNameSaveBtn.getAttribute("data-id")
+      const oldTagName = editTagNameSaveBtn.getAttribute("old-tag-name")
+      localTagsArr = editTagObj(localTagsArr, elementId)
+      setItemInLocal("tagList", localTagsArr)
+      showTagsOnDisplay(localTagsArr)
+      hideElement(editTagContainerModal)
+      for (const operation of localOperationsArr) {
+        if (operation.tag === oldTagName) {
+          operation.tag = editTagNameInput.value
+        }
+      }
+      setItemInLocal("operationsList", localOperationsArr)
+    }
+    else {
+      unhideElement(errorEditTagMessage)
+    };
+  }
+  if (e.keyCode === 27) {
+    e.preventDefault()
+    hideElement(editTagContainerModal)
+  }
+});
 
 /*
 ------------------------------------------------------------------------
@@ -922,7 +968,7 @@ modalBtnAdd.addEventListener("click", (e) => {
 })
 
 modalContainer.addEventListener("keyup", (e) => {
-  if (event.keyCode === 13) {
+  if (e.keyCode === 13) {
     e.preventDefault()
     hideElement(modalErrorDescription)
     hideElement(modalErrorAmount)
@@ -946,7 +992,7 @@ modalContainer.addEventListener("keyup", (e) => {
     noResultsOrResults()
     hideElement(modalContainer);
   }
-  if (event.keyCode === 27) {
+  if (e.keyCode === 27) {
     e.preventDefault()
     hideElement(modalContainer);
   }
