@@ -532,7 +532,7 @@ if (localStorage.getItem("tagList")) {
 }
 else { showTagsOnDisplay(localTagsArr) }
 
-addTagBtn.addEventListener("click", () => {
+const addTagDom = () => {
   cleanHTML(tagTable)
   addNewTagObject(localTagsArr, createTagObject(localTagsArr))
   setItemInLocal("tagList", localTagsArr)
@@ -540,17 +540,15 @@ addTagBtn.addEventListener("click", () => {
   filterTag.innerHTML = `<option value="all">All</option>`
   addTagTypeFilter()
   inputNewTag.value = ""
+}
+
+addTagBtn.addEventListener("click", () => {
+  addTagDom()
 })
 
 inputNewTag.addEventListener("keyup", (event) => {
   if (event.keyCode === 13) {
-    cleanHTML(tagTable)
-    addNewTagObject(localTagsArr, createTagObject(localTagsArr))
-    setItemInLocal("tagList", localTagsArr)
-    showTagsOnDisplay(localTagsArr)
-    filterTag.innerHTML = `<option value="all">All</option>`
-    addTagTypeFilter()
-    inputNewTag.value = "";
+    addTagDom()
   }
 })
 
@@ -696,13 +694,17 @@ const deleteTag = () => {
   showTagsOnDisplay(localTagsArr)
 }
 
-deleteTagAcceptBtn.addEventListener("click", () => {
+const deleteTagDom = () => {
   deleteTag()
   hideElement(deleteTagModal)
   addTagTypeFilter()
   if (localTagsArr.length === 0) {
     tagTable.innerHTML = `<span class="text-red-600"> It seems that you are out of tags! Please add one to continue </span>`
   }
+}
+
+deleteTagAcceptBtn.addEventListener("click", () => {
+  deleteTagDom()
 })
 
 deleteTagCancelBtn.addEventListener("click", () => {
@@ -710,18 +712,11 @@ deleteTagCancelBtn.addEventListener("click", () => {
 })
 
 $("body").addEventListener("keyup", (event) => {
-  if(!deleteTagModal.classList.contains("hidden")){
+  if (!deleteTagModal.classList.contains("hidden")) {
     if (event.keyCode === 13) {
-      console.log("enter")
-      deleteTag()
-      hideElement(deleteTagModal)
-      addTagTypeFilter()
-      if (localTagsArr.length === 0) {
-        tagTable.innerHTML = `<span class="text-red-600"> It seems that you are out of tags! Please add one to continue </span>`
-      }
+      deleteTagDom()
     }
     if (event.keyCode === 27) {
-      console.log("esc")
       hideElement(deleteTagModal)
     }
   }
@@ -772,8 +767,7 @@ const editOperationObj = (operationsArr, elementId) => {
   })
 }
 
-editSaveBtn.addEventListener("click", (e) => {
-  e.preventDefault()
+const editSaveDom = () => {
   if (editDescription.value === "") {
     return unhideElement(editModalError)
   }
@@ -787,6 +781,11 @@ editSaveBtn.addEventListener("click", (e) => {
   showTotalsOnDisplay(balanceObj)
   showSummaryOnDisplay()
   hideElement(editContainerModal)
+}
+
+editSaveBtn.addEventListener("click", (e) => {
+  e.preventDefault()
+  editSaveDom()
 })
 
 editCancelBtn.addEventListener("click", (e) => {
@@ -796,20 +795,7 @@ editCancelBtn.addEventListener("click", (e) => {
 
 editContainerModal.addEventListener("keyup", (e) => {
   if (e.keyCode === 13) {
-    e.preventDefault()
-    if (editDescription.value === "") {
-      return unhideElement(editModalError)
-    }
-    operationTableContainer.innerHTML = ""
-    const elementId = editSaveBtn.getAttribute("data-id")
-    localOperationsArr = editOperationObj(localOperationsArr, elementId)
-    setItemInLocal("operationsList", localOperationsArr)
-    showOperationsOnDisplay(filterOperations())
-    refreshBalanceObj(filterOperations())
-    saveBalanceObj()
-    showTotalsOnDisplay(balanceObj)
-    showSummaryOnDisplay()
-    hideElement(editContainerModal)
+    editSaveDom()
   }
   if (e.keyCode === 27) {
     e.preventDefault()
@@ -849,8 +835,7 @@ const editTagObj = (tagArr, elementId) => {
   })
 }
 
-editTagNameSaveBtn.addEventListener("click", (e) => {
-  e.preventDefault()
+const editTagDom = () => {
   if (editTagNameInput.value !== '') {
     tagTable.innerHTML = ""
     const elementId = editTagNameSaveBtn.getAttribute("data-id")
@@ -869,6 +854,11 @@ editTagNameSaveBtn.addEventListener("click", (e) => {
   else {
     unhideElement(errorEditTagMessage)
   }
+}
+
+editTagNameSaveBtn.addEventListener("click", (e) => {
+  e.preventDefault()
+  editTagDom()
 })
 
 editTagNameCancelBtn.addEventListener("click", (e) => {
@@ -879,24 +869,7 @@ editTagNameCancelBtn.addEventListener("click", (e) => {
 editTagContainerModal.addEventListener("keyup", (e) => {
   if (e.keyCode === 13) {
     e.preventDefault()
-    if (editTagNameInput.value !== '') {
-      tagTable.innerHTML = ""
-      const elementId = editTagNameSaveBtn.getAttribute("data-id")
-      const oldTagName = editTagNameSaveBtn.getAttribute("old-tag-name")
-      localTagsArr = editTagObj(localTagsArr, elementId)
-      setItemInLocal("tagList", localTagsArr)
-      showTagsOnDisplay(localTagsArr)
-      hideElement(editTagContainerModal)
-      for (const operation of localOperationsArr) {
-        if (operation.tag === oldTagName) {
-          operation.tag = editTagNameInput.value
-        }
-      }
-      setItemInLocal("operationsList", localOperationsArr)
-    }
-    else {
-      unhideElement(errorEditTagMessage)
-    };
+    editTagDom()
   }
   if (e.keyCode === 27) {
     e.preventDefault()
@@ -929,21 +902,7 @@ const addTagModal = (selector) => {
 }
 
 // Modal event 
-operationBtn.addEventListener("click", () => {
-  hideElement(modalErrorDescription)
-  hideElement(modalErrorAmount)
-  unhideElement(modalContainer)
-  operationModalForm.reset()
-  addTagModal(tagModal)
-})
-
-cancelBtnModal.addEventListener("click", (e) => {
-  e.preventDefault()
-  hideElement(modalContainer)
-})
-
-modalBtnAdd.addEventListener("click", (e) => {
-  e.preventDefault()
+const modalAddDom = () => {
   hideElement(modalErrorDescription)
   hideElement(modalErrorAmount)
   if (descriptionInput.value === "" && amountInput.value === "") {
@@ -965,32 +924,30 @@ modalBtnAdd.addEventListener("click", (e) => {
   showTotalsOnDisplay(balanceObj)
   noResultsOrResults()
   hideElement(modalContainer)
+}
+
+operationBtn.addEventListener("click", () => {
+  hideElement(modalErrorDescription)
+  hideElement(modalErrorAmount)
+  unhideElement(modalContainer)
+  operationModalForm.reset()
+  addTagModal(tagModal)
+})
+
+cancelBtnModal.addEventListener("click", (e) => {
+  e.preventDefault()
+  hideElement(modalContainer)
+})
+
+modalBtnAdd.addEventListener("click", (e) => {
+  e.preventDefault()
+  modalAddDom()
 })
 
 modalContainer.addEventListener("keyup", (e) => {
   if (e.keyCode === 13) {
     e.preventDefault()
-    hideElement(modalErrorDescription)
-    hideElement(modalErrorAmount)
-    if (descriptionInput.value === "" && amountInput.value === "") {
-      unhideElement(modalErrorDescription)
-      return unhideElement(modalErrorAmount)
-    }
-    if (descriptionInput.value === "") {
-      return unhideElement(modalErrorDescription)
-    }
-    if (amountInput.value === "") {
-      return unhideElement(modalErrorAmount)
-    }
-    cleanHTML(operationTableContainer)
-    addNewOperationObject(localOperationsArr, createOperationObject())
-    setItemInLocal("operationsList", localOperationsArr)
-    showOperationsOnDisplay(filterOperations())
-    refreshBalanceObj(filterOperations())
-    saveBalanceObj()
-    showTotalsOnDisplay(balanceObj)
-    noResultsOrResults()
-    hideElement(modalContainer);
+    modalAddDom()
   }
   if (e.keyCode === 27) {
     e.preventDefault()
