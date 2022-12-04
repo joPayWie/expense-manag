@@ -1,6 +1,8 @@
 # myExpenseManager
 by **Solange Aimery** and **Jo Pay**
 
+[Expense manager](https://jopaywie.github.io/expense-manag/)
+
 ![Desktop version](/assets/readme-images/expmanag1.png)
 
 ## 💵 This web application helps you control your expenses.
